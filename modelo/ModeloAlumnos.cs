@@ -1,0 +1,167 @@
+﻿using System;
+using System.Data;
+using MySql.Data.MySqlClient;
+
+public class ModeloAlumno
+{
+    private Conexion conexion;
+
+    public ModeloAlumno()
+    {
+        conexion = new Conexion();
+    }
+
+    public int InsertarAlumno(Alumno alumno)
+    {
+        int idGenerado = -1;
+
+        string query = @"
+            INSERT INTO alumno (dni, nombre, apellido, telefono_padres)
+            VALUES (@dni, @nombre, @apellido, @telefono_padres);
+            SELECT LAST_INSERT_ID();";
+
+        using (MySqlConnection conn = conexion.getConexion())
+        {
+            try
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@dni", alumno.Dni);
+                    cmd.Parameters.AddWithValue("@nombre", alumno.Nombre);
+                    cmd.Parameters.AddWithValue("@apellido", alumno.Apellido);
+                    cmd.Parameters.AddWithValue("@telefono_padres", alumno.Telefono_padres);
+
+                    object result = cmd.ExecuteScalar();
+                    if (result != null)
+                        idGenerado = Convert.ToInt32(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Error al insertar alumno: " + ex.Message);
+            }
+        }
+
+        return idGenerado;
+    }
+
+    public List<Alumno> ObtenerAlumnosComoLista()
+    {
+        List<Alumno> lista = new List<Alumno>();
+
+        try
+        {
+            using (MySqlConnection conn = conexion.getConexion())
+            {
+                conn.Open();
+                string query = "SELECT id, dni, nombre, apellido, telefono_padres FROM alumno";
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Alumno alumno = new Alumno
+                            {
+                                Id = reader.GetInt32("id"),
+                                Dni = reader.GetInt32("dni"),
+                                Nombre = reader.GetString("nombre"),
+                                Apellido = reader.GetString("apellido"),
+                                Telefono_padres = reader.GetString("telefono_padres")
+                            };
+                            lista.Add(alumno);
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Windows.Forms.MessageBox.Show("Error al obtener alumnos: " + ex.Message);
+        }
+
+        return lista;
+    }
+
+    public DataTable ObtenerTablaAlumnos()
+    {
+        DataTable tabla = new DataTable();
+        try
+        {
+            using (MySqlConnection conn = conexion.getConexion())
+            {
+                conn.Open();
+                string query = "SELECT id, dni, nombre, apellido, telefono_padres FROM alumno";
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
+                    {
+                        adapter.Fill(tabla);
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Windows.Forms.MessageBox.Show("Error al obtener alumnos: " + ex.Message);
+        }
+        return tabla;
+    }
+
+    public bool ActualizarAlumno(Alumno alumno)
+    {
+        bool exito = false;
+        string query = @"
+            UPDATE alumno
+            SET dni = @dni, nombre = @nombre, apellido = @apellido, telefono_padres = @telefono_padres
+            WHERE id = @id";
+
+        using (MySqlConnection conn = conexion.getConexion())
+        {
+            try
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@dni", alumno.Dni);
+                    cmd.Parameters.AddWithValue("@nombre", alumno.Nombre);
+                    cmd.Parameters.AddWithValue("@apellido", alumno.Apellido);
+                    cmd.Parameters.AddWithValue("@telefono_padres", alumno.Telefono_padres);
+                    cmd.Parameters.AddWithValue("@id", alumno.Id);
+
+                    exito = cmd.ExecuteNonQuery() > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Error al actualizar alumno: " + ex.Message);
+            }
+        }
+        return exito;
+    }
+
+    public bool EliminarAlumno(int id)
+    {
+        bool exito = false;
+        string query = "DELETE FROM alumno WHERE id = @id";
+
+        using (MySqlConnection conn = conexion.getConexion())
+        {
+            try
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", id);
+                    exito = cmd.ExecuteNonQuery() > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Error al eliminar alumno: " + ex.Message);
+            }
+        }
+        return exito;
+    }
+}

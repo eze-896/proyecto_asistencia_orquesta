@@ -1,0 +1,23 @@
+C:\Users\54291\source\repos\GUI Login\bin\Debug\net8.0-windows\GUI Login.exe
+C:\Users\54291\source\repos\GUI Login\bin\Debug\net8.0-windows\GUI Login.deps.json
+C:\Users\54291\source\repos\GUI Login\bin\Debug\net8.0-windows\GUI Login.runtimeconfig.json
+C:\Users\54291\source\repos\GUI Login\bin\Debug\net8.0-windows\GUI Login.dll
+C:\Users\54291\source\repos\GUI Login\bin\Debug\net8.0-windows\GUI Login.pdb
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI_Login.Form1.resources
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI_Login.Properties.Resources.resources
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI Login.csproj.GenerateResource.cache
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI Login.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI Login.AssemblyInfoInputs.cache
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI Login.AssemblyInfo.cs
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI Login.csproj.CoreCompileInputs.cache
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI Login.dll
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\refint\GUI Login.dll
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI Login.pdb
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI Login.genruntimeconfig.cache
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\ref\GUI Login.dll
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI Login.csproj.AssemblyReference.cache
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI_Login.frmPrincipal.resources
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI_Login.frmUsuarios.resources
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI_Login.registro.resources
+C:\Users\54291\source\repos\GUI Login\bin\Debug\net8.0-windows\MySql.Data.dll
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI Login.csproj.Up2Date
