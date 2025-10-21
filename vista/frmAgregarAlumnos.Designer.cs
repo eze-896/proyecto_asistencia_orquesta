@@ -28,205 +28,63 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmAgregarAlumnos));
-            txtDni = new TextBox();
-            txtNombre = new TextBox();
-            txtApellido = new TextBox();
-            txtTelePadres = new TextBox();
-            label1 = new Label();
-            label2 = new Label();
-            label3 = new Label();
-            label4 = new Label();
-            label5 = new Label();
-            btnIngresar = new Button();
-            btnVolver = new Button();
-            label6 = new Label();
-            cmbInstrumentos = new ComboBox();
+            panelHeader = new Panel();
+            lblTitulo = new Label();
+            lblSubtitulo = new Label();
             btnSalir = new Button();
-            panel1 = new Panel();
-            pictureBox1 = new PictureBox();
-            label7 = new Label();
-            panel2 = new Panel();
-            panel3 = new Panel();
-            panel4 = new Panel();
-            panel5 = new Panel();
-            panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            panelMain = new Panel();
+            panelForm = new Panel();
+            cmbInstrumentos = new ComboBox();
+            btnVolver = new Button();
+            btnIngresar = new Button();
+            txtTelePadres = new TextBox();
+            txtApellido = new TextBox();
+            txtNombre = new TextBox();
+            txtDni = new TextBox();
+            label6 = new Label();
+            label5 = new Label();
+            label4 = new Label();
+            label3 = new Label();
+            label2 = new Label();
+            label1 = new Label();
+            panelHeader.SuspendLayout();
+            panelMain.SuspendLayout();
+            panelForm.SuspendLayout();
             SuspendLayout();
             // 
-            // txtDni
+            // panelHeader
             // 
-            txtDni.BackColor = Color.FromArgb(240, 242, 245);
-            txtDni.BorderStyle = BorderStyle.None;
-            txtDni.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtDni.ForeColor = Color.FromArgb(64, 64, 64);
-            txtDni.Location = new Point(50, 245);
-            txtDni.Multiline = true;
-            txtDni.Name = "txtDni";
-            txtDni.Size = new Size(220, 32);
-            txtDni.TabIndex = 2;
-            txtDni.Text = "Ingrese DNI";
-            txtDni.Enter += txtDni_Enter;
-            txtDni.Leave += txtDni_Leave;
+            panelHeader.BackColor = Color.FromArgb(116, 86, 174);
+            panelHeader.Controls.Add(lblTitulo);
+            panelHeader.Controls.Add(lblSubtitulo);
+            panelHeader.Controls.Add(btnSalir);
+            panelHeader.Dock = DockStyle.Top;
+            panelHeader.Location = new Point(0, 0);
+            panelHeader.Name = "panelHeader";
+            panelHeader.Size = new Size(900, 120);
+            panelHeader.TabIndex = 0;
             // 
-            // txtNombre
+            // lblTitulo
             // 
-            txtNombre.BackColor = Color.FromArgb(240, 242, 245);
-            txtNombre.BorderStyle = BorderStyle.None;
-            txtNombre.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtNombre.ForeColor = Color.FromArgb(64, 64, 64);
-            txtNombre.Location = new Point(50, 165);
-            txtNombre.Multiline = true;
-            txtNombre.Name = "txtNombre";
-            txtNombre.Size = new Size(220, 32);
-            txtNombre.TabIndex = 0;
-            txtNombre.Text = "Ingrese nombre";
-            txtNombre.Enter += txtNombre_Enter;
-            txtNombre.Leave += txtNombre_Leave;
+            lblTitulo.AutoSize = true;
+            lblTitulo.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
+            lblTitulo.ForeColor = Color.White;
+            lblTitulo.Location = new Point(35, 25);
+            lblTitulo.Name = "lblTitulo";
+            lblTitulo.Size = new Size(341, 45);
+            lblTitulo.TabIndex = 0;
+            lblTitulo.Text = "REGISTRO ALUMNOS";
             // 
-            // txtApellido
+            // lblSubtitulo
             // 
-            txtApellido.BackColor = Color.FromArgb(240, 242, 245);
-            txtApellido.BorderStyle = BorderStyle.None;
-            txtApellido.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtApellido.ForeColor = Color.FromArgb(64, 64, 64);
-            txtApellido.Location = new Point(300, 165);
-            txtApellido.Multiline = true;
-            txtApellido.Name = "txtApellido";
-            txtApellido.Size = new Size(220, 32);
-            txtApellido.TabIndex = 1;
-            txtApellido.Text = "Ingrese apellido";
-            txtApellido.Enter += txtApellido_Enter;
-            txtApellido.Leave += txtApellido_Leave;
-            // 
-            // txtTelePadres
-            // 
-            txtTelePadres.BackColor = Color.FromArgb(240, 242, 245);
-            txtTelePadres.BorderStyle = BorderStyle.None;
-            txtTelePadres.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtTelePadres.ForeColor = Color.FromArgb(64, 64, 64);
-            txtTelePadres.Location = new Point(50, 325);
-            txtTelePadres.Multiline = true;
-            txtTelePadres.Name = "txtTelePadres";
-            txtTelePadres.Size = new Size(220, 32);
-            txtTelePadres.TabIndex = 3;
-            txtTelePadres.Text = "Ingrese teléfono";
-            txtTelePadres.Enter += txtTelePadres_Enter;
-            txtTelePadres.Leave += txtTelePadres_Leave;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.ForeColor = Color.FromArgb(116, 86, 174);
-            label1.Location = new Point(45, 90);
-            label1.Name = "label1";
-            label1.Size = new Size(240, 30);
-            label1.TabIndex = 14;
-            label1.Text = "Nuevo Alumno Musical";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.ForeColor = Color.FromArgb(116, 86, 174);
-            label2.Location = new Point(50, 140);
-            label2.Name = "label2";
-            label2.Size = new Size(60, 17);
-            label2.TabIndex = 15;
-            label2.Text = "Nombre";
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label3.ForeColor = Color.FromArgb(116, 86, 174);
-            label3.Location = new Point(300, 140);
-            label3.Name = "label3";
-            label3.Size = new Size(59, 17);
-            label3.TabIndex = 16;
-            label3.Text = "Apellido";
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label4.ForeColor = Color.FromArgb(116, 86, 174);
-            label4.Location = new Point(50, 220);
-            label4.Name = "label4";
-            label4.Size = new Size(30, 17);
-            label4.TabIndex = 17;
-            label4.Text = "DNI";
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label5.ForeColor = Color.FromArgb(116, 86, 174);
-            label5.Location = new Point(50, 300);
-            label5.Name = "label5";
-            label5.Size = new Size(124, 17);
-            label5.TabIndex = 18;
-            label5.Text = "Teléfono de padres";
-            // 
-            // btnIngresar
-            // 
-            btnIngresar.BackColor = Color.FromArgb(116, 86, 174);
-            btnIngresar.Cursor = Cursors.Hand;
-            btnIngresar.FlatAppearance.BorderSize = 0;
-            btnIngresar.FlatAppearance.MouseOverBackColor = Color.FromArgb(94, 68, 140);
-            btnIngresar.FlatStyle = FlatStyle.Flat;
-            btnIngresar.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnIngresar.ForeColor = Color.White;
-            btnIngresar.Location = new Point(50, 430);
-            btnIngresar.Name = "btnIngresar";
-            btnIngresar.Size = new Size(220, 40);
-            btnIngresar.TabIndex = 5;
-            btnIngresar.Text = "🎵 INGRESAR ALUMNO";
-            btnIngresar.UseVisualStyleBackColor = false;
-            btnIngresar.Click += btnIngresar_Click;
-            // 
-            // btnVolver
-            // 
-            btnVolver.BackColor = Color.White;
-            btnVolver.Cursor = Cursors.Hand;
-            btnVolver.FlatAppearance.BorderColor = Color.FromArgb(116, 86, 174);
-            btnVolver.FlatAppearance.BorderSize = 2;
-            btnVolver.FlatAppearance.MouseOverBackColor = Color.FromArgb(245, 243, 250);
-            btnVolver.FlatStyle = FlatStyle.Flat;
-            btnVolver.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnVolver.ForeColor = Color.FromArgb(116, 86, 174);
-            btnVolver.Location = new Point(300, 430);
-            btnVolver.Name = "btnVolver";
-            btnVolver.Size = new Size(220, 40);
-            btnVolver.TabIndex = 6;
-            btnVolver.Text = "↩ VOLVER";
-            btnVolver.UseVisualStyleBackColor = false;
-            btnVolver.Click += btnVolver_Click;
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label6.ForeColor = Color.FromArgb(116, 86, 174);
-            label6.Location = new Point(300, 220);
-            label6.Name = "label6";
-            label6.Size = new Size(159, 17);
-            label6.TabIndex = 19;
-            label6.Text = "Instrumento a aprender";
-            // 
-            // cmbInstrumentos
-            // 
-            cmbInstrumentos.BackColor = Color.FromArgb(240, 242, 245);
-            cmbInstrumentos.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbInstrumentos.FlatStyle = FlatStyle.Flat;
-            cmbInstrumentos.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            cmbInstrumentos.ForeColor = Color.FromArgb(64, 64, 64);
-            cmbInstrumentos.FormattingEnabled = true;
-            cmbInstrumentos.Location = new Point(300, 245);
-            cmbInstrumentos.Name = "cmbInstrumentos";
-            cmbInstrumentos.Size = new Size(220, 28);
-            cmbInstrumentos.TabIndex = 4;
+            lblSubtitulo.AutoSize = true;
+            lblSubtitulo.Font = new Font("Segoe UI", 12F);
+            lblSubtitulo.ForeColor = Color.White;
+            lblSubtitulo.Location = new Point(40, 75);
+            lblSubtitulo.Name = "lblSubtitulo";
+            lblSubtitulo.Size = new Size(329, 21);
+            lblSubtitulo.TabIndex = 1;
+            lblSubtitulo.Text = "Complete los datos del nuevo alumno musical";
             // 
             // btnSalir
             // 
@@ -235,142 +93,256 @@
             btnSalir.FlatAppearance.BorderSize = 0;
             btnSalir.FlatAppearance.MouseOverBackColor = Color.FromArgb(255, 128, 128);
             btnSalir.FlatStyle = FlatStyle.Flat;
-            btnSalir.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnSalir.ForeColor = Color.FromArgb(116, 86, 174);
-            btnSalir.Location = new Point(530, 12);
+            btnSalir.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+            btnSalir.ForeColor = Color.White;
+            btnSalir.Location = new Point(850, 20);
             btnSalir.Name = "btnSalir";
-            btnSalir.Size = new Size(30, 30);
-            btnSalir.TabIndex = 7;
+            btnSalir.Size = new Size(40, 40);
+            btnSalir.TabIndex = 1;
             btnSalir.Text = "×";
             btnSalir.UseVisualStyleBackColor = false;
             btnSalir.Click += btnSalir_Click;
             // 
-            // panel1
+            // panelMain
             // 
-            panel1.BackColor = Color.FromArgb(116, 86, 174);
-            panel1.Controls.Add(pictureBox1);
-            panel1.Controls.Add(label7);
-            panel1.Dock = DockStyle.Top;
-            panel1.Location = new Point(0, 0);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(572, 70);
-            panel1.TabIndex = 20;
+            panelMain.BackColor = Color.FromArgb(248, 248, 252);
+            panelMain.Controls.Add(panelForm);
+            panelMain.Dock = DockStyle.Fill;
+            panelMain.Location = new Point(0, 120);
+            panelMain.Name = "panelMain";
+            panelMain.Padding = new Padding(30);
+            panelMain.Size = new Size(900, 580);
+            panelMain.TabIndex = 1;
             // 
-            // pictureBox1
+            // panelForm
             // 
-            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(20, 15);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(40, 40);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 1;
-            pictureBox1.TabStop = false;
+            panelForm.BackColor = Color.White;
+            panelForm.Controls.Add(cmbInstrumentos);
+            panelForm.Controls.Add(btnVolver);
+            panelForm.Controls.Add(btnIngresar);
+            panelForm.Controls.Add(txtTelePadres);
+            panelForm.Controls.Add(txtApellido);
+            panelForm.Controls.Add(txtNombre);
+            panelForm.Controls.Add(txtDni);
+            panelForm.Controls.Add(label6);
+            panelForm.Controls.Add(label5);
+            panelForm.Controls.Add(label4);
+            panelForm.Controls.Add(label3);
+            panelForm.Controls.Add(label2);
+            panelForm.Controls.Add(label1);
+            panelForm.Dock = DockStyle.Fill;
+            panelForm.Location = new Point(30, 30);
+            panelForm.Name = "panelForm";
+            panelForm.Padding = new Padding(40);
+            panelForm.Size = new Size(840, 520);
+            panelForm.TabIndex = 0;
             // 
-            // label7
+            // cmbInstrumentos
             // 
-            label7.AutoSize = true;
-            label7.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label7.ForeColor = Color.White;
-            label7.Location = new Point(70, 20);
-            label7.Name = "label7";
-            label7.Size = new Size(235, 30);
-            label7.TabIndex = 0;
-            label7.Text = "Registro de Alumnos 🎶";
+            cmbInstrumentos.BackColor = Color.FromArgb(248, 248, 252);
+            cmbInstrumentos.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbInstrumentos.FlatStyle = FlatStyle.Flat;
+            cmbInstrumentos.Font = new Font("Segoe UI", 11F);
+            cmbInstrumentos.ForeColor = Color.FromArgb(64, 64, 64);
+            cmbInstrumentos.FormattingEnabled = true;
+            cmbInstrumentos.Location = new Point(450, 180);
+            cmbInstrumentos.Name = "cmbInstrumentos";
+            cmbInstrumentos.Size = new Size(320, 28);
+            cmbInstrumentos.TabIndex = 2;
             // 
-            // panel2
+            // btnVolver
             // 
-            panel2.BackColor = Color.FromArgb(116, 86, 174);
-            panel2.Location = new Point(50, 197);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(220, 2);
-            panel2.TabIndex = 21;
+            btnVolver.BackColor = Color.FromArgb(240, 240, 240);
+            btnVolver.Cursor = Cursors.Hand;
+            btnVolver.FlatAppearance.BorderSize = 0;
+            btnVolver.FlatAppearance.MouseOverBackColor = Color.FromArgb(220, 220, 220);
+            btnVolver.FlatStyle = FlatStyle.Flat;
+            btnVolver.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            btnVolver.ForeColor = Color.FromArgb(64, 64, 64);
+            btnVolver.Location = new Point(450, 400);
+            btnVolver.Name = "btnVolver";
+            btnVolver.Size = new Size(320, 45);
+            btnVolver.TabIndex = 5;
+            btnVolver.Text = "← VOLVER AL PRINCIPAL";
+            btnVolver.UseVisualStyleBackColor = false;
+            btnVolver.Click += btnVolver_Click;
             // 
-            // panel3
+            // btnIngresar
             // 
-            panel3.BackColor = Color.FromArgb(116, 86, 174);
-            panel3.Location = new Point(300, 197);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(220, 2);
-            panel3.TabIndex = 22;
+            btnIngresar.BackColor = Color.FromArgb(116, 86, 174);
+            btnIngresar.Cursor = Cursors.Hand;
+            btnIngresar.FlatAppearance.BorderSize = 0;
+            btnIngresar.FlatAppearance.MouseOverBackColor = Color.FromArgb(94, 68, 140);
+            btnIngresar.FlatStyle = FlatStyle.Flat;
+            btnIngresar.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            btnIngresar.ForeColor = Color.White;
+            btnIngresar.Location = new Point(80, 400);
+            btnIngresar.Name = "btnIngresar";
+            btnIngresar.Size = new Size(320, 45);
+            btnIngresar.TabIndex = 4;
+            btnIngresar.Text = "🎵 INGRESAR ALUMNO";
+            btnIngresar.UseVisualStyleBackColor = false;
+            btnIngresar.Click += btnIngresar_Click;
             // 
-            // panel4
+            // txtTelePadres
             // 
-            panel4.BackColor = Color.FromArgb(116, 86, 174);
-            panel4.Location = new Point(50, 277);
-            panel4.Name = "panel4";
-            panel4.Size = new Size(220, 2);
-            panel4.TabIndex = 23;
+            txtTelePadres.BackColor = Color.FromArgb(248, 248, 252);
+            txtTelePadres.BorderStyle = BorderStyle.FixedSingle;
+            txtTelePadres.Font = new Font("Segoe UI", 11F);
+            txtTelePadres.ForeColor = Color.FromArgb(64, 64, 64);
+            txtTelePadres.Location = new Point(80, 240);
+            txtTelePadres.Name = "txtTelePadres";
+            txtTelePadres.Size = new Size(320, 27);
+            txtTelePadres.TabIndex = 3;
+            txtTelePadres.Leave += txtTelePadres_Leave;
             // 
-            // panel5
+            // txtApellido
             // 
-            panel5.BackColor = Color.FromArgb(116, 86, 174);
-            panel5.Location = new Point(50, 357);
-            panel5.Name = "panel5";
-            panel5.Size = new Size(220, 2);
-            panel5.TabIndex = 24;
+            txtApellido.BackColor = Color.FromArgb(248, 248, 252);
+            txtApellido.BorderStyle = BorderStyle.FixedSingle;
+            txtApellido.Font = new Font("Segoe UI", 11F);
+            txtApellido.ForeColor = Color.FromArgb(64, 64, 64);
+            txtApellido.Location = new Point(450, 120);
+            txtApellido.Name = "txtApellido";
+            txtApellido.Size = new Size(320, 27);
+            txtApellido.TabIndex = 1;
+            txtApellido.Leave += txtApellido_Leave;
             // 
-            // frmAlumnos
+            // txtNombre
             // 
-            AutoScaleDimensions = new SizeF(8F, 17F);
+            txtNombre.BackColor = Color.FromArgb(248, 248, 252);
+            txtNombre.BorderStyle = BorderStyle.FixedSingle;
+            txtNombre.Font = new Font("Segoe UI", 11F);
+            txtNombre.ForeColor = Color.FromArgb(64, 64, 64);
+            txtNombre.Location = new Point(80, 120);
+            txtNombre.Name = "txtNombre";
+            txtNombre.Size = new Size(320, 27);
+            txtNombre.TabIndex = 0;
+            txtNombre.Leave += txtNombre_Leave;
+            // 
+            // txtDni
+            // 
+            txtDni.BackColor = Color.FromArgb(248, 248, 252);
+            txtDni.BorderStyle = BorderStyle.FixedSingle;
+            txtDni.Font = new Font("Segoe UI", 11F);
+            txtDni.ForeColor = Color.FromArgb(64, 64, 64);
+            txtDni.Location = new Point(80, 180);
+            txtDni.Name = "txtDni";
+            txtDni.Size = new Size(320, 27);
+            txtDni.TabIndex = 2;
+            txtDni.Leave += txtDni_Leave;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label6.ForeColor = Color.FromArgb(116, 86, 174);
+            label6.Location = new Point(450, 150);
+            label6.Name = "label6";
+            label6.Size = new Size(190, 21);
+            label6.TabIndex = 19;
+            label6.Text = "Instrumento a aprender";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label5.ForeColor = Color.FromArgb(116, 86, 174);
+            label5.Location = new Point(80, 210);
+            label5.Name = "label5";
+            label5.Size = new Size(155, 21);
+            label5.TabIndex = 18;
+            label5.Text = "Teléfono de padres";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label4.ForeColor = Color.FromArgb(116, 86, 174);
+            label4.Location = new Point(80, 150);
+            label4.Name = "label4";
+            label4.Size = new Size(40, 21);
+            label4.TabIndex = 17;
+            label4.Text = "DNI";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label3.ForeColor = Color.FromArgb(116, 86, 174);
+            label3.Location = new Point(450, 90);
+            label3.Name = "label3";
+            label3.Size = new Size(75, 21);
+            label3.TabIndex = 16;
+            label3.Text = "Apellido";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label2.ForeColor = Color.FromArgb(116, 86, 174);
+            label2.Location = new Point(80, 90);
+            label2.Name = "label2";
+            label2.Size = new Size(73, 21);
+            label2.TabIndex = 15;
+            label2.Text = "Nombre";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            label1.ForeColor = Color.FromArgb(116, 86, 174);
+            label1.Location = new Point(75, 30);
+            label1.Name = "label1";
+            label1.Size = new Size(282, 32);
+            label1.TabIndex = 14;
+            label1.Text = "Nuevo Alumno Musical";
+            // 
+            // frmAgregarAlumnos
+            // 
+            AutoScaleDimensions = new SizeF(9F, 21F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(572, 500);
-            Controls.Add(panel5);
-            Controls.Add(panel4);
-            Controls.Add(panel3);
-            Controls.Add(panel2);
-            Controls.Add(panel1);
-            Controls.Add(btnSalir);
-            Controls.Add(cmbInstrumentos);
-            Controls.Add(label6);
-            Controls.Add(btnVolver);
-            Controls.Add(btnIngresar);
-            Controls.Add(label5);
-            Controls.Add(label4);
-            Controls.Add(label3);
-            Controls.Add(label2);
-            Controls.Add(label1);
-            Controls.Add(txtTelePadres);
-            Controls.Add(txtApellido);
-            Controls.Add(txtNombre);
-            Controls.Add(txtDni);
-            Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            ForeColor = Color.FromArgb(164, 165, 169);
+            ClientSize = new Size(900, 700);
+            Controls.Add(panelMain);
+            Controls.Add(panelHeader);
+            Font = new Font("Segoe UI", 12F);
             FormBorderStyle = FormBorderStyle.None;
-            Icon = (Icon)resources.GetObject("$this.Icon");
-            Name = "frmAlumnos";
+            KeyPreview = true;
+            Name = "frmAgregarAlumnos";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Registro de Alumnos";
-            Load += frmAlumnos_Load;
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            Load += frmAgregarAlumnos_Load;
+            KeyDown += frmAgregarAlumnos_KeyDown;
+            panelHeader.ResumeLayout(false);
+            panelHeader.PerformLayout();
+            panelMain.ResumeLayout(false);
+            panelForm.ResumeLayout(false);
+            panelForm.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
+
         }
 
         #endregion
 
-        private TextBox txtDni;
-        private TextBox txtNombre;
-        private TextBox txtApellido;
-        private TextBox txtTelePadres;
-        private Label label1;
-        private Label label2;
-        private Label label3;
-        private Label label4;
-        private Label label5;
-        private Button btnIngresar;
-        private Button btnVolver;
-        private Label label6;
-        private ComboBox cmbInstrumentos;
+        private Panel panelHeader;
+        private Label lblTitulo;
+        private Label lblSubtitulo;
         private Button btnSalir;
-        private Panel panel1;
-        private Label label7;
-        private PictureBox pictureBox1;
-        private Panel panel2;
-        private Panel panel3;
-        private Panel panel4;
-        private Panel panel5;
+        private Panel panelMain;
+        private Panel panelForm;
+        private ComboBox cmbInstrumentos;
+        private Button btnVolver;
+        private Button btnIngresar;
+        private TextBox txtTelePadres;
+        private TextBox txtApellido;
+        private TextBox txtNombre;
+        private TextBox txtDni;
+        private Label label6;
+        private Label label5;
+        private Label label4;
+        private Label label3;
+        private Label label2;
+        private Label label1;
     }
 }

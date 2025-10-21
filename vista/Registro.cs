@@ -10,27 +10,27 @@ using System.Windows.Forms;
 
 namespace GUI_Login
 {
-    public partial class registro : Form
+    public partial class Registro : Form
     {
-        public registro()
+        public Registro()
         {
             InitializeComponent();
         }
 
-        private void registro_Load(object sender, EventArgs e)
+        private void Registro_Load(object sender, EventArgs e)
         {
             txtNombreRegistro.Focus(); // Cuando abre el formulario, pone el foco en usuario
         }
 
-        private void btnVolver_Click(object sender, EventArgs e)
+        private void BtnVolver_Click(object sender, EventArgs e)
         {
             // Volver al login
-            login login = new login();
+            Login login = new ();
             this.Visible = false;
             login.Show();
         }
 
-        private void btnSalir_Click(object sender, EventArgs e)
+        private void BtnSalir_Click(object sender, EventArgs e)
         {
             DialogResult rta = MessageBox.Show("¿Seguro que desea salir?", "Registro",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -44,7 +44,7 @@ namespace GUI_Login
             }
         }
 
-        private void btnRegistro_Click(object sender, EventArgs e)
+        private void BtnRegistro_Click(object sender, EventArgs e)
         {
             try
             {
@@ -70,19 +70,21 @@ namespace GUI_Login
                 }
 
                 // Crear objeto Usuario
-                Usuario nuevoUser = new Usuario();
-                nuevoUser.Nombre = usuario;
-                ControlSesion cs = new ControlSesion();
+                Usuario nuevoUser = new()
+                {
+                    Nombre = usuario
+                };
+                ControlSesion cs = new ();
                 nuevoUser.Contrasena = cs.generarSHA1(pass); // Guardar encriptado
 
                 // Guardar en BD
-                ModeloSesion modelo = new ModeloSesion();
+                ModeloSesion modelo = new ();
                 if (modelo.registrarUsuario(nuevoUser))
                 {
                     MessageBox.Show("Usuario registrado con éxito", "Registro",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    login login = new login();
+                    Login login = new ();
                     this.Visible = false;
                     login.Show();
                 }

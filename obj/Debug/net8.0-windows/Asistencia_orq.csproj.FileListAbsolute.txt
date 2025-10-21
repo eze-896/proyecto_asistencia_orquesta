@@ -29,3 +29,7 @@ C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI_Login.vista.f
 C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI_Login.vista.frmListadoProfesores.resources
 C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI_Login.vista.frmEliminarAlumnos.resources
 C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI_Login.vista.frmModificarAlumnos.resources
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\Asistencia_orq.sourcelink.json
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI_Login.vista.frmEliminarProfesores.resources
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI_Login.vista.frmModificarProfesores.resources
+C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI_Login.vista.frmEliminarInstrumento.resources

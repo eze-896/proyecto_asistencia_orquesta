@@ -1,66 +1,103 @@
-﻿using GUI_Login.vista;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
     public partial class frmAgregarAlumnos : Form
     {
+        private ControlAlumno controlAlumno;
         private ControlInstrumento controlInstrumento;
+
         public frmAgregarAlumnos()
         {
             InitializeComponent();
+            controlAlumno = new ControlAlumno();
             controlInstrumento = new ControlInstrumento();
         }
 
+        private void frmAgregarAlumnos_Load(object sender, EventArgs e)
+        {
+            CargarComboInstrumentos();
+        }
+
+        private void CargarComboInstrumentos()
+        {
+            try
+            {
+                List<Instrumento> instrumentos = controlInstrumento.ListarInstrumentosEnOrquesta();
+                cmbInstrumentos.DataSource = null;
+                cmbInstrumentos.DataSource = instrumentos;
+                cmbInstrumentos.DisplayMember = "Nombre";
+                cmbInstrumentos.ValueMember = "Id";
+                cmbInstrumentos.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar instrumentos: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnIngresar_Click(object sender, EventArgs e)
+        {
+            // Validar campos obligatorios
+            if (!controlAlumno.ValidarCamposObligatorios(
+                txtNombre.Text, txtApellido.Text, txtDni.Text, txtTelePadres.Text,
+                cmbInstrumentos.SelectedValue as int?))
+                return;
+
+            // Crear objeto alumno
+            Alumno alumno = new Alumno
+            {
+                Dni = int.Parse(txtDni.Text),
+                Nombre = txtNombre.Text.Trim(),
+                Apellido = txtApellido.Text.Trim(),
+                Telefono_padres = txtTelePadres.Text.Trim()
+            };
+
+            int idInstrumento = (int)cmbInstrumentos.SelectedValue;
+
+            // Registrar alumno con instrumento
+            bool exito = controlAlumno.RegistrarAlumnoConInstrumento(alumno, idInstrumento);
+
+            if (exito)
+            {
+                LimpiarFormulario();
+            }
+        }
+
+        private void LimpiarFormulario()
+        {
+            txtDni.Clear();
+            txtNombre.Clear();
+            txtApellido.Clear();
+            txtTelePadres.Clear();
+            cmbInstrumentos.SelectedIndex = -1;
+            txtNombre.Focus();
+        }
+
+        // Eventos de UI (sin lógica de negocio)
         private void txtDni_Leave(object sender, EventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(txtDni.Text))
+            if (!string.IsNullOrWhiteSpace(txtDni.Text) && !int.TryParse(txtDni.Text, out _))
             {
-                if (!int.TryParse(txtDni.Text, out _))
-                {
-                    MessageBox.Show("El DNI debe ser un número válido.");
-                    txtDni.Clear();
-                    txtDni.Focus();
-                }
+                MessageBox.Show("El DNI debe ser un número válido.",
+                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtDni.Clear();
+                txtDni.Focus();
             }
         }
 
         private void txtTelePadres_Leave(object sender, EventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(txtTelePadres.Text))
+            if (!string.IsNullOrWhiteSpace(txtTelePadres.Text) && !long.TryParse(txtTelePadres.Text, out _))
             {
-                if (!long.TryParse(txtTelePadres.Text, out _))
-                {
-                    MessageBox.Show("El teléfono debe ser un número válido.");
-                    txtTelePadres.Clear();
-                    txtTelePadres.Focus();
-                }
-            }
-        }
-
-        private void txtTelePadres_Enter(object sender, EventArgs e)
-        {
-            txtTelePadres.BackColor = Color.LightYellow;
-        }
-
-        private void txtDni_Enter(object sender, EventArgs e)
-        {
-            txtDni.BackColor = Color.LightYellow;
-        }
-
-        private void txtApellido_Leave(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrWhiteSpace(txtApellido.Text))
-            {
-                txtApellido.Text = char.ToUpper(txtApellido.Text[0]) + txtApellido.Text.Substring(1).ToLower();
+                MessageBox.Show("El teléfono debe ser un número válido.",
+                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtTelePadres.Clear();
+                txtTelePadres.Focus();
             }
         }
 
@@ -72,90 +109,37 @@ namespace GUI_Login.vista
             }
         }
 
-        private void txtApellido_Enter(object sender, EventArgs e)
+        private void txtApellido_Leave(object sender, EventArgs e)
         {
-            txtApellido.BackColor = Color.LightYellow;
-        }
-
-        private void txtNombre_Enter(object sender, EventArgs e)
-        {
-            txtNombre.BackColor = Color.LightYellow;
-        }
-        private void frmAlumnos_Load(object sender, EventArgs e)
-        {
-            List<Instrumento> instrumentos = controlInstrumento.ListarInstrumentosEnOrquesta();
-            cmbInstrumentos.DataSource = null;
-            cmbInstrumentos.DataSource = instrumentos;
-            cmbInstrumentos.DisplayMember = "Nombre";
-            cmbInstrumentos.ValueMember = "Id";
-            cmbInstrumentos.SelectedIndex = -1;
-        }
-
-        private void btnIngresar_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(txtDni.Text) ||
-                string.IsNullOrWhiteSpace(txtNombre.Text) ||
-                string.IsNullOrWhiteSpace(txtApellido.Text) ||
-                string.IsNullOrWhiteSpace(txtTelePadres.Text) ||
-                cmbInstrumentos.SelectedIndex == -1)
+            if (!string.IsNullOrWhiteSpace(txtApellido.Text))
             {
-                MessageBox.Show("Todos los campos son obligatorios.");
-                return;
-            }
-
-            Alumno alumno = new Alumno
-            {
-                Dni = int.Parse(txtDni.Text),
-                Nombre = txtNombre.Text,
-                Apellido = txtApellido.Text,
-                Telefono_padres = txtTelePadres.Text
-            };
-
-            ControlAlumno controlAlumno = new ControlAlumno();
-            int idAlumno = controlAlumno.RegistrarAlumnoYObtenerId(alumno); // método nuevo que devuelve el ID
-
-            if (idAlumno > 0)
-            {
-                // Ahora guardamos la relación alumno-instrumento
-                int idInstrumento = (int)cmbInstrumentos.SelectedValue;
-
-                ControlAlumnoInstrumento controlRel = new ControlAlumnoInstrumento();
-                bool relacionInsertada = controlRel.RegistrarRelacion(idAlumno, idInstrumento);
-
-                if (relacionInsertada)
-                {
-                    MessageBox.Show("Alumno registrado correctamente junto a su instrumento.");
-
-                    txtDni.Clear();
-                    txtNombre.Clear();
-                    txtApellido.Clear();
-                    txtTelePadres.Clear();
-                    cmbInstrumentos.SelectedIndex = -1;
-                }
-                else
-                {
-                    MessageBox.Show("Error al asociar el instrumento al alumno.");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Error al registrar el alumno.");
+                txtApellido.Text = char.ToUpper(txtApellido.Text[0]) + txtApellido.Text.Substring(1).ToLower();
             }
         }
 
+        // Efectos visuales
+        private void Control_Enter(object sender, EventArgs e)
+        {
+            if (sender is TextBox textBox)
+                textBox.BackColor = Color.LightYellow;
+        }
+
+        private void Control_Leave(object sender, EventArgs e)
+        {
+            if (sender is TextBox textBox)
+                textBox.BackColor = Color.White;
+        }
 
         private void btnVolver_Click(object sender, EventArgs e)
         {
-            // Dirigir al formulario principal
-            frmPrincipal principalForm = new frmPrincipal();
-            principalForm.Show();
-            this.Hide();
+            this.Close();
+            FrmPrincipal formPrincipal = new FrmPrincipal();
+            formPrincipal.Show();
         }
-
-        private void btnSalir_Click(object sender, EventArgs e)
+        private void btnSalir_Click(object sender, EventArgs e) => Application.Exit();
+        private void frmAgregarAlumnos_KeyDown(object sender, KeyEventArgs e)
         {
-            // Cierra la pestaña y el sistema
-            Application.Exit();
+            if (e.KeyCode == Keys.Escape) btnVolver_Click(sender, e);
         }
     }
 }

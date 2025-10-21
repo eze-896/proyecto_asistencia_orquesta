@@ -85,4 +85,24 @@ public class ModeloAlumnoInstrumento
 
         return idInstrumento;
     }
+
+    // Eliminar relación por alumno
+    public bool EliminarRelacionPorAlumno(int idAlumno)
+    {
+        bool eliminado = false;
+
+        using (MySqlConnection conn = conexion.getConexion())
+        {
+            conn.Open();
+            string sql = "DELETE FROM alumno_instrumento WHERE id_alumno = @idAlumno";
+
+            using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@idAlumno", idAlumno);
+                eliminado = cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        return eliminado;
+    }
 }

@@ -16,6 +16,12 @@
     <Compile Update="vista\frmEliminarAlumnos.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="vista\frmEliminarInstrumento.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="vista\frmEliminarProfesores.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="vista\frmModificarAlumnos.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -23,6 +29,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="vista\frmListadoProfesores.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="vista\frmModificarProfesores.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="vista\Login.cs">

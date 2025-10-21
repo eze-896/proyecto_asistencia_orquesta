@@ -11,7 +11,67 @@ public class ModeloInstrumento
         conexion = new Conexion();
     }
 
-    // Agregar un instrumento existente (de la tabla instrumento) a la orquesta
+    // Método para eliminar instrumento de la orquesta
+    public bool EliminarInstrumentoOrquesta(int idInstrumento)
+    {
+        using (MySqlConnection conn = conexion.getConexion())
+        {
+            conn.Open();
+
+            string sql = "DELETE FROM instrumento_orquesta WHERE id = @id";
+            using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@id", idInstrumento);
+
+                try
+                {
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    return rowsAffected > 0;
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("Error al eliminar instrumento de la orquesta: " + ex.Message);
+                    return false;
+                }
+            }
+        }
+    }
+
+    // Verificar si el instrumento está siendo usado por algún profesor
+    public bool EstaInstrumentoEnUso(int idInstrumento)
+    {
+        using (MySqlConnection conn = conexion.getConexion())
+        {
+            conn.Open();
+
+            string sql = "SELECT COUNT(*) FROM profesor WHERE id_instrumento = @id";
+            using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@id", idInstrumento);
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                return count > 0;
+            }
+        }
+    }
+
+    // Verificar si el instrumento está siendo usado por algún alumno
+    public bool EstaInstrumentoEnUsoPorAlumnos(int idInstrumento)
+    {
+        using (MySqlConnection conn = conexion.getConexion())
+        {
+            conn.Open();
+
+            string sql = "SELECT COUNT(*) FROM alumno_instrumento WHERE id_instrumento = @id";
+            using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@id", idInstrumento);
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                return count > 0;
+            }
+        }
+    }
+
+    // Resto de los métodos existentes...
     public bool AgregarInstrumentoOrquesta(int idInstrumento)
     {
         using (MySqlConnection conn = conexion.getConexion())
@@ -30,7 +90,6 @@ public class ModeloInstrumento
                 }
                 catch (MySqlException ex)
                 {
-                    // Por ejemplo: si ya existe ese id en instrumento_orquesta (PK/FK duplicada)
                     Console.WriteLine("Error al agregar instrumento a la orquesta: " + ex.Message);
                     return false;
                 }
@@ -38,7 +97,6 @@ public class ModeloInstrumento
         }
     }
 
-    // Listar intrumentos que pertenecen a la orquesta
     public List<Instrumento> ListarInstrumentosOrquesta()
     {
         List<Instrumento> lista = new List<Instrumento>();
@@ -74,7 +132,6 @@ public class ModeloInstrumento
         return lista;
     }
 
-    // Lista los instrumentos que aún NO están en la orquesta
     public List<Instrumento> ListarInstrumentosDisponibles()
     {
         List<Instrumento> lista = new List<Instrumento>();

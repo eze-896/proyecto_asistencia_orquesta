@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace GUI_Login.vista
@@ -9,7 +8,6 @@ namespace GUI_Login.vista
     {
         private ControlAlumno controlAlumno;
         private ControlInstrumento controlInstrumento;
-        private ControlAlumnoInstrumento controlAlumnoInstrumento;
         private int idSeleccionado = -1;
         private List<Alumno> listaAlumnos;
 
@@ -18,7 +16,6 @@ namespace GUI_Login.vista
             InitializeComponent();
             controlAlumno = new ControlAlumno();
             controlInstrumento = new ControlInstrumento();
-            controlAlumnoInstrumento = new ControlAlumnoInstrumento();
         }
 
         private void frmModificarAlumnos_Load(object sender, EventArgs e)
@@ -33,7 +30,6 @@ namespace GUI_Login.vista
             lstAlumnosModificar.DataSource = null;
             lstAlumnosModificar.DataSource = listaAlumnos;
             lstAlumnosModificar.DisplayMember = "Nombre";
-            lstAlumnosModificar.DisplayMember = "Apellido";
             lstAlumnosModificar.ValueMember = "Id";
         }
 
@@ -59,18 +55,32 @@ namespace GUI_Login.vista
             txtDni.Text = alumno.Dni.ToString();
             txtTelePadres.Text = alumno.Telefono_padres;
 
-            int idInstrumentoActual = controlAlumnoInstrumento.ObtenerInstrumentoPorAlumno(idSeleccionado);
-            cmbInstrumentos.SelectedValue = idInstrumentoActual;
+            int idInstrumentoActual = controlAlumno.ObtenerInstrumentoPorAlumno(idSeleccionado);
+            if (idInstrumentoActual > 0)
+                cmbInstrumentos.SelectedValue = idInstrumentoActual;
         }
 
         private void btnGuardarCambios_Click(object sender, EventArgs e)
         {
-            if (idSeleccionado <= 0) return;
+            if (idSeleccionado <= 0)
+            {
+                MessageBox.Show("Por favor, seleccione un alumno para modificar.",
+                    "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
+            // Validar campos obligatorios
+            if (!controlAlumno.ValidarCamposObligatorios(
+                txtNombre.Text, txtApellido.Text, txtDni.Text, txtTelePadres.Text,
+                cmbInstrumentos.SelectedValue as int?))
+                return;
+
+            // Confirmar modificación
             if (MessageBox.Show("¿Está seguro que desea modificar los datos del alumno?",
                 "Confirmar Modificación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
+            // Crear objeto alumno
             Alumno alumno = new Alumno
             {
                 Id = idSeleccionado,
@@ -82,30 +92,36 @@ namespace GUI_Login.vista
 
             int idInstrumento = (int)cmbInstrumentos.SelectedValue;
 
-            bool modificado = controlAlumno.ModificarAlumno(alumno);
-            bool relActualizada = controlAlumnoInstrumento.ActualizarRelacion(idSeleccionado, idInstrumento);
+            // Modificar alumno con instrumento
+            bool exito = controlAlumno.ModificarAlumnoConInstrumento(alumno, idInstrumento);
 
-            if (modificado && relActualizada)
+            if (exito)
             {
-                MessageBox.Show("Alumno y su instrumento modificados correctamente.");
                 CargarListaAlumnos();
+                LimpiarFormulario();
             }
-            else
-            {
-                MessageBox.Show("Error al modificar el alumno o su instrumento.");
-            }
+        }
+
+        private void LimpiarFormulario()
+        {
+            txtNombre.Clear();
+            txtApellido.Clear();
+            txtDni.Clear();
+            txtTelePadres.Clear();
+            cmbInstrumentos.SelectedIndex = -1;
+            idSeleccionado = -1;
         }
 
         private void btnVolver_Click(object sender, EventArgs e)
         {
-            this.Hide();
-            frmPrincipal principal = new frmPrincipal();
-            principal.Show();
+            this.Close();
+            FrmPrincipal formPrincipal = new FrmPrincipal();
+            formPrincipal.Show();
         }
-
-        private void btnSalir_Click(object sender, EventArgs e)
+        private void btnSalir_Click(object sender, EventArgs e) => Application.Exit();
+        private void frmModificarAlumnos_KeyDown(object sender, KeyEventArgs e)
         {
-            Application.Exit();
+            if (e.KeyCode == Keys.Escape) btnVolver_Click(sender, e);
         }
     }
 }

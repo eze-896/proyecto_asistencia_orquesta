@@ -14,53 +14,72 @@ namespace GUI_Login.vista
             controlInstrumento = new ControlInstrumento();
         }
 
-        private void frmInstrumentos_Load(object sender, EventArgs e)
+        private void frmAgregarInstrumentos_Load(object sender, EventArgs e)
         {
             CargarComboInstrumentos();
         }
 
         private void CargarComboInstrumentos()
         {
-            List<Instrumento> instrumentos = controlInstrumento.ListarInstrumentosDisponibles();
-            cmbInstrumento.DataSource = null;
-            cmbInstrumento.DataSource = instrumentos;
-            cmbInstrumento.DisplayMember = "Nombre";
-            cmbInstrumento.ValueMember = "Id";
-            cmbInstrumento.SelectedIndex = -1;
+            try
+            {
+                List<Instrumento> instrumentos = controlInstrumento.ListarInstrumentosDisponibles();
+                cmbInstrumento.DataSource = null;
+                cmbInstrumento.DataSource = instrumentos;
+                cmbInstrumento.DisplayMember = "Nombre";
+                cmbInstrumento.ValueMember = "Id";
+                cmbInstrumento.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar los instrumentos: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnIngresar_Click(object sender, EventArgs e)
         {
             if (cmbInstrumento.SelectedIndex == -1)
             {
-                MessageBox.Show("Seleccione un instrumento");
+                MessageBox.Show("Seleccione un instrumento", "Advertencia",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            int idInstrumento = (int)cmbInstrumento.SelectedValue;
-            bool insertado = controlInstrumento.AgregarInstrumentoAOrquesta(idInstrumento);
+            try
+            {
+                int idInstrumento = (int)cmbInstrumento.SelectedValue;
+                bool insertado = controlInstrumento.AgregarInstrumentoAOrquesta(idInstrumento);
 
-            if (insertado)
-            {
-                MessageBox.Show("Instrumento agregado a la orquesta correctamente.");
-                CargarComboInstrumentos(); // refresca lista
+                if (insertado)
+                {
+                    MessageBox.Show("Instrumento agregado a la orquesta correctamente.",
+                        "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    CargarComboInstrumentos(); // refresca lista
+                }
+                else
+                {
+                    MessageBox.Show("No se pudo agregar el instrumento. Quizás ya está en la orquesta.",
+                        "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("No se pudo agregar el instrumento. Quizás ya está en la orquesta.");
+                MessageBox.Show($"Error al agregar el instrumento: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnVolver_Click(object sender, EventArgs e)
         {
-            frmPrincipal formPrincipal = new frmPrincipal();
+            this.Close(); 
+            FrmPrincipal formPrincipal = new FrmPrincipal();
             formPrincipal.Show();
-            this.Hide();
         }
 
         private void btnSalir_Click(object sender, EventArgs e)
         {
-            // Cierra la pestaña y el sistema
+            // Cierra el sistema
             Application.Exit();
         }
     }

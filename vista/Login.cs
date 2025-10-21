@@ -1,24 +1,24 @@
 namespace GUI_Login
 {
-    public partial class login : Form
+    public partial class Login : Form
     {
-        public login()
+        public Login()
         {
             InitializeComponent();
         }
 
-        private void btnIniciarsesion_Click(object sender, EventArgs e)
+        private void BtnIniciarsesion_Click(object sender, EventArgs e)
         {
             try
             {
                 String usuario = txtUsuario.Text;
                 String pass = txtContraseña.Text;
-                ControlSesion control = new ControlSesion();
+                ControlSesion control = new ();
                 String respuestaControlador = control.ctrlLogin(usuario, pass);
                 if (respuestaControlador == "¡Bienvenido!")
                 {
                     MessageBox.Show(control.ctrlLogin(usuario, pass), "Control de usuarios", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    frmPrincipal p = new frmPrincipal();
+                    FrmPrincipal p = new ();
                     this.Visible = false; //Oculta el formulario de inicio de sesión.
                     p.Show();
                 }
@@ -38,7 +38,7 @@ namespace GUI_Login
             }
         }
 
-        private void btnSalir_Click(object sender, EventArgs e)
+        private void BtnSalir_Click(object sender, EventArgs e)
         {
             // Boton salir
             DialogResult rta = MessageBox.Show("¿Seguro que desea salir?", "Control de usuarios",
@@ -53,15 +53,15 @@ namespace GUI_Login
             }
         }
 
-        private void btnRegistro_Click(object sender, EventArgs e)
+        private void BtnRegistro_Click(object sender, EventArgs e)
         {
             // Ir al formulario de registro
-            registro reg = new registro();
+            Registro reg = new ();
             this.Visible = false; // Oculta el formulario de inicio de sesión.
             reg.Show();
         }
 
-        private void checkBxMostrarContraseña_CheckedChanged(object sender, EventArgs e)
+        private void CheckBxMostrarContraseña_CheckedChanged(object sender, EventArgs e)
         {
             // Mostrar u ocultar contraseña
 

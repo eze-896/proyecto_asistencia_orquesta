@@ -15,7 +15,7 @@ namespace GUI_Login.vista
             controlAsistencia = new ControlAsistencia();
         }
 
-        private void frmAsistencia_Load(object sender, EventArgs e)
+        private void frmAgregarAsistencia_Load(object sender, EventArgs e)
         {
             datePicker.Value = DateTime.Today;
             cmbActividad.DataSource = Enum.GetValues(typeof(Asistencia.Tipo_Actividad));
@@ -111,17 +111,24 @@ namespace GUI_Login.vista
             }
         }
 
-
         private void btnVolver_Click(object sender, EventArgs e)
         {
-            frmPrincipal formPrincipal = new frmPrincipal();
-            formPrincipal.Show();
             this.Hide();
+            FrmPrincipal formPrincipal = new FrmPrincipal();
+            formPrincipal.Show();
         }
 
-        private void btnCerrar_Click(object sender, EventArgs e)
+        private void btnSalir_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Application.Exit();
+        }
+
+        private void frmAgregarAsistencia_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                btnVolver_Click(sender, e);
+            }
         }
     }
 }

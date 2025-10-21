@@ -1,6 +1,6 @@
 ﻿namespace GUI_Login
 {
-    partial class registro
+    partial class Registro
     {
         /// <summary>
         /// Required designer variable.
@@ -133,7 +133,7 @@
             btnRegistro.TabIndex = 10;
             btnRegistro.Text = "REGISTRARSE";
             btnRegistro.UseVisualStyleBackColor = false;
-            btnRegistro.Click += btnRegistro_Click;
+            btnRegistro.Click += BtnRegistro_Click;
             // 
             // btnVolver
             // 
@@ -149,7 +149,7 @@
             btnVolver.TabIndex = 11;
             btnVolver.Text = "VOLVER";
             btnVolver.UseVisualStyleBackColor = false;
-            btnVolver.Click += btnVolver_Click;
+            btnVolver.Click += BtnVolver_Click;
             // 
             // btnSalir
             // 
@@ -165,7 +165,7 @@
             btnSalir.TabIndex = 12;
             btnSalir.Text = "X";
             btnSalir.UseVisualStyleBackColor = false;
-            btnSalir.Click += btnSalir_Click;
+            btnSalir.Click += BtnSalir_Click;
             // 
             // registro
             // 
@@ -186,7 +186,7 @@
             FormBorderStyle = FormBorderStyle.None;
             Name = "registro";
             Text = "registro";
-            Load += registro_Load;
+            Load += Registro_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();

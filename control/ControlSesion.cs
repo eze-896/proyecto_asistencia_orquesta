@@ -7,6 +7,7 @@ class ControlSesion
     {
         ModeloSesion modelo = new ModeloSesion();
         string rta = "";
+
         if ((string.IsNullOrEmpty(usuario)) || string.IsNullOrEmpty(pass))
             rta = "Datos incompletos";
         else
@@ -24,20 +25,20 @@ class ControlSesion
         }
         return rta;
     }
+
     public string generarSHA1(string cadena)
     {
-        UTF8Encoding enc = new UTF8Encoding();
-        byte[] data = enc.GetBytes(cadena);
-        byte[] result;
-        SHA1CryptoServiceProvider sha = new SHA1CryptoServiceProvider();
-        result = sha.ComputeHash(data);
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < result.Length; i++)
+        using (SHA1 sha1 = SHA1.Create())
         {
-            if (result[i] < 16)
-                sb.Append("0");
-            sb.Append(result[i].ToString("x"));
+            byte[] data = Encoding.UTF8.GetBytes(cadena);
+            byte[] hash = sha1.ComputeHash(data);
+
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in hash)
+            {
+                sb.Append(b.ToString("x2")); 
+            }
+            return sb.ToString();
         }
-        return sb.ToString();
     }
 }

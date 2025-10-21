@@ -1,6 +1,6 @@
 ﻿namespace GUI_Login
 {
-    partial class login
+    partial class Login
     {
         /// <summary>
         ///  Required designer variable.
@@ -106,7 +106,7 @@
             checkBxMostrarContraseña.TabIndex = 5;
             checkBxMostrarContraseña.Text = "Mostrar Contraseña";
             checkBxMostrarContraseña.UseVisualStyleBackColor = true;
-            checkBxMostrarContraseña.CheckedChanged += checkBxMostrarContraseña_CheckedChanged;
+            checkBxMostrarContraseña.CheckedChanged += CheckBxMostrarContraseña_CheckedChanged;
             // 
             // btnIniciarsesion
             // 
@@ -121,7 +121,7 @@
             btnIniciarsesion.TabIndex = 6;
             btnIniciarsesion.Text = "INICIAR SESION";
             btnIniciarsesion.UseVisualStyleBackColor = false;
-            btnIniciarsesion.Click += btnIniciarsesion_Click;
+            btnIniciarsesion.Click += BtnIniciarsesion_Click;
             // 
             // btnSalir
             // 
@@ -137,7 +137,7 @@
             btnSalir.TabIndex = 13;
             btnSalir.Text = "X";
             btnSalir.UseVisualStyleBackColor = false;
-            btnSalir.Click += btnSalir_Click;
+            btnSalir.Click += BtnSalir_Click;
             // 
             // btnRegistro
             // 
@@ -153,7 +153,7 @@
             btnRegistro.TabIndex = 14;
             btnRegistro.Text = "REGISTRARSE";
             btnRegistro.UseVisualStyleBackColor = false;
-            btnRegistro.Click += btnRegistro_Click;
+            btnRegistro.Click += BtnRegistro_Click;
             // 
             // Form1
             // 

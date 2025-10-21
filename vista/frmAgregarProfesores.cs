@@ -6,78 +6,111 @@ namespace GUI_Login.vista
 {
     public partial class frmAgregarProfesores : Form
     {
+        private ControlProfesor controlProfesor;
         private ControlInstrumento controlInstrumento;
 
         public frmAgregarProfesores()
         {
             InitializeComponent();
+            controlProfesor = new ControlProfesor();
             controlInstrumento = new ControlInstrumento();
         }
 
-        private void frmProfesores_Load(object sender, EventArgs e)
+        private void frmAgregarProfesores_Load(object sender, EventArgs e)
         {
-            List<Instrumento> instrumentos = controlInstrumento.ListarInstrumentosEnOrquesta();
-            cmbInstrumentos.DataSource = null;
-            cmbInstrumentos.DataSource = instrumentos;
-            cmbInstrumentos.DisplayMember = "Nombre";
-            cmbInstrumentos.ValueMember = "Id";
-            cmbInstrumentos.SelectedIndex = -1;
+            CargarInstrumentos();
+        }
+
+        private void CargarInstrumentos()
+        {
+            try
+            {
+                List<Instrumento> instrumentos = controlInstrumento.ListarInstrumentosEnOrquesta();
+                cmbInstrumentos.DataSource = null;
+                cmbInstrumentos.DataSource = instrumentos;
+                cmbInstrumentos.DisplayMember = "Nombre";
+                cmbInstrumentos.ValueMember = "Id";
+                cmbInstrumentos.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar instrumentos: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnIngresar_Click(object sender, EventArgs e)
         {
-            // Validación de campos
-            if (string.IsNullOrWhiteSpace(txtDni.Text) ||
-                string.IsNullOrWhiteSpace(txtNombre.Text) ||
-                string.IsNullOrWhiteSpace(txtApellido.Text) ||
-                string.IsNullOrWhiteSpace(txtTelefono.Text) ||
-                string.IsNullOrWhiteSpace(txtEmail.Text) ||
-                cmbInstrumentos.SelectedIndex == -1)
-            {
-                MessageBox.Show("Todos los campos son obligatorios.");
+            // Validar campos obligatorios
+            if (!controlProfesor.ValidarCamposObligatorios(
+                txtNombre.Text, txtApellido.Text, txtDni.Text, txtTelefono.Text,
+                txtEmail.Text, cmbInstrumentos.SelectedValue as int?))
                 return;
-            }
 
+            // Crear objeto profesor
             Profesor profesor = new Profesor
             {
                 Dni = int.Parse(txtDni.Text),
-                Nombre = txtNombre.Text,
-                Apellido = txtApellido.Text,
-                Telefono = txtTelefono.Text,
-                Email = txtEmail.Text,
+                Nombre = txtNombre.Text.Trim(),
+                Apellido = txtApellido.Text.Trim(),
+                Telefono = txtTelefono.Text.Trim(),
+                Email = txtEmail.Text.Trim(),
                 Id_instrumento = (int)cmbInstrumentos.SelectedValue
             };
 
-            ControlProfesor controlProfesor = new ControlProfesor();
-            bool insertado = controlProfesor.RegistrarProfesor(profesor);
+            // Registrar profesor
+            bool exito = controlProfesor.RegistrarProfesor(profesor);
 
-            if (insertado)
+            if (exito)
             {
-                MessageBox.Show("Profesor registrado correctamente.");
-                txtDni.Clear();
-                txtNombre.Clear();
-                txtApellido.Clear();
-                txtTelefono.Clear();
-                txtEmail.Clear();
-                cmbInstrumentos.SelectedIndex = -1;
+                LimpiarFormulario();
             }
-            else
+        }
+
+        private void LimpiarFormulario()
+        {
+            txtDni.Clear();
+            txtNombre.Clear();
+            txtApellido.Clear();
+            txtTelefono.Clear();
+            txtEmail.Clear();
+            cmbInstrumentos.SelectedIndex = -1;
+            txtNombre.Focus();
+        }
+
+        // Eventos de validación en UI
+        private void txtDni_Leave(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(txtDni.Text) && !int.TryParse(txtDni.Text, out _))
             {
-                MessageBox.Show("Error: no se pudo registrar el profesor. Verifique los datos.");
+                MessageBox.Show("El DNI debe ser un número válido.",
+                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtDni.Clear();
+                txtDni.Focus();
+            }
+        }
+
+        private void txtTelefono_Leave(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(txtTelefono.Text) && !long.TryParse(txtTelefono.Text, out _))
+            {
+                MessageBox.Show("El teléfono debe ser un número válido.",
+                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtTelefono.Clear();
+                txtTelefono.Focus();
             }
         }
 
         private void btnVolver_Click(object sender, EventArgs e)
         {
-            frmPrincipal formPrincipal = new frmPrincipal();
+            this.Close();
+            FrmPrincipal formPrincipal = new FrmPrincipal();
             formPrincipal.Show();
-            this.Hide();
         }
-
-        private void btnSalir_Click(object sender, EventArgs e)
+        private void btnSalir_Click(object sender, EventArgs e) => Application.Exit();
+        private void frmAgregarProfesores_KeyDown(object sender, KeyEventArgs e)
         {
-            // Cierra la pestaña y el sistema
-            Application.Exit();
+            if (e.KeyCode == Keys.Escape) btnVolver_Click(sender, e);
         }
     }
 }

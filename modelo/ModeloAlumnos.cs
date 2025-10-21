@@ -141,27 +141,56 @@ public class ModeloAlumno
         return exito;
     }
 
-    public bool EliminarAlumno(int id)
+    public bool EliminarAlumno(int idAlumno)
     {
         bool exito = false;
-        string query = "DELETE FROM alumno WHERE id = @id";
-
-        using (MySqlConnection conn = conexion.getConexion())
+        try
         {
-            try
+            using (MySqlConnection conn = conexion.getConexion())
             {
                 conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+
+                // Primero eliminamos las asistencias del alumno
+                string deleteAsistencias = "DELETE FROM asistencia WHERE id_alumno = @id";
+                using (MySqlCommand cmdAsis = new MySqlCommand(deleteAsistencias, conn))
                 {
-                    cmd.Parameters.AddWithValue("@id", id);
-                    exito = cmd.ExecuteNonQuery() > 0;
+                    cmdAsis.Parameters.AddWithValue("@id", idAlumno);
+                    cmdAsis.ExecuteNonQuery();
+                }
+
+                // Luego eliminamos sus relaciones con instrumentos
+                string deleteRelaciones = "DELETE FROM alumno_instrumento WHERE id_alumno = @id";
+                using (MySqlCommand cmdRel = new MySqlCommand(deleteRelaciones, conn))
+                {
+                    cmdRel.Parameters.AddWithValue("@id", idAlumno);
+                    cmdRel.ExecuteNonQuery();
+                }
+
+                // Finalmente eliminamos al alumno
+                string deleteAlumno = "DELETE FROM alumno WHERE id = @id";
+                using (MySqlCommand cmdAlu = new MySqlCommand(deleteAlumno, conn))
+                {
+                    cmdAlu.Parameters.AddWithValue("@id", idAlumno);
+                    int filas = cmdAlu.ExecuteNonQuery();
+
+                    if (filas > 0)
+                    {
+                        MessageBox.Show("Alumno eliminado correctamente.");
+                        exito = true;
+                    }
+                    else
+                    {
+                        MessageBox.Show("No se encontró el alumno a eliminar.");
+                    }
                 }
             }
-            catch (Exception ex)
-            {
-                System.Windows.Forms.MessageBox.Show("Error al eliminar alumno: " + ex.Message);
-            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error al eliminar alumno: " + ex.Message);
         }
         return exito;
     }
+
+
 }

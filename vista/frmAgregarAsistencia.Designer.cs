@@ -29,260 +29,283 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmAgregarAsistencia));
-            label1 = new Label();
-            label2 = new Label();
-            label3 = new Label();
-            label4 = new Label();
-            datePicker = new DateTimePicker();
-            cmbActividad = new ComboBox();
-            chkListaAlumnos = new CheckedListBox();
-            btnVolver = new Button();
-            btnGuardar = new Button();
-            panel1 = new Panel();
-            pictureBox1 = new PictureBox();
-            label7 = new Label();
-            btnCerrar = new Button();
-            panel2 = new Panel();
-            panel3 = new Panel();
-            panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            SuspendLayout();
+            this.panelHeader = new System.Windows.Forms.Panel();
+            this.lblTitulo = new System.Windows.Forms.Label();
+            this.lblSubtitulo = new System.Windows.Forms.Label();
+            this.btnSalir = new System.Windows.Forms.Button();
+            this.panelMain = new System.Windows.Forms.Panel();
+            this.panelForm = new System.Windows.Forms.Panel();
+            this.btnVolver = new System.Windows.Forms.Button();
+            this.btnGuardar = new System.Windows.Forms.Button();
+            this.chkListaAlumnos = new System.Windows.Forms.CheckedListBox();
+            this.cmbActividad = new System.Windows.Forms.ComboBox();
+            this.datePicker = new System.Windows.Forms.DateTimePicker();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.panelHeader.SuspendLayout();
+            this.panelMain.SuspendLayout();
+            this.panelForm.SuspendLayout();
+            this.SuspendLayout();
+
             // 
-            // label1
+            // panelHeader
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.ForeColor = Color.FromArgb(116, 86, 174);
-            label1.Location = new Point(45, 90);
-            label1.Name = "label1";
-            label1.Size = new Size(240, 30);
-            label1.TabIndex = 14;
-            label1.Text = "Registro de Asistencias";
+            this.panelHeader.BackColor = System.Drawing.Color.FromArgb(116, 86, 174);
+            this.panelHeader.Controls.Add(this.lblTitulo);
+            this.panelHeader.Controls.Add(this.lblSubtitulo);
+            this.panelHeader.Controls.Add(this.btnSalir);
+            this.panelHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelHeader.Location = new System.Drawing.Point(0, 0);
+            this.panelHeader.Name = "panelHeader";
+            this.panelHeader.Size = new System.Drawing.Size(900, 120);
+            this.panelHeader.TabIndex = 0;
+
             // 
-            // label2
+            // lblTitulo
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.ForeColor = Color.FromArgb(116, 86, 174);
-            label2.Location = new Point(50, 140);
-            label2.Name = "label2";
-            label2.Size = new Size(42, 17);
-            label2.TabIndex = 15;
-            label2.Text = "Fecha";
+            this.lblTitulo.AutoSize = true;
+            this.lblTitulo.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblTitulo.ForeColor = System.Drawing.Color.White;
+            this.lblTitulo.Location = new System.Drawing.Point(35, 25);
+            this.lblTitulo.Name = "lblTitulo";
+            this.lblTitulo.Size = new System.Drawing.Size(380, 45);
+            this.lblTitulo.TabIndex = 0;
+            this.lblTitulo.Text = "REGISTRO ASISTENCIAS";
+
             // 
-            // label3
+            // lblSubtitulo
             // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label3.ForeColor = Color.FromArgb(116, 86, 174);
-            label3.Location = new Point(50, 210);
-            label3.Name = "label3";
-            label3.Size = new Size(65, 17);
-            label3.TabIndex = 16;
-            label3.Text = "Actividad";
+            this.lblSubtitulo.AutoSize = true;
+            this.lblSubtitulo.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.lblSubtitulo.ForeColor = System.Drawing.Color.White;
+            this.lblSubtitulo.Location = new System.Drawing.Point(40, 75);
+            this.lblSubtitulo.Name = "lblSubtitulo";
+            this.lblSubtitulo.Size = new System.Drawing.Size(350, 21);
+            this.lblSubtitulo.TabIndex = 1;
+            this.lblSubtitulo.Text = "Registre las asistencias de los alumnos por fecha";
+
             // 
-            // label4
+            // btnSalir
             // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label4.ForeColor = Color.FromArgb(116, 86, 174);
-            label4.Location = new Point(300, 140);
-            label4.Name = "label4";
-            label4.Size = new Size(140, 17);
-            label4.TabIndex = 17;
-            label4.Text = "Alumnos que asistieron";
+            this.btnSalir.BackColor = System.Drawing.Color.Transparent;
+            this.btnSalir.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSalir.FlatAppearance.BorderSize = 0;
+            this.btnSalir.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(255, 128, 128);
+            this.btnSalir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSalir.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnSalir.ForeColor = System.Drawing.Color.White;
+            this.btnSalir.Location = new System.Drawing.Point(850, 20);
+            this.btnSalir.Name = "btnSalir";
+            this.btnSalir.Size = new System.Drawing.Size(40, 40);
+            this.btnSalir.TabIndex = 1;
+            this.btnSalir.Text = "×";
+            this.btnSalir.UseVisualStyleBackColor = false;
+            this.btnSalir.Click += new System.EventHandler(this.btnSalir_Click);
+
             // 
-            // datePicker
+            // panelMain
             // 
-            datePicker.CalendarFont = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            datePicker.CalendarForeColor = Color.FromArgb(64, 64, 64);
-            datePicker.CalendarMonthBackground = Color.FromArgb(240, 242, 245);
-            datePicker.CalendarTitleBackColor = Color.FromArgb(116, 86, 174);
-            datePicker.CalendarTitleForeColor = Color.White;
-            datePicker.CalendarTrailingForeColor = Color.Gray;
-            datePicker.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            datePicker.Format = DateTimePickerFormat.Short;
-            datePicker.Location = new Point(50, 165);
-            datePicker.Name = "datePicker";
-            datePicker.Size = new Size(220, 27);
-            datePicker.TabIndex = 0;
+            this.panelMain.BackColor = System.Drawing.Color.FromArgb(248, 248, 252);
+            this.panelMain.Controls.Add(this.panelForm);
+            this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelMain.Location = new System.Drawing.Point(0, 120);
+            this.panelMain.Name = "panelMain";
+            this.panelMain.Padding = new System.Windows.Forms.Padding(30);
+            this.panelMain.Size = new System.Drawing.Size(900, 580);
+            this.panelMain.TabIndex = 1;
+
             // 
-            // cmbActividad
+            // panelForm
             // 
-            cmbActividad.BackColor = Color.FromArgb(240, 242, 245);
-            cmbActividad.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbActividad.FlatStyle = FlatStyle.Flat;
-            cmbActividad.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            cmbActividad.ForeColor = Color.FromArgb(64, 64, 64);
-            cmbActividad.FormattingEnabled = true;
-            cmbActividad.Location = new Point(50, 235);
-            cmbActividad.Name = "cmbActividad";
-            cmbActividad.Size = new Size(220, 28);
-            cmbActividad.TabIndex = 1;
-            // 
-            // chkListaAlumnos
-            // 
-            chkListaAlumnos.BackColor = Color.FromArgb(240, 242, 245);
-            chkListaAlumnos.BorderStyle = BorderStyle.None;
-            chkListaAlumnos.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            chkListaAlumnos.ForeColor = Color.FromArgb(64, 64, 64);
-            chkListaAlumnos.FormattingEnabled = true;
-            chkListaAlumnos.Location = new Point(300, 165);
-            chkListaAlumnos.Name = "chkListaAlumnos";
-            chkListaAlumnos.ScrollAlwaysVisible = true;
-            chkListaAlumnos.Size = new Size(220, 216);
-            chkListaAlumnos.TabIndex = 2;
+            this.panelForm.BackColor = System.Drawing.Color.White;
+            this.panelForm.Controls.Add(this.btnVolver);
+            this.panelForm.Controls.Add(this.btnGuardar);
+            this.panelForm.Controls.Add(this.chkListaAlumnos);
+            this.panelForm.Controls.Add(this.cmbActividad);
+            this.panelForm.Controls.Add(this.datePicker);
+            this.panelForm.Controls.Add(this.label4);
+            this.panelForm.Controls.Add(this.label3);
+            this.panelForm.Controls.Add(this.label2);
+            this.panelForm.Controls.Add(this.label1);
+            this.panelForm.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelForm.Location = new System.Drawing.Point(30, 30);
+            this.panelForm.Name = "panelForm";
+            this.panelForm.Padding = new System.Windows.Forms.Padding(40);
+            this.panelForm.Size = new System.Drawing.Size(840, 520);
+            this.panelForm.TabIndex = 0;
+
             // 
             // btnVolver
             // 
-            btnVolver.BackColor = Color.White;
-            btnVolver.Cursor = Cursors.Hand;
-            btnVolver.FlatAppearance.BorderColor = Color.FromArgb(116, 86, 174);
-            btnVolver.FlatAppearance.BorderSize = 2;
-            btnVolver.FlatAppearance.MouseOverBackColor = Color.FromArgb(245, 243, 250);
-            btnVolver.FlatStyle = FlatStyle.Flat;
-            btnVolver.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnVolver.ForeColor = Color.FromArgb(116, 86, 174);
-            btnVolver.Location = new Point(300, 430);
-            btnVolver.Name = "btnVolver";
-            btnVolver.Size = new Size(220, 40);
-            btnVolver.TabIndex = 4;
-            btnVolver.Text = "↩ VOLVER";
-            btnVolver.UseVisualStyleBackColor = false;
-            btnVolver.Click += btnVolver_Click;
+            this.btnVolver.BackColor = System.Drawing.Color.FromArgb(240, 240, 240);
+            this.btnVolver.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnVolver.FlatAppearance.BorderSize = 0;
+            this.btnVolver.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(220, 220, 220);
+            this.btnVolver.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnVolver.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnVolver.ForeColor = System.Drawing.Color.FromArgb(64, 64, 64);
+            this.btnVolver.Location = new System.Drawing.Point(450, 400);
+            this.btnVolver.Name = "btnVolver";
+            this.btnVolver.Size = new System.Drawing.Size(320, 45);
+            this.btnVolver.TabIndex = 4;
+            this.btnVolver.Text = "← VOLVER AL PRINCIPAL";
+            this.btnVolver.UseVisualStyleBackColor = false;
+            this.btnVolver.Click += new System.EventHandler(this.btnVolver_Click);
+
             // 
             // btnGuardar
             // 
-            btnGuardar.BackColor = Color.FromArgb(116, 86, 174);
-            btnGuardar.Cursor = Cursors.Hand;
-            btnGuardar.FlatAppearance.BorderSize = 0;
-            btnGuardar.FlatAppearance.MouseOverBackColor = Color.FromArgb(94, 68, 140);
-            btnGuardar.FlatStyle = FlatStyle.Flat;
-            btnGuardar.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnGuardar.ForeColor = Color.White;
-            btnGuardar.Location = new Point(50, 430);
-            btnGuardar.Name = "btnGuardar";
-            btnGuardar.Size = new Size(220, 40);
-            btnGuardar.TabIndex = 3;
-            btnGuardar.Text = "💾 GUARDAR ASISTENCIAS";
-            btnGuardar.UseVisualStyleBackColor = false;
-            btnGuardar.Click += btnGuardar_Click;
+            this.btnGuardar.BackColor = System.Drawing.Color.FromArgb(116, 86, 174);
+            this.btnGuardar.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnGuardar.FlatAppearance.BorderSize = 0;
+            this.btnGuardar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(94, 68, 140);
+            this.btnGuardar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnGuardar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnGuardar.ForeColor = System.Drawing.Color.White;
+            this.btnGuardar.Location = new System.Drawing.Point(80, 400);
+            this.btnGuardar.Name = "btnGuardar";
+            this.btnGuardar.Size = new System.Drawing.Size(320, 45);
+            this.btnGuardar.TabIndex = 3;
+            this.btnGuardar.Text = "💾 GUARDAR ASISTENCIAS";
+            this.btnGuardar.UseVisualStyleBackColor = false;
+            this.btnGuardar.Click += new System.EventHandler(this.btnGuardar_Click);
+
             // 
-            // panel1
+            // chkListaAlumnos
             // 
-            panel1.BackColor = Color.FromArgb(116, 86, 174);
-            panel1.Controls.Add(pictureBox1);
-            panel1.Controls.Add(label7);
-            panel1.Dock = DockStyle.Top;
-            panel1.Location = new Point(0, 0);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(572, 70);
-            panel1.TabIndex = 20;
+            this.chkListaAlumnos.BackColor = System.Drawing.Color.FromArgb(248, 248, 252);
+            this.chkListaAlumnos.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.chkListaAlumnos.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.chkListaAlumnos.ForeColor = System.Drawing.Color.FromArgb(64, 64, 64);
+            this.chkListaAlumnos.FormattingEnabled = true;
+            this.chkListaAlumnos.Location = new System.Drawing.Point(450, 120);
+            this.chkListaAlumnos.Name = "chkListaAlumnos";
+            this.chkListaAlumnos.ScrollAlwaysVisible = true;
+            this.chkListaAlumnos.Size = new System.Drawing.Size(320, 260);
+            this.chkListaAlumnos.TabIndex = 2;
+
             // 
-            // pictureBox1
+            // cmbActividad
             // 
-            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(20, 15);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(40, 40);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 1;
-            pictureBox1.TabStop = false;
+            this.cmbActividad.BackColor = System.Drawing.Color.FromArgb(248, 248, 252);
+            this.cmbActividad.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbActividad.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbActividad.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.cmbActividad.ForeColor = System.Drawing.Color.FromArgb(64, 64, 64);
+            this.cmbActividad.FormattingEnabled = true;
+            this.cmbActividad.Location = new System.Drawing.Point(80, 280);
+            this.cmbActividad.Name = "cmbActividad";
+            this.cmbActividad.Size = new System.Drawing.Size(320, 28);
+            this.cmbActividad.TabIndex = 1;
+
             // 
-            // label7
+            // datePicker
             // 
-            label7.AutoSize = true;
-            label7.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label7.ForeColor = Color.White;
-            label7.Location = new Point(70, 20);
-            label7.Name = "label7";
-            label7.Size = new Size(265, 30);
-            label7.TabIndex = 0;
-            label7.Text = "Control de Asistencias 📋";
+            this.datePicker.CalendarFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.datePicker.CalendarForeColor = System.Drawing.Color.FromArgb(64, 64, 64);
+            this.datePicker.CalendarMonthBackground = System.Drawing.Color.FromArgb(248, 248, 252);
+            this.datePicker.CalendarTitleBackColor = System.Drawing.Color.FromArgb(116, 86, 174);
+            this.datePicker.CalendarTitleForeColor = System.Drawing.Color.White;
+            this.datePicker.CalendarTrailingForeColor = System.Drawing.Color.Gray;
+            this.datePicker.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.datePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.datePicker.Location = new System.Drawing.Point(80, 180);
+            this.datePicker.Name = "datePicker";
+            this.datePicker.Size = new System.Drawing.Size(320, 27);
+            this.datePicker.TabIndex = 0;
+
             // 
-            // btnCerrar
+            // label4
             // 
-            btnCerrar.BackColor = Color.Transparent;
-            btnCerrar.Cursor = Cursors.Hand;
-            btnCerrar.FlatAppearance.BorderSize = 0;
-            btnCerrar.FlatAppearance.MouseOverBackColor = Color.FromArgb(255, 128, 128);
-            btnCerrar.FlatStyle = FlatStyle.Flat;
-            btnCerrar.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnCerrar.ForeColor = Color.White;
-            btnCerrar.Location = new Point(530, 15);
-            btnCerrar.Name = "btnCerrar";
-            btnCerrar.Size = new Size(30, 30);
-            btnCerrar.TabIndex = 5;
-            btnCerrar.Text = "×";
-            btnCerrar.UseVisualStyleBackColor = false;
-            btnCerrar.Click += btnCerrar_Click;
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(116, 86, 174);
+            this.label4.Location = new System.Drawing.Point(450, 80);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(180, 21);
+            this.label4.TabIndex = 17;
+            this.label4.Text = "Alumnos que asistieron";
+
             // 
-            // panel2
+            // label3
             // 
-            panel2.BackColor = Color.FromArgb(116, 86, 174);
-            panel2.Location = new Point(50, 269);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(220, 2);
-            panel2.TabIndex = 21;
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(116, 86, 174);
+            this.label3.Location = new System.Drawing.Point(80, 240);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(82, 21);
+            this.label3.TabIndex = 16;
+            this.label3.Text = "Actividad";
+
             // 
-            // panel3
+            // label2
             // 
-            panel3.BackColor = Color.FromArgb(116, 86, 174);
-            panel3.Location = new Point(300, 387);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(220, 2);
-            panel3.TabIndex = 22;
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(116, 86, 174);
+            this.label2.Location = new System.Drawing.Point(80, 140);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(54, 21);
+            this.label2.TabIndex = 15;
+            this.label2.Text = "Fecha";
+
             // 
-            // frmAsistencia
+            // label1
             // 
-            AutoScaleDimensions = new SizeF(8F, 17F);
-            AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.White;
-            ClientSize = new Size(572, 500);
-            Controls.Add(panel3);
-            Controls.Add(panel2);
-            Controls.Add(btnCerrar);
-            Controls.Add(panel1);
-            Controls.Add(btnVolver);
-            Controls.Add(btnGuardar);
-            Controls.Add(chkListaAlumnos);
-            Controls.Add(cmbActividad);
-            Controls.Add(datePicker);
-            Controls.Add(label4);
-            Controls.Add(label3);
-            Controls.Add(label2);
-            Controls.Add(label1);
-            Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            ForeColor = Color.FromArgb(164, 165, 169);
-            FormBorderStyle = FormBorderStyle.None;
-            Icon = (Icon)resources.GetObject("$this.Icon");
-            Name = "frmAsistencia";
-            StartPosition = FormStartPosition.CenterScreen;
-            Text = "Control de Asistencias";
-            Load += frmAsistencia_Load;
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            ResumeLayout(false);
-            PerformLayout();
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(116, 86, 174);
+            this.label1.Location = new System.Drawing.Point(75, 40);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(280, 32);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "Registro de Asistencias";
+
+            // 
+            // frmAgregarAsistencia
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(900, 700);
+            this.Controls.Add(this.panelMain);
+            this.Controls.Add(this.panelHeader);
+            this.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.KeyPreview = true;
+            this.Name = "frmAgregarAsistencia";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Control de Asistencias";
+            this.Load += new System.EventHandler(this.frmAgregarAsistencia_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmAgregarAsistencia_KeyDown);
+            this.panelHeader.ResumeLayout(false);
+            this.panelHeader.PerformLayout();
+            this.panelMain.ResumeLayout(false);
+            this.panelForm.ResumeLayout(false);
+            this.panelForm.PerformLayout();
+            this.ResumeLayout(false);
+
         }
 
         #endregion
 
-        private Label label1;
-        private Label label2;
-        private Label label3;
-        private Label label4;
-        private DateTimePicker datePicker;
-        private ComboBox cmbActividad;
-        private CheckedListBox chkListaAlumnos;
+        private Panel panelHeader;
+        private Label lblTitulo;
+        private Label lblSubtitulo;
+        private Button btnSalir;
+        private Panel panelMain;
+        private Panel panelForm;
         private Button btnVolver;
         private Button btnGuardar;
-        private Panel panel1;
-        private PictureBox pictureBox1;
-        private Label label7;
-        private Button btnCerrar;
-        private Panel panel2;
-        private Panel panel3;
+        private CheckedListBox chkListaAlumnos;
+        private ComboBox cmbActividad;
+        private DateTimePicker datePicker;
+        private Label label4;
+        private Label label3;
+        private Label label2;
+        private Label label1;
     }
 }

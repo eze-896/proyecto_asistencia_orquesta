@@ -1,131 +1,208 @@
 ﻿using GUI_Login.vista;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.Control;
+using System.Data;
 
 namespace GUI_Login
 {
-    public partial class frmPrincipal : Form
+    public partial class FrmPrincipal : Form
     {
-        private ControlAsistencia controlAsistencia;
-        public frmPrincipal()
+        private readonly ControlAsistencia controlAsistencia;
+        private DataTable datosOriginales;
+
+        public FrmPrincipal()
         {
             InitializeComponent();
             controlAsistencia = new ControlAsistencia();
+            datosOriginales = new DataTable();
         }
 
-        private void frmPrincipal_Load(object sender, EventArgs e)
+        private void FrmPrincipal_Load(object sender, EventArgs e)
         {
             CargarTablaAsistencia();
         }
 
         private void CargarTablaAsistencia()
         {
-            DataTable datos = controlAsistencia.ObtenerDatosParaGrid();
-            dgwTablaAsistencia.DataSource = datos;
+            try
+            {
+                datosOriginales = controlAsistencia.ObtenerDatosParaGrid();
+                dgwTablaAsistencia.DataSource = datosOriginales;
+                ConfigurarGrid();
+                AplicarColoresPorcentaje();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar la tabla de asistencias: " + ex.Message,
+                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ConfigurarGrid()
+        {
             dgwTablaAsistencia.ClearSelection();
 
+            // Ocultar columna ID
+            if (dgwTablaAsistencia.Columns.Contains("id_alumno"))
+                dgwTablaAsistencia.Columns["id_alumno"].Visible = false;
 
-            dgwTablaAsistencia.Columns["id_alumno"].Visible = false;
+            // Configurar headers con nombres más cortos y claros
+            if (dgwTablaAsistencia.Columns.Contains("nombre_alumno"))
+                dgwTablaAsistencia.Columns["nombre_alumno"].HeaderText = "Alumno";
 
-            dgwTablaAsistencia.Columns["nombre_alumno"].HeaderText = "Nombre";
-            dgwTablaAsistencia.Columns["apellido_alumno"].HeaderText = "Apellido";
-            dgwTablaAsistencia.Columns["nombre_instrumento"].HeaderText = "Instrumento";
-            dgwTablaAsistencia.Columns["nombre_profesor"].HeaderText = "Profesor";
-            dgwTablaAsistencia.Columns["apellido_profesor"].HeaderText = "Apellido Profesor";
-            dgwTablaAsistencia.Columns["porcentaje_asistencia"].HeaderText = "% Asistencia";
+            if (dgwTablaAsistencia.Columns.Contains("apellido_alumno"))
+                dgwTablaAsistencia.Columns["apellido_alumno"].HeaderText = "Apellido";
 
-            // Colorear las filas según el porcentaje
+            if (dgwTablaAsistencia.Columns.Contains("nombre_instrumento"))
+                dgwTablaAsistencia.Columns["nombre_instrumento"].HeaderText = "Instrumento";
+
+            if (dgwTablaAsistencia.Columns.Contains("nombre_profesor"))
+                dgwTablaAsistencia.Columns["nombre_profesor"].HeaderText = "Profesor";
+
+            if (dgwTablaAsistencia.Columns.Contains("apellido_profesor"))
+                dgwTablaAsistencia.Columns["apellido_profesor"].HeaderText = "Apellido P.";
+
+            if (dgwTablaAsistencia.Columns.Contains("porcentaje_asistencia"))
+                dgwTablaAsistencia.Columns["porcentaje_asistencia"].HeaderText = "% Asistencia";
+
+            if (dgwTablaAsistencia.Columns.Contains("apellido_profesor"))
+                dgwTablaAsistencia.Columns["apellido_profesor"].FillWeight = 80;
+
+            if (dgwTablaAsistencia.Columns.Contains("nombre_profesor"))
+                dgwTablaAsistencia.Columns["nombre_profesor"].FillWeight = 100;
+
+            if (dgwTablaAsistencia.Columns.Contains("porcentaje_asistencia"))
+                dgwTablaAsistencia.Columns["porcentaje_asistencia"].FillWeight = 90;
+        }
+
+        private void AplicarColoresPorcentaje()
+        {
             foreach (DataGridViewRow fila in dgwTablaAsistencia.Rows)
             {
-                if (fila.Cells["porcentaje_asistencia"].Value != DBNull.Value)
+                if (fila.Cells["porcentaje_asistencia"].Value != null &&
+                    fila.Cells["porcentaje_asistencia"].Value != DBNull.Value)
                 {
                     double porcentaje = Convert.ToDouble(fila.Cells["porcentaje_asistencia"].Value);
 
+                    // Colores más suaves y texto oscuro para mejor legibilidad
                     if (porcentaje >= 80)
-                        fila.DefaultCellStyle.BackColor = Color.LightGreen; // alta asistencia
+                    {
+                        fila.DefaultCellStyle.BackColor = Color.FromArgb(220, 255, 220); // Verde muy claro
+                        fila.DefaultCellStyle.ForeColor = Color.FromArgb(0, 80, 0); // Verde oscuro para texto
+                    }
                     else if (porcentaje >= 50)
-                        fila.DefaultCellStyle.BackColor = Color.Khaki; // media
+                    {
+                        fila.DefaultCellStyle.BackColor = Color.FromArgb(255, 255, 200); // Amarillo claro
+                        fila.DefaultCellStyle.ForeColor = Color.FromArgb(102, 77, 0); // Marrón oscuro para texto
+                    }
                     else
-                        fila.DefaultCellStyle.BackColor = Color.LightCoral; // baja
+                    {
+                        fila.DefaultCellStyle.BackColor = Color.FromArgb(255, 220, 220); // Rojo muy claro
+                        fila.DefaultCellStyle.ForeColor = Color.FromArgb(120, 0, 0); // Rojo oscuro para texto
+                    }
+
+                    // Formatear el porcentaje para mostrar 2 decimales
+                    if (fila.Cells["porcentaje_asistencia"].Value != null)
+                    {
+                        fila.Cells["porcentaje_asistencia"].Value =
+                            Math.Round(Convert.ToDouble(fila.Cells["porcentaje_asistencia"].Value), 2);
+                    }
+                }
+                else
+                {
+                    // Para filas sin porcentaje, usar colores neutros
+                    fila.DefaultCellStyle.BackColor = Color.White;
+                    fila.DefaultCellStyle.ForeColor = Color.FromArgb(64, 64, 64);
                 }
             }
         }
 
-        private void menuAlumnos_Click(object sender, EventArgs e)
+        private void DgwTablaAsistencia_Sorted(object sender, EventArgs e)
         {
-            // Dirigir al formulario de Alumnos
-            frmAgregarAlumnos formAlumnos = new frmAgregarAlumnos();
+            AplicarColoresPorcentaje();
+        }
+
+        private void MenuAlumnos_Click(object sender, EventArgs e)
+        {
+            frmAgregarAlumnos formAlumnos = new();
             formAlumnos.Show();
             this.Hide();
         }
 
-        private void menuProfesor_Click(object sender, EventArgs e)
+        private void MenuProfesor_Click(object sender, EventArgs e)
         {
-            // Dirigir al formulario de Profesores
-            frmAgregarProfesores formProfesores = new frmAgregarProfesores();
+            frmAgregarProfesores formProfesores = new ();
             formProfesores.Show();
             this.Hide();
         }
 
-        private void menuInstrumentos_Click(object sender, EventArgs e)
+        private void MenuInstrumentos_Click(object sender, EventArgs e)
         {
-            // Dirigir al formulario de Instrumentos
-            frmAgregarInstrumentos formInstrumentos = new frmAgregarInstrumentos();
+            frmAgregarInstrumentos formInstrumentos = new ();
             formInstrumentos.Show();
             this.Hide();
         }
 
-        private void menuAsistencia_Click(object sender, EventArgs e)
+        private void MenuAsistencia_Click(object sender, EventArgs e)
         {
-            // Dirigir al formulario de Asistencias
-            frmAgregarAsistencia formAsistencia = new frmAgregarAsistencia();
+            frmAgregarAsistencia formAsistencia = new ();
             formAsistencia.Show();
             this.Hide();
         }
 
-        private void btnSalir_Click(object sender, EventArgs e)
+        private void BtnSalir_Click(object sender, EventArgs e)
         {
-            // Cierra la pestaña y el sistema
             Application.Exit();
         }
 
-        private void menuListadoAlumnos_Click(object sender, EventArgs e)
+        private void MenuListadoAlumnos_Click(object sender, EventArgs e)
         {
-            // Cierra la pestaña y abre el listado de alumnos
-            frmListadoAlumnos formListadoAlumnos = new frmListadoAlumnos();
+            FrmListadoAlumnos formListadoAlumnos = new ();
             formListadoAlumnos.Show();
             this.Hide();
         }
 
-        private void menuListadoProfesores_Click(object sender, EventArgs e)
+        private void MenuListadoProfesores_Click(object sender, EventArgs e)
         {
-            // Cierra la pestaña y abre el listado de profesores
-            frmListadoProfesores formListadoProfesores = new frmListadoProfesores();
+            frmListadoProfesores formListadoProfesores = new ();
             formListadoProfesores.Show();
             this.Hide();
         }
 
-        private void menuModificarAlumnos_Click(object sender, EventArgs e)
+        private void MenuModificarAlumnos_Click(object sender, EventArgs e)
         {
-            frmModificarAlumnos formModificarAlumnos = new frmModificarAlumnos();
+            frmModificarAlumnos formModificarAlumnos = new ();
             formModificarAlumnos.Show();
             this.Hide();
         }
 
-        private void menuEliminarAlumnos_Click(object sender, EventArgs e)
+        private void MenuEliminarAlumnos_Click(object sender, EventArgs e)
         {
-            frmEliminarAlumnos formEliminarAlumnos = new frmEliminarAlumnos();
+            frmEliminarAlumnos formEliminarAlumnos = new ();
             formEliminarAlumnos.Show();
             this.Hide();
         }
 
+        private void MenuModificarProfesores_Click(object sender, EventArgs e)
+        {
+            frmModificarProfesores formModificarProfesores = new ();
+            formModificarProfesores.Show();
+            this.Hide();
+        }
+
+        private void MenuEliminarProfesores_Click(object sender, EventArgs e)
+        {
+            frmEliminarProfesores formEliminarProfesores = new ();
+            formEliminarProfesores.Show();
+            this.Hide();
+        }
+
+        private void MenuEliminarInstrumentos_Click(object sender, EventArgs e)
+        {
+            frmEliminarInstrumento formEliminarInstrumentos = new ();
+            formEliminarInstrumentos.Show();
+            this.Hide();
+        }
     }
 }
