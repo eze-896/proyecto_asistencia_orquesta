@@ -1,46 +1,50 @@
-﻿using System;
+﻿using GUI_Login.modelo;
+using System;
 using System.Collections.Generic;
 
-public class ControlInstrumento
+namespace GUI_Login.control
 {
-    public ModeloInstrumento modeloInstrumento;
-
-    public ControlInstrumento()
+    public class ControlInstrumento
     {
-        modeloInstrumento = new ModeloInstrumento();
-    }
+        public ModeloInstrumento modeloInstrumento;
 
-    // Método para eliminar instrumento de la orquesta
-    public bool EliminarInstrumentoDeOrquesta(int idInstrumento)
-    {
-        return modeloInstrumento.EliminarInstrumentoOrquesta(idInstrumento);
-    }
+        public ControlInstrumento()
+        {
+            modeloInstrumento = new ModeloInstrumento();
+        }
 
-    // Verificar si el instrumento está siendo usado por algún profesor
-    public bool EstaInstrumentoEnUso(int idInstrumento)
-    {
-        return modeloInstrumento.EstaInstrumentoEnUso(idInstrumento);
-    }
+        // Método para eliminar instrumento de la orquesta
+        public bool EliminarInstrumentoDeOrquesta(int idInstrumento)
+        {
+            return modeloInstrumento.EliminarInstrumentoOrquesta(idInstrumento);
+        }
 
-    // Verificar si el instrumento está siendo usado por algún alumno
-    public bool EstaInstrumentoEnUsoPorAlumnos(int idInstrumento)
-    {
-        return modeloInstrumento.EstaInstrumentoEnUsoPorAlumnos(idInstrumento);
-    }
+        // Verificar si el instrumento está siendo usado por algún profesor
+        public bool EstaInstrumentoEnUso(int idInstrumento)
+        {
+            return modeloInstrumento.EstaInstrumentoEnUso(idInstrumento);
+        }
 
-    // Resto de los métodos existentes...
-    public List<Instrumento> ListarInstrumentosDisponibles()
-    {
-        return modeloInstrumento.ListarInstrumentosDisponibles();
-    }
+        // Verificar si el instrumento está siendo usado por algún alumno
+        public bool EstaInstrumentoEnUsoPorAlumnos(int idInstrumento)
+        {
+            return modeloInstrumento.EstaInstrumentoEnUsoPorAlumnos(idInstrumento);
+        }
 
-    public List<Instrumento> ListarInstrumentosEnOrquesta()
-    {
-        return modeloInstrumento.ListarInstrumentosOrquesta();
-    }
+        // Resto de los métodos existentes...
+        public List<Instrumento> ListarInstrumentosDisponibles()
+        {
+            return modeloInstrumento.ListarInstrumentosDisponibles();
+        }
 
-    public bool AgregarInstrumentoAOrquesta(int idInstrumento)
-    {
-        return modeloInstrumento.AgregarInstrumentoOrquesta(idInstrumento);
+        public List<Instrumento> ListarInstrumentosEnOrquesta()
+        {
+            return modeloInstrumento.ListarInstrumentosOrquesta();
+        }
+
+        public bool AgregarInstrumentoAOrquesta(int idInstrumento)
+        {
+            return modeloInstrumento.AgregarInstrumentoOrquesta(idInstrumento);
+        }
     }
 }

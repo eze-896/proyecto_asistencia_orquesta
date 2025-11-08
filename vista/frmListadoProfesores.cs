@@ -1,14 +1,15 @@
-﻿using System;
+﻿using GUI_Login.control;
+using System;
 using System.Data;
 using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
-    public partial class frmListadoProfesores : Form
+    public partial class FrmListadoProfesores : Form
     {
         private readonly ControlProfesor controlProfesor;
 
-        public frmListadoProfesores()
+        public FrmListadoProfesores()
         {
             InitializeComponent();
             controlProfesor = new ControlProfesor();

@@ -13,11 +13,10 @@ namespace GUI_Login
             {
                 String usuario = txtUsuario.Text;
                 String pass = txtContraseña.Text;
+                String respuestaControlador = ControlSesion.CtrlLogin(usuario, pass);
                 ControlSesion control = new ();
-                String respuestaControlador = control.ctrlLogin(usuario, pass);
                 if (respuestaControlador == "¡Bienvenido!")
                 {
-                    MessageBox.Show(control.ctrlLogin(usuario, pass), "Control de usuarios", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     FrmPrincipal p = new ();
                     this.Visible = false; //Oculta el formulario de inicio de sesión.
                     p.Show();

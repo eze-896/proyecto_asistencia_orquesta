@@ -1,27 +1,29 @@
-﻿using System;
+﻿using GUI_Login.control;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
-    public partial class frmModificarAlumnos : Form
+    public partial class FrmModificarAlumnos : Form
     {
-        private ControlAlumno controlAlumno;
-        private ControlInstrumento controlInstrumento;
+        private readonly ControlAlumno controlAlumno;
+        private readonly ControlInstrumento controlInstrumento;
         private int idSeleccionado = -1;
-        private List<Alumno> listaAlumnos;
+        private List<Alumno> listaAlumnos = [];
 
-        public frmModificarAlumnos()
+        public FrmModificarAlumnos()
         {
             InitializeComponent();
             controlAlumno = new ControlAlumno();
             controlInstrumento = new ControlInstrumento();
         }
 
-        private void frmModificarAlumnos_Load(object sender, EventArgs e)
+        private void FrmModificarAlumnos_Load(object sender, EventArgs e)
         {
             CargarListaAlumnos();
-            CargarComboInstrumentos();
+            CargarCheckListInstrumentos();
         }
 
         private void CargarListaAlumnos()
@@ -31,19 +33,24 @@ namespace GUI_Login.vista
             lstAlumnosModificar.DataSource = listaAlumnos;
             lstAlumnosModificar.DisplayMember = "Nombre";
             lstAlumnosModificar.ValueMember = "Id";
+
+            // Seleccionar automáticamente el primer alumno si existe
+            if (lstAlumnosModificar.Items.Count > 0)
+            {
+                lstAlumnosModificar.SelectedIndex = 0;
+            }
         }
 
-        private void CargarComboInstrumentos()
+        private void CargarCheckListInstrumentos()
         {
             List<Instrumento> instrumentos = controlInstrumento.ListarInstrumentosEnOrquesta();
-            cmbInstrumentos.DataSource = null;
-            cmbInstrumentos.DataSource = instrumentos;
-            cmbInstrumentos.DisplayMember = "Nombre";
-            cmbInstrumentos.ValueMember = "Id";
-            cmbInstrumentos.SelectedIndex = -1;
+            chkListInstrumentos.DataSource = null;
+            chkListInstrumentos.DataSource = instrumentos;
+            chkListInstrumentos.DisplayMember = "Nombre";
+            chkListInstrumentos.ValueMember = "Id";
         }
 
-        private void lstAlumnosModificar_SelectedIndexChanged(object sender, EventArgs e)
+        private void LstAlumnosModificar_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lstAlumnosModificar.SelectedItem == null) return;
 
@@ -55,12 +62,33 @@ namespace GUI_Login.vista
             txtDni.Text = alumno.Dni.ToString();
             txtTelePadres.Text = alumno.Telefono_padres;
 
-            int idInstrumentoActual = controlAlumno.ObtenerInstrumentoPorAlumno(idSeleccionado);
-            if (idInstrumentoActual > 0)
-                cmbInstrumentos.SelectedValue = idInstrumentoActual;
+            // Cargar los instrumentos actuales del alumno
+            CargarInstrumentosDelAlumno(idSeleccionado);
         }
 
-        private void btnGuardarCambios_Click(object sender, EventArgs e)
+        private void CargarInstrumentosDelAlumno(int idAlumno)
+        {
+            // Desmarcar todos los instrumentos primero
+            for (int i = 0; i < chkListInstrumentos.Items.Count; i++)
+            {
+                chkListInstrumentos.SetItemChecked(i, false);
+            }
+
+            // Obtener los instrumentos actuales del alumno
+            List<int> instrumentosAlumno = controlAlumno.ObtenerInstrumentosPorAlumno(idAlumno);
+
+            // Marcar los instrumentos que el alumno ya tiene
+            for (int i = 0; i < chkListInstrumentos.Items.Count; i++)
+            {
+                Instrumento instrumento = (Instrumento)chkListInstrumentos.Items[i];
+                if (instrumentosAlumno.Contains(instrumento.Id))
+                {
+                    chkListInstrumentos.SetItemChecked(i, true);
+                }
+            }
+        }
+
+        private void BtnGuardarCambios_Click(object sender, EventArgs e)
         {
             if (idSeleccionado <= 0)
             {
@@ -70,35 +98,48 @@ namespace GUI_Login.vista
             }
 
             // Validar campos obligatorios
-            if (!controlAlumno.ValidarCamposObligatorios(
-                txtNombre.Text, txtApellido.Text, txtDni.Text, txtTelePadres.Text,
-                cmbInstrumentos.SelectedValue as int?))
-                return;
-
-            // Confirmar modificación
-            if (MessageBox.Show("¿Está seguro que desea modificar los datos del alumno?",
-                "Confirmar Modificación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                return;
-
-            // Crear objeto alumno
-            Alumno alumno = new Alumno
+            if (ControlAlumno.ValidarCamposObligatorios(
+                txtNombre.Text, txtApellido.Text, txtDni.Text, txtTelePadres.Text))
             {
-                Id = idSeleccionado,
-                Nombre = txtNombre.Text.Trim(),
-                Apellido = txtApellido.Text.Trim(),
-                Dni = int.Parse(txtDni.Text.Trim()),
-                Telefono_padres = txtTelePadres.Text.Trim()
-            };
+                // Validar que al menos un instrumento esté seleccionado
+                if (chkListInstrumentos.CheckedItems.Count == 0)
+                {
+                    MessageBox.Show("Seleccione al menos un instrumento.",
+                        "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
-            int idInstrumento = (int)cmbInstrumentos.SelectedValue;
+                // Confirmar modificación
+                if (MessageBox.Show("¿Está seguro que desea modificar los datos del alumno?",
+                    "Confirmar Modificación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    return;
 
-            // Modificar alumno con instrumento
-            bool exito = controlAlumno.ModificarAlumnoConInstrumento(alumno, idInstrumento);
+                // Crear objeto alumno
+                Alumno alumno = new()
+                {
+                    Id = idSeleccionado,
+                    Nombre = txtNombre.Text.Trim(),
+                    Apellido = txtApellido.Text.Trim(),
+                    Dni = int.Parse(txtDni.Text.Trim()),
+                    Telefono_padres = txtTelePadres.Text.Trim()
+                };
 
-            if (exito)
-            {
-                CargarListaAlumnos();
-                LimpiarFormulario();
+                // Obtener los IDs de los instrumentos seleccionados
+                List<int> idsInstrumentos = [];
+                foreach (var item in chkListInstrumentos.CheckedItems)
+                {
+                    Instrumento instrumento = (Instrumento)item;
+                    idsInstrumentos.Add(instrumento.Id);
+                }
+
+                // Modificar alumno con sus instrumentos
+                bool exito = controlAlumno.ModificarAlumnoConInstrumentos(alumno, idsInstrumentos);
+
+                if (exito)
+                {
+                    CargarListaAlumnos();
+                    LimpiarFormulario();
+                }
             }
         }
 
@@ -108,20 +149,23 @@ namespace GUI_Login.vista
             txtApellido.Clear();
             txtDni.Clear();
             txtTelePadres.Clear();
-            cmbInstrumentos.SelectedIndex = -1;
+            for (int i = 0; i < chkListInstrumentos.Items.Count; i++)
+            {
+                chkListInstrumentos.SetItemChecked(i, false);
+            }
             idSeleccionado = -1;
         }
 
-        private void btnVolver_Click(object sender, EventArgs e)
+        private void BtnVolver_Click(object sender, EventArgs e)
         {
             this.Close();
-            FrmPrincipal formPrincipal = new FrmPrincipal();
+            FrmPrincipal formPrincipal = new();
             formPrincipal.Show();
         }
-        private void btnSalir_Click(object sender, EventArgs e) => Application.Exit();
-        private void frmModificarAlumnos_KeyDown(object sender, KeyEventArgs e)
+        private void BtnSalir_Click(object sender, EventArgs e) => Application.Exit();
+        private void FrmModificarAlumnos_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape) btnVolver_Click(sender, e);
+            if (e.KeyCode == Keys.Escape) BtnVolver_Click(sender, e);
         }
     }
 }

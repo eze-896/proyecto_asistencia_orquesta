@@ -3,19 +3,19 @@ using System.Security.Cryptography;
 
 class ControlSesion
 {
-    public string ctrlLogin(String usuario, String pass)
+    public static string CtrlLogin(String usuario, String pass)
     {
-        ModeloSesion modelo = new ModeloSesion();
-        string rta = "";
+        ModeloSesion modelo = new();
+        string rta;
 
         if ((string.IsNullOrEmpty(usuario)) || string.IsNullOrEmpty(pass))
             rta = "Datos incompletos";
         else
         {
-            Usuario userResult = modelo.miUsuario(usuario);
+            Usuario? userResult = modelo.MiUsuario(usuario);
             if (userResult != null)
             {
-                if (userResult.Contrasena == generarSHA1(pass))
+                if (userResult.Contrasena == GenerarSHA1(pass))
                     rta = "¡Bienvenido!";
                 else
                     rta = "Clave incorrecta";
@@ -26,19 +26,16 @@ class ControlSesion
         return rta;
     }
 
-    public string generarSHA1(string cadena)
+    public static string GenerarSHA1(string cadena)
     {
-        using (SHA1 sha1 = SHA1.Create())
-        {
-            byte[] data = Encoding.UTF8.GetBytes(cadena);
-            byte[] hash = sha1.ComputeHash(data);
+        byte[] data = Encoding.UTF8.GetBytes(cadena);
+        byte[] hash = SHA1.HashData(data);
 
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in hash)
-            {
-                sb.Append(b.ToString("x2")); 
-            }
-            return sb.ToString();
+        StringBuilder sb = new();
+        foreach (byte b in hash)
+        {
+            sb.Append(b.ToString("x2"));
         }
+        return sb.ToString();
     }
 }

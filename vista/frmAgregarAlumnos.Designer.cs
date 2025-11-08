@@ -1,6 +1,6 @@
 ﻿namespace GUI_Login.vista
 {
-    partial class frmAgregarAlumnos
+    partial class FrmAgregarAlumnos
     {
         /// <summary>
         /// Required designer variable.
@@ -34,7 +34,7 @@
             btnSalir = new Button();
             panelMain = new Panel();
             panelForm = new Panel();
-            cmbInstrumentos = new ComboBox();
+            chkListInstrumentos = new CheckedListBox();
             btnVolver = new Button();
             btnIngresar = new Button();
             txtTelePadres = new TextBox();
@@ -101,7 +101,7 @@
             btnSalir.TabIndex = 1;
             btnSalir.Text = "×";
             btnSalir.UseVisualStyleBackColor = false;
-            btnSalir.Click += btnSalir_Click;
+            btnSalir.Click += BtnSalir_Click;
             // 
             // panelMain
             // 
@@ -117,7 +117,7 @@
             // panelForm
             // 
             panelForm.BackColor = Color.White;
-            panelForm.Controls.Add(cmbInstrumentos);
+            panelForm.Controls.Add(chkListInstrumentos);
             panelForm.Controls.Add(btnVolver);
             panelForm.Controls.Add(btnIngresar);
             panelForm.Controls.Add(txtTelePadres);
@@ -137,18 +137,17 @@
             panelForm.Size = new Size(840, 520);
             panelForm.TabIndex = 0;
             // 
-            // cmbInstrumentos
+            // chkListInstrumentos
             // 
-            cmbInstrumentos.BackColor = Color.FromArgb(248, 248, 252);
-            cmbInstrumentos.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbInstrumentos.FlatStyle = FlatStyle.Flat;
-            cmbInstrumentos.Font = new Font("Segoe UI", 11F);
-            cmbInstrumentos.ForeColor = Color.FromArgb(64, 64, 64);
-            cmbInstrumentos.FormattingEnabled = true;
-            cmbInstrumentos.Location = new Point(450, 180);
-            cmbInstrumentos.Name = "cmbInstrumentos";
-            cmbInstrumentos.Size = new Size(320, 28);
-            cmbInstrumentos.TabIndex = 2;
+            this.chkListInstrumentos.BackColor = Color.FromArgb(248, 248, 252);
+            this.chkListInstrumentos.BorderStyle = BorderStyle.None;
+            this.chkListInstrumentos.Font = new Font("Segoe UI", 11F);
+            this.chkListInstrumentos.ForeColor = Color.FromArgb(64, 64, 64);
+            this.chkListInstrumentos.FormattingEnabled = true;
+            this.chkListInstrumentos.Location = new Point(450, 180);
+            this.chkListInstrumentos.Name = "chkListInstrumentos";
+            this.chkListInstrumentos.Size = new Size(320, 180); // Mayor altura para mostrar varios items
+            this.chkListInstrumentos.TabIndex = 2;
             // 
             // btnVolver
             // 
@@ -165,7 +164,7 @@
             btnVolver.TabIndex = 5;
             btnVolver.Text = "← VOLVER AL PRINCIPAL";
             btnVolver.UseVisualStyleBackColor = false;
-            btnVolver.Click += btnVolver_Click;
+            btnVolver.Click += BtnVolver_Click;
             // 
             // btnIngresar
             // 
@@ -182,7 +181,7 @@
             btnIngresar.TabIndex = 4;
             btnIngresar.Text = "🎵 INGRESAR ALUMNO";
             btnIngresar.UseVisualStyleBackColor = false;
-            btnIngresar.Click += btnIngresar_Click;
+            btnIngresar.Click += BtnIngresar_Click;
             // 
             // txtTelePadres
             // 
@@ -194,7 +193,7 @@
             txtTelePadres.Name = "txtTelePadres";
             txtTelePadres.Size = new Size(320, 27);
             txtTelePadres.TabIndex = 3;
-            txtTelePadres.Leave += txtTelePadres_Leave;
+            txtTelePadres.Leave += TxtTelePadres_Leave;
             // 
             // txtApellido
             // 
@@ -206,7 +205,7 @@
             txtApellido.Name = "txtApellido";
             txtApellido.Size = new Size(320, 27);
             txtApellido.TabIndex = 1;
-            txtApellido.Leave += txtApellido_Leave;
+            txtApellido.Leave += TxtApellido_Leave;
             // 
             // txtNombre
             // 
@@ -218,7 +217,7 @@
             txtNombre.Name = "txtNombre";
             txtNombre.Size = new Size(320, 27);
             txtNombre.TabIndex = 0;
-            txtNombre.Leave += txtNombre_Leave;
+            txtNombre.Leave += TxtNombre_Leave;
             // 
             // txtDni
             // 
@@ -230,7 +229,7 @@
             txtDni.Name = "txtDni";
             txtDni.Size = new Size(320, 27);
             txtDni.TabIndex = 2;
-            txtDni.Leave += txtDni_Leave;
+            txtDni.Leave += TxtDni_Leave;
             // 
             // label6
             // 
@@ -312,8 +311,8 @@
             Name = "frmAgregarAlumnos";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Registro de Alumnos";
-            Load += frmAgregarAlumnos_Load;
-            KeyDown += frmAgregarAlumnos_KeyDown;
+            Load += FrmAgregarAlumnos_Load;
+            KeyDown += FrmAgregarAlumnos_KeyDown;
             panelHeader.ResumeLayout(false);
             panelHeader.PerformLayout();
             panelMain.ResumeLayout(false);
@@ -331,7 +330,7 @@
         private Button btnSalir;
         private Panel panelMain;
         private Panel panelForm;
-        private ComboBox cmbInstrumentos;
+        private CheckedListBox chkListInstrumentos;
         private Button btnVolver;
         private Button btnIngresar;
         private TextBox txtTelePadres;

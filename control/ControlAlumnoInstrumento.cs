@@ -1,100 +1,104 @@
-﻿using System;
+﻿using GUI_Login.modelo;
+using System;
 using System.Windows.Forms;
 
-public class ControlAlumnoInstrumento
+namespace GUI_Login.control
 {
-    private ModeloAlumnoInstrumento modeloAlumnoInstrumento;
-
-    public ControlAlumnoInstrumento()
+    public class ControlAlumnoInstrumento
     {
-        modeloAlumnoInstrumento = new ModeloAlumnoInstrumento();
-    }
+        private readonly ModeloAlumnoInstrumento modeloAlumnoInstrumento;
 
-    // Registrar relación nueva
-    public bool RegistrarRelacion(int idAlumno, int idInstrumento)
-    {
-        try
+        public ControlAlumnoInstrumento()
         {
-            AlumnoInstrumento relacion = new AlumnoInstrumento
-            {
-                IdAlumno = idAlumno,
-                IdInstrumento = idInstrumento
-            };
+            modeloAlumnoInstrumento = new ModeloAlumnoInstrumento();
+        }
 
-            bool resultado = modeloAlumnoInstrumento.InsertarAlumnoInstrumento(relacion);
-
-            if (!resultado)
+        // Registrar relación nueva
+        public bool RegistrarInstrumentosParaAlumno(int idAlumno, List<int> idsInstrumentos)
+        {
+            try
             {
-                MessageBox.Show("Error al registrar la relación alumno-instrumento.",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return modeloAlumnoInstrumento.RegistrarInstrumentosParaAlumno(idAlumno, idsInstrumentos);
             }
-
-            return resultado;
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Error inesperado al registrar relación: {ex.Message}",
-                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return false;
-        }
-    }
-
-    // Actualizar relación existente o insertar si no existe
-    public bool ActualizarRelacion(int idAlumno, int idInstrumento)
-    {
-        try
-        {
-            AlumnoInstrumento relacion = new AlumnoInstrumento
+            catch (Exception ex)
             {
-                IdAlumno = idAlumno,
-                IdInstrumento = idInstrumento
-            };
-
-            bool resultado = modeloAlumnoInstrumento.ActualizarAlumnoInstrumento(relacion);
-
-            if (!resultado)
-            {
-                MessageBox.Show("Error al actualizar la relación alumno-instrumento.",
+                MessageBox.Show($"Error inesperado al registrar instrumentos: {ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
+        }
 
-            return resultado;
-        }
-        catch (Exception ex)
+        // Actualizar relación existente o insertar si no existe
+        public bool ActualizarRelacion(int idAlumno, int idInstrumento)
         {
-            MessageBox.Show($"Error inesperado al actualizar relación: {ex.Message}",
-                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return false;
-        }
-    }
+            try
+            {
+                AlumnoInstrumento relacion = new()
+                {
+                    IdAlumno = idAlumno,
+                    IdInstrumento = idInstrumento
+                };
 
-    // Eliminar relación por alumno
-    public bool EliminarRelacionPorAlumno(int idAlumno)
-    {
-        try
-        {
-            return modeloAlumnoInstrumento.EliminarRelacionPorAlumno(idAlumno);
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Error al eliminar relación alumno-instrumento: {ex.Message}",
-                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return false;
-        }
-    }
+                bool resultado = modeloAlumnoInstrumento.ActualizarAlumnoInstrumento(relacion);
 
-    // Obtener el instrumento actual de un alumno
-    public int ObtenerInstrumentoPorAlumno(int idAlumno)
-    {
-        try
-        {
-            return modeloAlumnoInstrumento.ObtenerInstrumentoPorAlumno(idAlumno);
+                if (!resultado)
+                {
+                    MessageBox.Show("Error al actualizar la relación alumno-instrumento.",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error inesperado al actualizar relación: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
         }
-        catch (Exception ex)
+
+        public bool ActualizarInstrumentosDeAlumno(int idAlumno, List<int> idsInstrumentos)
         {
-            MessageBox.Show($"Error al obtener instrumento del alumno: {ex.Message}",
-                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return -1;
+            try
+            {
+                return modeloAlumnoInstrumento.ActualizarInstrumentosDeAlumno(idAlumno, idsInstrumentos);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error inesperado al actualizar instrumentos: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        // Eliminar relación por alumno
+        public bool EliminarRelacionPorAlumno(int idAlumno)
+        {
+            try
+            {
+                return modeloAlumnoInstrumento.EliminarRelacionPorAlumno(idAlumno);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al eliminar relación alumno-instrumento: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        // Obtener el instrumento actual de un alumno
+        public List<int> ObtenerInstrumentosPorAlumno(int idAlumno)
+        {
+            try
+            {
+                return modeloAlumnoInstrumento.ObtenerInstrumentosPorAlumno(idAlumno);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al obtener instrumentos del alumno: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return [];
+            }
         }
     }
 }

@@ -1,37 +1,44 @@
-﻿using System;
+﻿using GUI_Login.control;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
-    public partial class frmAgregarAlumnos : Form
+    public partial class FrmAgregarAlumnos : Form
     {
-        private ControlAlumno controlAlumno;
-        private ControlInstrumento controlInstrumento;
+        private readonly ControlAlumno controlAlumno;
+        private readonly ControlInstrumento controlInstrumento;
 
-        public frmAgregarAlumnos()
+        public FrmAgregarAlumnos()
         {
             InitializeComponent();
             controlAlumno = new ControlAlumno();
             controlInstrumento = new ControlInstrumento();
         }
 
-        private void frmAgregarAlumnos_Load(object sender, EventArgs e)
+        private void FrmAgregarAlumnos_Load(object sender, EventArgs e)
         {
-            CargarComboInstrumentos();
+            CargarCheckListInstrumentos();
         }
 
-        private void CargarComboInstrumentos()
+        private void CargarCheckListInstrumentos()
         {
             try
             {
                 List<Instrumento> instrumentos = controlInstrumento.ListarInstrumentosEnOrquesta();
-                cmbInstrumentos.DataSource = null;
-                cmbInstrumentos.DataSource = instrumentos;
-                cmbInstrumentos.DisplayMember = "Nombre";
-                cmbInstrumentos.ValueMember = "Id";
-                cmbInstrumentos.SelectedIndex = -1;
+                chkListInstrumentos.DataSource = null;
+                chkListInstrumentos.DataSource = instrumentos;
+                chkListInstrumentos.DisplayMember = "Nombre";
+                chkListInstrumentos.ValueMember = "Id";
+
+                // Desmarcar todos los items al cargar
+                for (int i = 0; i < chkListInstrumentos.Items.Count; i++)
+                {
+                    chkListInstrumentos.SetItemChecked(i, false);
+                }
             }
             catch (Exception ex)
             {
@@ -40,16 +47,23 @@ namespace GUI_Login.vista
             }
         }
 
-        private void btnIngresar_Click(object sender, EventArgs e)
+        private void BtnIngresar_Click(object sender, EventArgs e)
         {
-            // Validar campos obligatorios
-            if (!controlAlumno.ValidarCamposObligatorios(
-                txtNombre.Text, txtApellido.Text, txtDni.Text, txtTelePadres.Text,
-                cmbInstrumentos.SelectedValue as int?))
+            // Validar campos obligatorios básicos
+            if (!ControlAlumno.ValidarCamposObligatorios(
+                txtNombre.Text, txtApellido.Text, txtDni.Text, txtTelePadres.Text))
                 return;
 
+            // Validar que al menos un instrumento esté seleccionado
+            if (chkListInstrumentos.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("Seleccione al menos un instrumento.",
+                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             // Crear objeto alumno
-            Alumno alumno = new Alumno
+            Alumno alumno = new()
             {
                 Dni = int.Parse(txtDni.Text),
                 Nombre = txtNombre.Text.Trim(),
@@ -57,10 +71,16 @@ namespace GUI_Login.vista
                 Telefono_padres = txtTelePadres.Text.Trim()
             };
 
-            int idInstrumento = (int)cmbInstrumentos.SelectedValue;
+            // Obtener los IDs de los instrumentos seleccionados
+            List<int> idsInstrumentos = [];
+            foreach (var item in chkListInstrumentos.CheckedItems)
+            {
+                Instrumento instrumento = (Instrumento)item;
+                idsInstrumentos.Add(instrumento.Id);
+            }
 
-            // Registrar alumno con instrumento
-            bool exito = controlAlumno.RegistrarAlumnoConInstrumento(alumno, idInstrumento);
+            // Registrar alumno con instrumentos
+            bool exito = controlAlumno.RegistrarAlumnoConInstrumentos(alumno, idsInstrumentos);
 
             if (exito)
             {
@@ -74,12 +94,18 @@ namespace GUI_Login.vista
             txtNombre.Clear();
             txtApellido.Clear();
             txtTelePadres.Clear();
-            cmbInstrumentos.SelectedIndex = -1;
+
+            // Desmarcar todos los instrumentos
+            for (int i = 0; i < chkListInstrumentos.Items.Count; i++)
+            {
+                chkListInstrumentos.SetItemChecked(i, false);
+            }
+
             txtNombre.Focus();
         }
 
         // Eventos de UI (sin lógica de negocio)
-        private void txtDni_Leave(object sender, EventArgs e)
+        private void TxtDni_Leave(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtDni.Text) && !int.TryParse(txtDni.Text, out _))
             {
@@ -90,7 +116,7 @@ namespace GUI_Login.vista
             }
         }
 
-        private void txtTelePadres_Leave(object sender, EventArgs e)
+        private void TxtTelePadres_Leave(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtTelePadres.Text) && !long.TryParse(txtTelePadres.Text, out _))
             {
@@ -101,19 +127,19 @@ namespace GUI_Login.vista
             }
         }
 
-        private void txtNombre_Leave(object sender, EventArgs e)
+        private void TxtNombre_Leave(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtNombre.Text))
             {
-                txtNombre.Text = char.ToUpper(txtNombre.Text[0]) + txtNombre.Text.Substring(1).ToLower();
+                txtNombre.Text = char.ToUpper(txtNombre.Text[0]) + txtNombre.Text[1..].ToLower();
             }
         }
 
-        private void txtApellido_Leave(object sender, EventArgs e)
+        private void TxtApellido_Leave(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtApellido.Text))
             {
-                txtApellido.Text = char.ToUpper(txtApellido.Text[0]) + txtApellido.Text.Substring(1).ToLower();
+                txtApellido.Text = char.ToUpper(txtApellido.Text[0]) + txtApellido.Text[1..].ToLower();
             }
         }
 
@@ -130,16 +156,16 @@ namespace GUI_Login.vista
                 textBox.BackColor = Color.White;
         }
 
-        private void btnVolver_Click(object sender, EventArgs e)
+        private void BtnVolver_Click(object sender, EventArgs e)
         {
             this.Close();
-            FrmPrincipal formPrincipal = new FrmPrincipal();
+            FrmPrincipal formPrincipal = new();
             formPrincipal.Show();
         }
-        private void btnSalir_Click(object sender, EventArgs e) => Application.Exit();
-        private void frmAgregarAlumnos_KeyDown(object sender, KeyEventArgs e)
+        private void BtnSalir_Click(object sender, EventArgs e) => Application.Exit();
+        private void FrmAgregarAlumnos_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape) btnVolver_Click(sender, e);
+            if (e.KeyCode == Keys.Escape) BtnVolver_Click(sender, e);
         }
     }
 }

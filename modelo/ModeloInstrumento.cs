@@ -2,120 +2,105 @@
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 
-public class ModeloInstrumento
+namespace GUI_Login.modelo
 {
-    private Conexion conexion;
-
-    public ModeloInstrumento()
+    public class ModeloInstrumento
     {
-        conexion = new Conexion();
-    }
+        private readonly Conexion conexion;
 
-    // Método para eliminar instrumento de la orquesta
-    public bool EliminarInstrumentoOrquesta(int idInstrumento)
-    {
-        using (MySqlConnection conn = conexion.getConexion())
+        public ModeloInstrumento()
         {
+            conexion = new Conexion();
+        }
+
+        // Método para eliminar instrumento de la orquesta
+        public bool EliminarInstrumentoOrquesta(int idInstrumento)
+        {
+            using MySqlConnection conn = conexion.getConexion();
             conn.Open();
 
             string sql = "DELETE FROM instrumento_orquesta WHERE id = @id";
-            using (MySqlCommand cmd = new MySqlCommand(sql, conn))
-            {
-                cmd.Parameters.AddWithValue("@id", idInstrumento);
+            using MySqlCommand cmd = new(sql, conn);
+            cmd.Parameters.AddWithValue("@id", idInstrumento);
 
-                try
-                {
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    return rowsAffected > 0;
-                }
-                catch (MySqlException ex)
-                {
-                    Console.WriteLine("Error al eliminar instrumento de la orquesta: " + ex.Message);
-                    return false;
-                }
+            try
+            {
+                int rowsAffected = cmd.ExecuteNonQuery();
+                return rowsAffected > 0;
+            }
+            catch (MySqlException ex)
+            {
+                Console.WriteLine("Error al eliminar instrumento de la orquesta: " + ex.Message);
+                return false;
             }
         }
-    }
 
-    // Verificar si el instrumento está siendo usado por algún profesor
-    public bool EstaInstrumentoEnUso(int idInstrumento)
-    {
-        using (MySqlConnection conn = conexion.getConexion())
+        // Verificar si el instrumento está siendo usado por algún profesor
+        public bool EstaInstrumentoEnUso(int idInstrumento)
         {
+            using MySqlConnection conn = conexion.getConexion();
             conn.Open();
 
             string sql = "SELECT COUNT(*) FROM profesor WHERE id_instrumento = @id";
-            using (MySqlCommand cmd = new MySqlCommand(sql, conn))
-            {
-                cmd.Parameters.AddWithValue("@id", idInstrumento);
-                int count = Convert.ToInt32(cmd.ExecuteScalar());
-                return count > 0;
-            }
+            using MySqlCommand cmd = new(sql, conn);
+            cmd.Parameters.AddWithValue("@id", idInstrumento);
+            int count = Convert.ToInt32(cmd.ExecuteScalar());
+            return count > 0;
         }
-    }
 
-    // Verificar si el instrumento está siendo usado por algún alumno
-    public bool EstaInstrumentoEnUsoPorAlumnos(int idInstrumento)
-    {
-        using (MySqlConnection conn = conexion.getConexion())
+        // Verificar si el instrumento está siendo usado por algún alumno
+        public bool EstaInstrumentoEnUsoPorAlumnos(int idInstrumento)
         {
+            using MySqlConnection conn = conexion.getConexion();
             conn.Open();
 
             string sql = "SELECT COUNT(*) FROM alumno_instrumento WHERE id_instrumento = @id";
-            using (MySqlCommand cmd = new MySqlCommand(sql, conn))
-            {
-                cmd.Parameters.AddWithValue("@id", idInstrumento);
-                int count = Convert.ToInt32(cmd.ExecuteScalar());
-                return count > 0;
-            }
+            using MySqlCommand cmd = new(sql, conn);
+            cmd.Parameters.AddWithValue("@id", idInstrumento);
+            int count = Convert.ToInt32(cmd.ExecuteScalar());
+            return count > 0;
         }
-    }
 
-    // Resto de los métodos existentes...
-    public bool AgregarInstrumentoOrquesta(int idInstrumento)
-    {
-        using (MySqlConnection conn = conexion.getConexion())
+        // Resto de los métodos existentes...
+        public bool AgregarInstrumentoOrquesta(int idInstrumento)
         {
+            using MySqlConnection conn = conexion.getConexion();
             conn.Open();
 
             string sql = "INSERT INTO instrumento_orquesta (id) VALUES (@id)";
-            using (MySqlCommand cmd = new MySqlCommand(sql, conn))
-            {
-                cmd.Parameters.AddWithValue("@id", idInstrumento);
+            using MySqlCommand cmd = new(sql, conn);
+            cmd.Parameters.AddWithValue("@id", idInstrumento);
 
-                try
-                {
-                    cmd.ExecuteNonQuery();
-                    return true;
-                }
-                catch (MySqlException ex)
-                {
-                    Console.WriteLine("Error al agregar instrumento a la orquesta: " + ex.Message);
-                    return false;
-                }
+            try
+            {
+                cmd.ExecuteNonQuery();
+                return true;
+            }
+            catch (MySqlException ex)
+            {
+                Console.WriteLine("Error al agregar instrumento a la orquesta: " + ex.Message);
+                return false;
             }
         }
-    }
 
-    public List<Instrumento> ListarInstrumentosOrquesta()
-    {
-        List<Instrumento> lista = new List<Instrumento>();
-
-        using (MySqlConnection conn = conexion.getConexion())
+        public List<Instrumento> ListarInstrumentosOrquesta()
         {
-            conn.Open();
+            List<Instrumento> lista = [];
 
-            string sql = @"
+            using (MySqlConnection conn = conexion.getConexion())
+            {
+                conn.Open();
+
+                string sql = @"
                 SELECT instrumento_orquesta.id, instrumento.nombre, instrumento.catedra
                 FROM instrumento_orquesta
                 INNER JOIN instrumento ON instrumento_orquesta.id = instrumento.id";
 
-            using (MySqlCommand cmd = new MySqlCommand(sql, conn))
-            using (MySqlDataReader reader = cmd.ExecuteReader())
-            {
+                using MySqlCommand cmd = new(sql, conn);
+                using MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    Instrumento inst = new Instrumento
+                    Instrumento inst = new()
                     {
                         Id = reader.GetInt32("id"),
                         Nombre = reader.GetString("nombre"),
@@ -127,32 +112,30 @@ public class ModeloInstrumento
                     lista.Add(inst);
                 }
             }
+
+            return lista;
         }
 
-        return lista;
-    }
-
-    public List<Instrumento> ListarInstrumentosDisponibles()
-    {
-        List<Instrumento> lista = new List<Instrumento>();
-
-        using (MySqlConnection conn = conexion.getConexion())
+        public List<Instrumento> ListarInstrumentosDisponibles()
         {
-            conn.Open();
+            List<Instrumento> lista = [];
 
-            string sql = @"
+            using (MySqlConnection conn = conexion.getConexion())
+            {
+                conn.Open();
+
+                string sql = @"
                 SELECT i.id, i.nombre, i.catedra
                 FROM instrumento i
                 LEFT JOIN instrumento_orquesta io ON i.id = io.id
                 WHERE io.id IS NULL
                 ORDER BY i.catedra, i.nombre";
 
-            using (MySqlCommand cmd = new MySqlCommand(sql, conn))
-            using (MySqlDataReader reader = cmd.ExecuteReader())
-            {
+                using MySqlCommand cmd = new(sql, conn);
+                using MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    Instrumento inst = new Instrumento
+                    Instrumento inst = new()
                     {
                         Id = reader.GetInt32("id"),
                         Nombre = reader.GetString("nombre"),
@@ -164,8 +147,8 @@ public class ModeloInstrumento
                     lista.Add(inst);
                 }
             }
-        }
 
-        return lista;
+            return lista;
+        }
     }
 }

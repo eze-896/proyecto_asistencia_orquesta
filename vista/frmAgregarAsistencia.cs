@@ -1,21 +1,23 @@
-﻿using System;
+﻿using GUI_Login.control;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
-    public partial class frmAgregarAsistencia : Form
+    public partial class FrmAgregarAsistencia : Form
     {
-        private ControlAsistencia controlAsistencia;
+        private readonly ControlAsistencia controlAsistencia;
         private List<Alumno> listaAlumnos;
 
-        public frmAgregarAsistencia()
+        public FrmAgregarAsistencia()
         {
             InitializeComponent();
             controlAsistencia = new ControlAsistencia();
+            listaAlumnos = [];
         }
 
-        private void frmAgregarAsistencia_Load(object sender, EventArgs e)
+        private void FrmAgregarAsistencia_Load(object sender, EventArgs e)
         {
             datePicker.Value = DateTime.Today;
             cmbActividad.DataSource = Enum.GetValues(typeof(Asistencia.Tipo_Actividad));
@@ -30,7 +32,7 @@ namespace GUI_Login.vista
             }
         }
 
-        private void btnGuardar_Click(object sender, EventArgs e)
+        private void BtnGuardar_Click(object sender, EventArgs e)
         {
             try
             {
@@ -51,9 +53,9 @@ namespace GUI_Login.vista
                 }
 
                 DateTime fecha = datePicker.Value.Date;
-                Asistencia.Tipo_Actividad actividad = (Asistencia.Tipo_Actividad)cmbActividad.SelectedItem;
+                Asistencia.Tipo_Actividad actividad = (Asistencia.Tipo_Actividad)cmbActividad.SelectedItem!;
 
-                List<Asistencia> asistencias = new List<Asistencia>();
+                List<Asistencia> asistencias = [];
 
                 // 🔹 Guardar todos los alumnos (presentes e inasistentes)
                 for (int i = 0; i < chkListaAlumnos.Items.Count; i++)
@@ -62,7 +64,7 @@ namespace GUI_Login.vista
                     {
                         bool estaPresente = chkListaAlumnos.GetItemChecked(i);
 
-                        Asistencia a = new Asistencia
+                        Asistencia a = new()
                         {
                             IdAlumno = listaAlumnos[i].Id,
                             Fecha = fecha,
@@ -111,23 +113,23 @@ namespace GUI_Login.vista
             }
         }
 
-        private void btnVolver_Click(object sender, EventArgs e)
+        private void BtnVolver_Click(object sender, EventArgs e)
         {
             this.Hide();
-            FrmPrincipal formPrincipal = new FrmPrincipal();
+            FrmPrincipal formPrincipal = new();
             formPrincipal.Show();
         }
 
-        private void btnSalir_Click(object sender, EventArgs e)
+        private void BtnSalir_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
-        private void frmAgregarAsistencia_KeyDown(object sender, KeyEventArgs e)
+        private void FrmAgregarAsistencia_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
             {
-                btnVolver_Click(sender, e);
+                BtnVolver_Click(sender, e);
             }
         }
     }

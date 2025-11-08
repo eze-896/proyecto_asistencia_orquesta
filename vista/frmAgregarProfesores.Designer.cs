@@ -1,6 +1,6 @@
 ﻿namespace GUI_Login.vista
 {
-    partial class frmAgregarProfesores
+    partial class FrmAgregarProfesores
     {
         /// <summary>
         /// Required designer variable.
@@ -103,7 +103,7 @@
             btnSalir.TabIndex = 1;
             btnSalir.Text = "×";
             btnSalir.UseVisualStyleBackColor = false;
-            btnSalir.Click += btnSalir_Click;
+            btnSalir.Click += BtnSalir_Click;
             // 
             // panelMain
             // 
@@ -202,7 +202,7 @@
             btnVolver.TabIndex = 6;
             btnVolver.Text = "← VOLVER AL PRINCIPAL";
             btnVolver.UseVisualStyleBackColor = false;
-            btnVolver.Click += btnVolver_Click;
+            btnVolver.Click += BtnVolver_Click;
             // 
             // btnIngresar
             // 
@@ -219,7 +219,7 @@
             btnIngresar.TabIndex = 5;
             btnIngresar.Text = "👨‍🏫 INGRESAR PROFESOR";
             btnIngresar.UseVisualStyleBackColor = false;
-            btnIngresar.Click += btnIngresar_Click;
+            btnIngresar.Click += BtnIngresar_Click;
             // 
             // txtTelefono
             // 
@@ -334,8 +334,8 @@
             Name = "frmAgregarProfesores";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Registro de Profesores";
-            Load += frmAgregarProfesores_Load;
-            KeyDown += frmAgregarProfesores_KeyDown;
+            Load += FrmAgregarProfesores_Load;
+            KeyDown += FrmAgregarProfesores_KeyDown;
             panelHeader.ResumeLayout(false);
             panelHeader.PerformLayout();
             panelMain.ResumeLayout(false);

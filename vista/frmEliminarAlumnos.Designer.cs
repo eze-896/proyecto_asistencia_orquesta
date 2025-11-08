@@ -75,7 +75,7 @@
             this.btnSalir.TabStop = false;
             this.btnSalir.Text = "×";
             this.btnSalir.UseVisualStyleBackColor = false;
-            this.btnSalir.Click += new System.EventHandler(this.btnSalir_Click);
+            this.btnSalir.Click += new System.EventHandler(this.BtnSalir_Click);
             // 
             // lblTitulo
             // 
@@ -124,7 +124,7 @@
             this.lstAlumnos.Name = "lstAlumnos";
             this.lstAlumnos.Size = new System.Drawing.Size(450, 302);
             this.lstAlumnos.TabIndex = 0;
-            this.lstAlumnos.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstAlumnos_KeyDown);
+            this.lstAlumnos.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LstAlumnos_KeyDown);
             // 
             // btnEliminar
             // 
@@ -141,7 +141,7 @@
             this.btnEliminar.TabIndex = 1;
             this.btnEliminar.Text = "ELIMINAR";
             this.btnEliminar.UseVisualStyleBackColor = false;
-            this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
+            this.btnEliminar.Click += new System.EventHandler(this.BtnEliminar_Click);
             // 
             // btnVolver
             // 
@@ -158,7 +158,7 @@
             this.btnVolver.TabIndex = 2;
             this.btnVolver.Text = "VOLVER";
             this.btnVolver.UseVisualStyleBackColor = false;
-            this.btnVolver.Click += new System.EventHandler(this.btnVolver_Click);
+            this.btnVolver.Click += new System.EventHandler(this.BtnVolver_Click);
             // 
             // frmEliminarAlumnos
             // 
@@ -174,7 +174,7 @@
             this.Name = "frmEliminarAlumnos";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Eliminar Alumnos";
-            this.Load += new System.EventHandler(this.frmEliminarAlumnos_Load);
+            this.Load += new System.EventHandler(this.FrmEliminarAlumnos_Load);
             this.KeyPreview = true;
             this.panelHeader.ResumeLayout(false);
             this.panelHeader.PerformLayout();

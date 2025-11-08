@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GUI_Login.control;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -6,7 +7,7 @@ namespace GUI_Login.vista
 {
     public partial class frmAgregarInstrumentos : Form
     {
-        private ControlInstrumento controlInstrumento;
+        private readonly ControlInstrumento controlInstrumento;
 
         public frmAgregarInstrumentos()
         {
@@ -14,7 +15,7 @@ namespace GUI_Login.vista
             controlInstrumento = new ControlInstrumento();
         }
 
-        private void frmAgregarInstrumentos_Load(object sender, EventArgs e)
+        private void FrmAgregarInstrumentos_Load(object sender, EventArgs e)
         {
             CargarComboInstrumentos();
         }
@@ -37,7 +38,7 @@ namespace GUI_Login.vista
             }
         }
 
-        private void btnIngresar_Click(object sender, EventArgs e)
+        private void BtnIngresar_Click(object sender, EventArgs e)
         {
             if (cmbInstrumento.SelectedIndex == -1)
             {
@@ -48,14 +49,21 @@ namespace GUI_Login.vista
 
             try
             {
-                int idInstrumento = (int)cmbInstrumento.SelectedValue;
-                bool insertado = controlInstrumento.AgregarInstrumentoAOrquesta(idInstrumento);
-
-                if (insertado)
+                if (cmbInstrumento.SelectedValue is int idInstrumento)
                 {
-                    MessageBox.Show("Instrumento agregado a la orquesta correctamente.",
-                        "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    CargarComboInstrumentos(); // refresca lista
+                    bool insertado = controlInstrumento.AgregarInstrumentoAOrquesta(idInstrumento);
+
+                    if (insertado)
+                    {
+                        MessageBox.Show("Instrumento agregado a la orquesta correctamente.",
+                            "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        CargarComboInstrumentos(); // refresca lista
+                    }
+                    else
+                    {
+                        MessageBox.Show("No se pudo agregar el instrumento. Quizás ya está en la orquesta.",
+                            "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
                 else
                 {
@@ -70,14 +78,14 @@ namespace GUI_Login.vista
             }
         }
 
-        private void btnVolver_Click(object sender, EventArgs e)
+        private void BtnVolver_Click(object sender, EventArgs e)
         {
             this.Close(); 
-            FrmPrincipal formPrincipal = new FrmPrincipal();
+            FrmPrincipal formPrincipal = new();
             formPrincipal.Show();
         }
 
-        private void btnSalir_Click(object sender, EventArgs e)
+        private void BtnSalir_Click(object sender, EventArgs e)
         {
             // Cierra el sistema
             Application.Exit();

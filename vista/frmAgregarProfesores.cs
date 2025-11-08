@@ -1,22 +1,23 @@
-﻿using System;
+﻿using GUI_Login.control;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
-    public partial class frmAgregarProfesores : Form
+    public partial class FrmAgregarProfesores : Form
     {
-        private ControlProfesor controlProfesor;
-        private ControlInstrumento controlInstrumento;
+        private readonly ControlProfesor controlProfesor;
+        private readonly ControlInstrumento controlInstrumento;
 
-        public frmAgregarProfesores()
+        public FrmAgregarProfesores()
         {
             InitializeComponent();
             controlProfesor = new ControlProfesor();
             controlInstrumento = new ControlInstrumento();
         }
 
-        private void frmAgregarProfesores_Load(object sender, EventArgs e)
+        private void FrmAgregarProfesores_Load(object sender, EventArgs e)
         {
             CargarInstrumentos();
         }
@@ -39,31 +40,38 @@ namespace GUI_Login.vista
             }
         }
 
-        private void btnIngresar_Click(object sender, EventArgs e)
+        private void BtnIngresar_Click(object sender, EventArgs e)
         {
             // Validar campos obligatorios
-            if (!controlProfesor.ValidarCamposObligatorios(
+            if (!ControlProfesor.ValidarCamposObligatorios(
                 txtNombre.Text, txtApellido.Text, txtDni.Text, txtTelefono.Text,
                 txtEmail.Text, cmbInstrumentos.SelectedValue as int?))
                 return;
-
-            // Crear objeto profesor
-            Profesor profesor = new Profesor
+            if (cmbInstrumentos.SelectedValue is int selectedValue)
             {
-                Dni = int.Parse(txtDni.Text),
-                Nombre = txtNombre.Text.Trim(),
-                Apellido = txtApellido.Text.Trim(),
-                Telefono = txtTelefono.Text.Trim(),
-                Email = txtEmail.Text.Trim(),
-                Id_instrumento = (int)cmbInstrumentos.SelectedValue
-            };
+                // Crear objeto profesor
+                Profesor profesor = new()
+                {
+                    Dni = int.Parse(txtDni.Text),
+                    Nombre = txtNombre.Text.Trim(),
+                    Apellido = txtApellido.Text.Trim(),
+                    Telefono = txtTelefono.Text.Trim(),
+                    Email = txtEmail.Text.Trim(),
+                    Id_instrumento = selectedValue // ✅ Usar la variable ya verificada
+                };
 
-            // Registrar profesor
-            bool exito = controlProfesor.RegistrarProfesor(profesor);
+                // Registrar profesor
+                bool exito = controlProfesor.RegistrarProfesor(profesor);
 
-            if (exito)
+                if (exito)
+                {
+                    LimpiarFormulario();
+                }
+            }
+            else
             {
-                LimpiarFormulario();
+                MessageBox.Show("Seleccione un instrumento válido.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -79,7 +87,7 @@ namespace GUI_Login.vista
         }
 
         // Eventos de validación en UI
-        private void txtDni_Leave(object sender, EventArgs e)
+        private void TxtDni_Leave(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtDni.Text) && !int.TryParse(txtDni.Text, out _))
             {
@@ -90,7 +98,7 @@ namespace GUI_Login.vista
             }
         }
 
-        private void txtTelefono_Leave(object sender, EventArgs e)
+        private void TxtTelefono_Leave(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtTelefono.Text) && !long.TryParse(txtTelefono.Text, out _))
             {
@@ -101,16 +109,16 @@ namespace GUI_Login.vista
             }
         }
 
-        private void btnVolver_Click(object sender, EventArgs e)
+        private void BtnVolver_Click(object sender, EventArgs e)
         {
             this.Close();
-            FrmPrincipal formPrincipal = new FrmPrincipal();
+            FrmPrincipal formPrincipal = new();
             formPrincipal.Show();
         }
-        private void btnSalir_Click(object sender, EventArgs e) => Application.Exit();
-        private void frmAgregarProfesores_KeyDown(object sender, KeyEventArgs e)
+        private void BtnSalir_Click(object sender, EventArgs e) => Application.Exit();
+        private void FrmAgregarProfesores_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape) btnVolver_Click(sender, e);
+            if (e.KeyCode == Keys.Escape) BtnVolver_Click(sender, e);
         }
     }
 }

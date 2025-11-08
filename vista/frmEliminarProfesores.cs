@@ -1,22 +1,23 @@
-﻿using System;
+﻿using GUI_Login.control;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
-    public partial class frmEliminarProfesores : Form
+    public partial class FrmEliminarProfesores : Form
     {
-        private ControlProfesor controlProfesor;
+        private readonly ControlProfesor controlProfesor;
         private List<Profesor> listaProfesores;
 
-        public frmEliminarProfesores()
+        public FrmEliminarProfesores()
         {
             InitializeComponent();
             controlProfesor = new ControlProfesor();
-            listaProfesores = new List<Profesor>();
+            listaProfesores = [];
         }
 
-        private void frmEliminarProfesores_Load(object sender, EventArgs e)
+        private void FrmEliminarProfesores_Load(object sender, EventArgs e)
         {
             CargarProfesores();
             this.KeyPreview = true;
@@ -38,7 +39,7 @@ namespace GUI_Login.vista
             }
         }
 
-        private void btnEliminar_Click(object sender, EventArgs e)
+        private void BtnEliminar_Click(object sender, EventArgs e)
         {
             if (lstProfesores.SelectedIndex == -1)
             {
@@ -50,7 +51,7 @@ namespace GUI_Login.vista
             Profesor seleccionado = listaProfesores[lstProfesores.SelectedIndex];
 
             // Confirmar y eliminar
-            if (controlProfesor.ConfirmarEliminacion(seleccionado.Nombre, seleccionado.Apellido))
+            if (ControlProfesor.ConfirmarEliminacion(seleccionado.Nombre, seleccionado.Apellido))
             {
                 bool exito = controlProfesor.EliminarProfesor(seleccionado.Id);
                 if (exito)
@@ -60,24 +61,24 @@ namespace GUI_Login.vista
             }
         }
 
-        private void btnVolver_Click(object sender, EventArgs e)
+        private void BtnVolver_Click(object sender, EventArgs e)
         {
             this.Close();
-            FrmPrincipal formPrincipal = new FrmPrincipal();
+            FrmPrincipal formPrincipal = new();
             formPrincipal.Show();
         }
-        private void btnSalir_Click(object sender, EventArgs e) => Application.Exit();
+        private void BtnSalir_Click(object sender, EventArgs e) => Application.Exit();
 
-        private void lstProfesores_KeyDown(object sender, KeyEventArgs e)
+        private void LstProfesores_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete && lstProfesores.SelectedIndex != -1)
             {
-                btnEliminar_Click(sender, e);
+                BtnEliminar_Click(sender, e);
                 e.Handled = true;
             }
             else if (e.KeyCode == Keys.Escape)
             {
-                btnVolver_Click(sender, e);
+                BtnVolver_Click(sender, e);
                 e.Handled = true;
             }
         }

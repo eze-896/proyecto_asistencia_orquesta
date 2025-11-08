@@ -1,6 +1,6 @@
 ﻿namespace GUI_Login.vista
 {
-    partial class frmModificarProfesores
+    partial class FrmModificarProfesores
     {
         private System.ComponentModel.IContainer components = null;
         private System.Windows.Forms.ListBox lstProfesoresModificar;
@@ -117,7 +117,7 @@
             this.btnSalir.TabIndex = 1;
             this.btnSalir.Text = "×";
             this.btnSalir.UseVisualStyleBackColor = false;
-            this.btnSalir.Click += new System.EventHandler(this.btnSalir_Click);
+            this.btnSalir.Click += new System.EventHandler(this.BtnSalir_Click);
 
             // 
             // panelMain
@@ -145,7 +145,7 @@
             this.lstProfesoresModificar.Name = "lstProfesoresModificar";
             this.lstProfesoresModificar.Size = new System.Drawing.Size(280, 520);
             this.lstProfesoresModificar.TabIndex = 0;
-            this.lstProfesoresModificar.SelectedIndexChanged += new System.EventHandler(this.lstProfesoresModificar_SelectedIndexChanged);
+            this.lstProfesoresModificar.SelectedIndexChanged += new System.EventHandler(this.LstProfesoresModificar_SelectedIndexChanged);
 
             // 
             // panelFormulario
@@ -332,7 +332,7 @@
             this.btnVolver.TabIndex = 7;
             this.btnVolver.Text = "← VOLVER AL PRINCIPAL";
             this.btnVolver.UseVisualStyleBackColor = false;
-            this.btnVolver.Click += new System.EventHandler(this.btnVolver_Click);
+            this.btnVolver.Click += new System.EventHandler(this.BtnVolver_Click);
 
             // 
             // btnGuardarCambios
@@ -350,7 +350,7 @@
             this.btnGuardarCambios.TabIndex = 6;
             this.btnGuardarCambios.Text = "💾 GUARDAR CAMBIOS";
             this.btnGuardarCambios.UseVisualStyleBackColor = false;
-            this.btnGuardarCambios.Click += new System.EventHandler(this.btnGuardarCambios_Click);
+            this.btnGuardarCambios.Click += new System.EventHandler(this.BtnGuardarCambios_Click);
 
             // 
             // frmModificarProfesores
@@ -367,8 +367,8 @@
             this.Name = "frmModificarProfesores";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Modificar Profesores";
-            this.Load += new System.EventHandler(this.frmModificarProfesores_Load);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmModificarProfesores_KeyDown);
+            this.Load += new System.EventHandler(this.FrmModificarProfesores_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmModificarProfesores_KeyDown);
             this.panelHeader.ResumeLayout(false);
             this.panelHeader.PerformLayout();
             this.panelMain.ResumeLayout(false);

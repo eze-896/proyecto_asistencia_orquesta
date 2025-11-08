@@ -1,22 +1,23 @@
-﻿using System;
+﻿using GUI_Login.control;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
-    public partial class frmEliminarInstrumento : Form
+    public partial class FrmEliminarInstrumento : Form
     {
-        private ControlInstrumento controlInstrumento;
+        private readonly ControlInstrumento controlInstrumento;
         private List<Instrumento> listaInstrumentos;
 
-        public frmEliminarInstrumento()
+        public FrmEliminarInstrumento()
         {
             InitializeComponent();
             controlInstrumento = new ControlInstrumento();
-            listaInstrumentos = new List<Instrumento>();
+            listaInstrumentos = [];
         }
 
-        private void frmEliminarInstrumento_Load(object sender, EventArgs e)
+        private void FrmEliminarInstrumento_Load(object sender, EventArgs e)
         {
             CargarInstrumentos();
             this.KeyPreview = true;
@@ -58,7 +59,7 @@ namespace GUI_Login.vista
             }
         }
 
-        private void btnEliminar_Click(object sender, EventArgs e)
+        private void BtnEliminar_Click(object sender, EventArgs e)
         {
             if (lstInstrumentos.SelectedIndex == -1)
             {
@@ -118,12 +119,12 @@ namespace GUI_Login.vista
             }
         }
 
-        private void btnVolver_Click(object sender, EventArgs e)
+        private void BtnVolver_Click(object sender, EventArgs e)
         {
             this.Close(); // Cierra este formulario y vuelve al principal
         }
 
-        private void btnSalir_Click(object sender, EventArgs e)
+        private void BtnSalir_Click(object sender, EventArgs e)
         {
             // Pregunta antes de salir del sistema
             DialogResult result = MessageBox.Show(
@@ -138,25 +139,25 @@ namespace GUI_Login.vista
             }
         }
 
-        private void lstInstrumentos_KeyDown(object sender, KeyEventArgs e)
+        private void LstInstrumentos_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
             {
                 case Keys.Delete:
                     if (lstInstrumentos.SelectedIndex != -1)
                     {
-                        btnEliminar_Click(sender, e);
+                        BtnEliminar_Click(sender, e);
                         e.Handled = true;
                     }
                     break;
                 case Keys.Escape:
-                    btnVolver_Click(sender, e);
+                    BtnVolver_Click(sender, e);
                     e.Handled = true;
                     break;
                 case Keys.Enter:
                     if (lstInstrumentos.Focused && lstInstrumentos.SelectedIndex != -1)
                     {
-                        btnEliminar_Click(sender, e);
+                        BtnEliminar_Click(sender, e);
                         e.Handled = true;
                     }
                     break;
@@ -171,7 +172,7 @@ namespace GUI_Login.vista
             // Manejar Alt+F4 para prevenir el cierre accidental
             if (keyData == (Keys.Alt | Keys.F4))
             {
-                btnSalir_Click(this, EventArgs.Empty);
+                BtnSalir_Click(this, EventArgs.Empty);
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);

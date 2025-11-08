@@ -3,57 +3,54 @@ using System.Collections.Generic;
 using System.Data;
 using MySql.Data.MySqlClient;
 
-public class ModeloAsistencia
+namespace GUI_Login.modelo
 {
-    private Conexion conexion;
-
-    public ModeloAsistencia()
+    public class ModeloAsistencia
     {
-        conexion = new Conexion();
-    }
+        private readonly Conexion conexion;
 
-    public List<Alumno> ListarAlumnos()
-    {
-        List<Alumno> alumnos = new List<Alumno>();
-
-        try
+        public ModeloAsistencia()
         {
-            using (MySqlConnection conn = conexion.getConexion())
+            conexion = new Conexion();
+        }
+
+        public List<Alumno> ListarAlumnos()
+        {
+            List<Alumno> alumnos = [];
+
+            try
             {
+                using MySqlConnection conn = conexion.getConexion();
                 conn.Open();
                 string sql = "SELECT id, nombre, apellido FROM alumno ORDER BY apellido, nombre";
-                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
-                using (MySqlDataReader reader = cmd.ExecuteReader())
+                using MySqlCommand cmd = new(sql, conn);
+                using MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    while (reader.Read())
+                    Alumno alumno = new()
                     {
-                        Alumno alumno = new Alumno
-                        {
-                            Id = reader.GetInt32("id"),
-                            Nombre = reader.GetString("nombre"),
-                            Apellido = reader.GetString("apellido")
-                        };
-                        alumnos.Add(alumno);
-                    }
+                        Id = reader.GetInt32("id"),
+                        Nombre = reader.GetString("nombre"),
+                        Apellido = reader.GetString("apellido")
+                    };
+                    alumnos.Add(alumno);
                 }
             }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error en ListarAlumnos: " + ex.Message);
-        }
-
-        return alumnos;
-    }
-
-    public bool MarcarAsistencia(Asistencia asistencia)
-    {
-        if (asistencia == null) return false;
-
-        try
-        {
-            using (MySqlConnection conn = conexion.getConexion())
+            catch (Exception ex)
             {
+                Console.WriteLine("Error en ListarAlumnos: " + ex.Message);
+            }
+
+            return alumnos;
+        }
+
+        public bool MarcarAsistencia(Asistencia asistencia)
+        {
+            if (asistencia == null) return false;
+
+            try
+            {
+                using MySqlConnection conn = conexion.getConexion();
                 conn.Open();
 
                 // Verificar si ya existe el registro
@@ -65,7 +62,7 @@ public class ModeloAsistencia
                   AND actividad_orquestal = @actividadOrquestal";
 
                 int existe = 0;
-                using (MySqlCommand cmdVerificar = new MySqlCommand(sqlVerificar, conn))
+                using (MySqlCommand cmdVerificar = new(sqlVerificar, conn))
                 {
                     cmdVerificar.Parameters.AddWithValue("@idAlumno", asistencia.IdAlumno);
                     cmdVerificar.Parameters.AddWithValue("@fecha", asistencia.Fecha);
@@ -92,33 +89,29 @@ public class ModeloAsistencia
                     VALUES (@idAlumno, @fecha, @actividadOrquestal, @presente)";
                 }
 
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@idAlumno", asistencia.IdAlumno);
-                    cmd.Parameters.AddWithValue("@fecha", asistencia.Fecha);
-                    cmd.Parameters.AddWithValue("@actividadOrquestal", asistencia.TipoActividad.ToString());
-                    cmd.Parameters.AddWithValue("@presente", asistencia.Presente);
+                using MySqlCommand cmd = new(query, conn);
+                cmd.Parameters.AddWithValue("@idAlumno", asistencia.IdAlumno);
+                cmd.Parameters.AddWithValue("@fecha", asistencia.Fecha);
+                cmd.Parameters.AddWithValue("@actividadOrquestal", asistencia.TipoActividad.ToString());
+                cmd.Parameters.AddWithValue("@presente", asistencia.Presente);
 
-                    int filasAfectadas = cmd.ExecuteNonQuery();
-                    return filasAfectadas > 0;
-                }
+                int filasAfectadas = cmd.ExecuteNonQuery();
+                return filasAfectadas > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error en MarcarAsistencia: " + ex.Message);
+                return false;
             }
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error en MarcarAsistencia: " + ex.Message);
-            return false;
-        }
-    }
 
-    public double CalcularPorcentajeAsistencia(int idAlumno)
-    {
-        double porcentaje = 0;
-
-        try
+        public double CalcularPorcentajeAsistencia(int idAlumno)
         {
-            using (MySqlConnection conn = conexion.getConexion())
+            double porcentaje = 0;
+
+            try
             {
+                using MySqlConnection conn = conexion.getConexion();
                 conn.Open();
 
                 string sql = @"
@@ -128,87 +121,82 @@ public class ModeloAsistencia
                 FROM asistencia
                 WHERE id_alumno = @idAlumno";
 
-                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                using MySqlCommand cmd = new(sql, conn);
+                cmd.Parameters.AddWithValue("@idAlumno", idAlumno);
+                using MySqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
                 {
-                    cmd.Parameters.AddWithValue("@idAlumno", idAlumno);
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            int presentes = Convert.ToInt32(reader["cantidad_presentes"]);
-                            int total = Convert.ToInt32(reader["total"]);
+                    int presentes = Convert.ToInt32(reader["cantidad_presentes"]);
+                    int total = Convert.ToInt32(reader["total"]);
 
-                            if (total > 0)
-                                porcentaje = (double)presentes / total * 100;
-                        }
-                    }
+                    if (total > 0)
+                        porcentaje = (double)presentes / total * 100;
                 }
             }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error calculando porcentaje: " + ex.Message);
-        }
-
-        return Math.Round(porcentaje, 2);
-    }
-
-
-    public DataTable ObtenerTablaAsistencia()
-    {
-        DataTable tabla = new DataTable();
-
-        try
-        {
-            using (MySqlConnection conn = conexion.getConexion())
+            catch (Exception ex)
             {
-                conn.Open();
-                string sql = @"
+                Console.WriteLine("Error calculando porcentaje: " + ex.Message);
+            }
+
+            return Math.Round(porcentaje, 2);
+        }
+
+
+        public DataTable ObtenerTablaAsistencia()
+        {
+            DataTable tabla = new();
+
+            try
+            {
+                using (MySqlConnection conn = conexion.getConexion())
+                {
+                    conn.Open();
+
+                    // Consulta que agrupa instrumentos pero mantiene una fila por alumno
+                    string sql = @"
             SELECT 
                 a.id AS id_alumno,
                 a.nombre AS nombre_alumno,
                 a.apellido AS apellido_alumno,
-                i.nombre AS nombre_instrumento,
-                COALESCE(p.nombre, 'Sin asignar') AS nombre_profesor,
-                COALESCE(p.apellido, '') AS apellido_profesor
+                GROUP_CONCAT(DISTINCT i.nombre ORDER BY i.nombre SEPARATOR '\n') AS instrumentos,
+                GROUP_CONCAT(DISTINCT CONCAT(p.nombre, ' ', p.apellido) ORDER BY p.apellido SEPARATOR '\n') AS profesores,
+                COUNT(DISTINCT i.id) AS cantidad_instrumentos
             FROM alumno a
             LEFT JOIN alumno_instrumento ai ON a.id = ai.id_alumno
             LEFT JOIN instrumento_orquesta io ON ai.id_instrumento = io.id
             LEFT JOIN instrumento i ON io.id = i.id
             LEFT JOIN profesor p ON io.id = p.id_instrumento
+            GROUP BY a.id, a.nombre, a.apellido
             ORDER BY a.apellido, a.nombre";
 
-                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    using MySqlCommand cmd = new(sql, conn);
+                    using MySqlDataAdapter adapter = new(cmd);
+                    adapter.Fill(tabla);
+                }
+
+                // Agregar columna de porcentaje
+                tabla.Columns.Add("porcentaje_asistencia", typeof(double));
+
+                foreach (DataRow fila in tabla.Rows)
                 {
-                    using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
+                    try
                     {
-                        adapter.Fill(tabla);
+                        int idAlumno = Convert.ToInt32(fila["id_alumno"]);
+                        fila["porcentaje_asistencia"] = CalcularPorcentajeAsistencia(idAlumno);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error calculando porcentaje: {ex.Message}");
+                        fila["porcentaje_asistencia"] = 0;
                     }
                 }
             }
-
-            // Agregar columna de porcentaje
-            tabla.Columns.Add("porcentaje_asistencia", typeof(double));
-
-            foreach (DataRow fila in tabla.Rows)
+            catch (Exception ex)
             {
-                try
-                {
-                    int idAlumno = Convert.ToInt32(fila["id_alumno"]);
-                    fila["porcentaje_asistencia"] = CalcularPorcentajeAsistencia(idAlumno);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error calculando porcentaje: {ex.Message}");
-                    fila["porcentaje_asistencia"] = 0;
-                }
+                Console.WriteLine("Error en ObtenerTablaAsistencia: " + ex.Message);
             }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error en ObtenerTablaAsistencia: " + ex.Message);
-        }
 
-        return tabla;
+            return tabla;
+        }
     }
 }

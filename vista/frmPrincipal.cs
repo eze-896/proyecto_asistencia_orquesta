@@ -3,6 +3,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Data;
+using GUI_Login.control;
 
 namespace GUI_Login
 {
@@ -16,6 +17,7 @@ namespace GUI_Login
             InitializeComponent();
             controlAsistencia = new ControlAsistencia();
             datosOriginales = new DataTable();
+            dgwTablaAsistencia.CellFormatting += DgwTablaAsistencia_CellFormatting;
         }
 
         private void FrmPrincipal_Load(object sender, EventArgs e)
@@ -30,6 +32,7 @@ namespace GUI_Login
                 datosOriginales = controlAsistencia.ObtenerDatosParaGrid();
                 dgwTablaAsistencia.DataSource = datosOriginales;
                 ConfigurarGrid();
+                ConfigurarGridParaMultiplesLineas(); // Nueva función
                 AplicarColoresPorcentaje();
             }
             catch (Exception ex)
@@ -43,77 +46,129 @@ namespace GUI_Login
         {
             dgwTablaAsistencia.ClearSelection();
 
-            // Ocultar columna ID
+            // Ocultar columnas que no queremos mostrar
             if (dgwTablaAsistencia.Columns.Contains("id_alumno"))
                 dgwTablaAsistencia.Columns["id_alumno"].Visible = false;
 
-            // Configurar headers con nombres más cortos y claros
+            if (dgwTablaAsistencia.Columns.Contains("cantidad_instrumentos"))
+                dgwTablaAsistencia.Columns["cantidad_instrumentos"].Visible = false;
+
+            // Configurar headers
             if (dgwTablaAsistencia.Columns.Contains("nombre_alumno"))
-                dgwTablaAsistencia.Columns["nombre_alumno"].HeaderText = "Alumno";
+                dgwTablaAsistencia.Columns["nombre_alumno"].HeaderText = "Nombre";
 
             if (dgwTablaAsistencia.Columns.Contains("apellido_alumno"))
                 dgwTablaAsistencia.Columns["apellido_alumno"].HeaderText = "Apellido";
 
-            if (dgwTablaAsistencia.Columns.Contains("nombre_instrumento"))
-                dgwTablaAsistencia.Columns["nombre_instrumento"].HeaderText = "Instrumento";
+            if (dgwTablaAsistencia.Columns.Contains("instrumentos"))
+                dgwTablaAsistencia.Columns["instrumentos"].HeaderText = "Instrumentos";
 
-            if (dgwTablaAsistencia.Columns.Contains("nombre_profesor"))
-                dgwTablaAsistencia.Columns["nombre_profesor"].HeaderText = "Profesor";
-
-            if (dgwTablaAsistencia.Columns.Contains("apellido_profesor"))
-                dgwTablaAsistencia.Columns["apellido_profesor"].HeaderText = "Apellido P.";
+            if (dgwTablaAsistencia.Columns.Contains("profesores"))
+                dgwTablaAsistencia.Columns["profesores"].HeaderText = "Profesores";
 
             if (dgwTablaAsistencia.Columns.Contains("porcentaje_asistencia"))
-                dgwTablaAsistencia.Columns["porcentaje_asistencia"].HeaderText = "% Asistencia";
+            {
+                dgwTablaAsistencia.Columns["porcentaje_asistencia"].HeaderText = "%Asistencia";
+                // ⚠️ IMPORTANTE: Formatear la celda para mostrar el símbolo %
+                dgwTablaAsistencia.Columns["porcentaje_asistencia"].DefaultCellStyle.Format = "0.00'%'";
+            }
 
-            if (dgwTablaAsistencia.Columns.Contains("apellido_profesor"))
-                dgwTablaAsistencia.Columns["apellido_profesor"].FillWeight = 80;
+            // Ajustar anchos de columnas
+            if (dgwTablaAsistencia.Columns.Contains("nombre_alumno"))
+                dgwTablaAsistencia.Columns["nombre_alumno"].FillWeight = 100;
 
-            if (dgwTablaAsistencia.Columns.Contains("nombre_profesor"))
-                dgwTablaAsistencia.Columns["nombre_profesor"].FillWeight = 100;
+            if (dgwTablaAsistencia.Columns.Contains("apellido_alumno"))
+                dgwTablaAsistencia.Columns["apellido_alumno"].FillWeight = 100;
+
+            if (dgwTablaAsistencia.Columns.Contains("instrumentos"))
+                dgwTablaAsistencia.Columns["instrumentos"].FillWeight = 150;
+
+            if (dgwTablaAsistencia.Columns.Contains("profesores"))
+                dgwTablaAsistencia.Columns["profesores"].FillWeight = 150;
 
             if (dgwTablaAsistencia.Columns.Contains("porcentaje_asistencia"))
-                dgwTablaAsistencia.Columns["porcentaje_asistencia"].FillWeight = 90;
+                dgwTablaAsistencia.Columns["porcentaje_asistencia"].FillWeight = 80;
+        }
+
+        private void ConfigurarGridParaMultiplesLineas()
+        {
+            // Permitir múltiples líneas en las celdas
+            dgwTablaAsistencia.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+
+            // Autoajustar altura de filas según el contenido
+            dgwTablaAsistencia.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+
+            // Configurar altura mínima de filas para que se vean bien los saltos de línea
+            dgwTablaAsistencia.RowTemplate.MinimumHeight = 40;
+
+            // Configurar específicamente las columnas que tendrán múltiples líneas
+            if (dgwTablaAsistencia.Columns.Contains("instrumentos"))
+            {
+                dgwTablaAsistencia.Columns["instrumentos"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                // Opcional: Centrar verticalmente el contenido
+                dgwTablaAsistencia.Columns["instrumentos"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            }
+
+            if (dgwTablaAsistencia.Columns.Contains("profesores"))
+            {
+                dgwTablaAsistencia.Columns["profesores"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                dgwTablaAsistencia.Columns["profesores"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            }
+
+            // Configurar la columna de porcentaje para que esté centrada
+            if (dgwTablaAsistencia.Columns.Contains("porcentaje_asistencia"))
+            {
+                dgwTablaAsistencia.Columns["porcentaje_asistencia"].DefaultCellStyle.Alignment =
+                    DataGridViewContentAlignment.MiddleCenter;
+            }
         }
 
         private void AplicarColoresPorcentaje()
         {
             foreach (DataGridViewRow fila in dgwTablaAsistencia.Rows)
             {
+                // Aplicar color base alternado para mejor legibilidad
+                if (fila.Index % 2 == 0)
+                {
+                    fila.DefaultCellStyle.BackColor = Color.White;
+                }
+                else
+                {
+                    fila.DefaultCellStyle.BackColor = Color.FromArgb(248, 248, 252);
+                }
+
+                fila.DefaultCellStyle.ForeColor = Color.FromArgb(64, 64, 64);
+
+                // Aplicar color específico a la celda de porcentaje según el valor
                 if (fila.Cells["porcentaje_asistencia"].Value != null &&
                     fila.Cells["porcentaje_asistencia"].Value != DBNull.Value)
                 {
                     double porcentaje = Convert.ToDouble(fila.Cells["porcentaje_asistencia"].Value);
 
-                    // Colores más suaves y texto oscuro para mejor legibilidad
+                    Color colorPorcentaje;
+                    Color colorTexto;
+
                     if (porcentaje >= 80)
                     {
-                        fila.DefaultCellStyle.BackColor = Color.FromArgb(220, 255, 220); // Verde muy claro
-                        fila.DefaultCellStyle.ForeColor = Color.FromArgb(0, 80, 0); // Verde oscuro para texto
+                        colorPorcentaje = Color.FromArgb(220, 255, 220); // Verde claro
+                        colorTexto = Color.FromArgb(0, 100, 0); // Verde oscuro
                     }
                     else if (porcentaje >= 50)
                     {
-                        fila.DefaultCellStyle.BackColor = Color.FromArgb(255, 255, 200); // Amarillo claro
-                        fila.DefaultCellStyle.ForeColor = Color.FromArgb(102, 77, 0); // Marrón oscuro para texto
+                        colorPorcentaje = Color.FromArgb(255, 255, 200); // Amarillo claro
+                        colorTexto = Color.FromArgb(102, 77, 0); // Marrón
                     }
                     else
                     {
-                        fila.DefaultCellStyle.BackColor = Color.FromArgb(255, 220, 220); // Rojo muy claro
-                        fila.DefaultCellStyle.ForeColor = Color.FromArgb(120, 0, 0); // Rojo oscuro para texto
+                        colorPorcentaje = Color.FromArgb(255, 220, 220); // Rojo claro
+                        colorTexto = Color.FromArgb(120, 0, 0); // Rojo oscuro
                     }
 
-                    // Formatear el porcentaje para mostrar 2 decimales
-                    if (fila.Cells["porcentaje_asistencia"].Value != null)
-                    {
-                        fila.Cells["porcentaje_asistencia"].Value =
-                            Math.Round(Convert.ToDouble(fila.Cells["porcentaje_asistencia"].Value), 2);
-                    }
-                }
-                else
-                {
-                    // Para filas sin porcentaje, usar colores neutros
-                    fila.DefaultCellStyle.BackColor = Color.White;
-                    fila.DefaultCellStyle.ForeColor = Color.FromArgb(64, 64, 64);
+                    // Aplicar solo a la celda de porcentaje
+                    fila.Cells["porcentaje_asistencia"].Style.BackColor = colorPorcentaje;
+                    fila.Cells["porcentaje_asistencia"].Style.ForeColor = colorTexto;
+                    fila.Cells["porcentaje_asistencia"].Style.Font =
+                        new Font(dgwTablaAsistencia.Font, FontStyle.Bold);
                 }
             }
         }
@@ -123,16 +178,29 @@ namespace GUI_Login
             AplicarColoresPorcentaje();
         }
 
+        private void DgwTablaAsistencia_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
+        {
+            // Mostrar tooltip con el contenido completo cuando hay muchas líneas
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                var cell = dgwTablaAsistencia.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                if (cell.Value != null)
+                {
+                    cell.ToolTipText = cell.Value.ToString();
+                }
+            }
+        }
+
         private void MenuAlumnos_Click(object sender, EventArgs e)
         {
-            frmAgregarAlumnos formAlumnos = new();
+            FrmAgregarAlumnos formAlumnos = new();
             formAlumnos.Show();
             this.Hide();
         }
 
         private void MenuProfesor_Click(object sender, EventArgs e)
         {
-            frmAgregarProfesores formProfesores = new ();
+            FrmAgregarProfesores formProfesores = new ();
             formProfesores.Show();
             this.Hide();
         }
@@ -146,7 +214,7 @@ namespace GUI_Login
 
         private void MenuAsistencia_Click(object sender, EventArgs e)
         {
-            frmAgregarAsistencia formAsistencia = new ();
+            FrmAgregarAsistencia formAsistencia = new ();
             formAsistencia.Show();
             this.Hide();
         }
@@ -165,14 +233,14 @@ namespace GUI_Login
 
         private void MenuListadoProfesores_Click(object sender, EventArgs e)
         {
-            frmListadoProfesores formListadoProfesores = new ();
+            FrmListadoProfesores formListadoProfesores = new ();
             formListadoProfesores.Show();
             this.Hide();
         }
 
         private void MenuModificarAlumnos_Click(object sender, EventArgs e)
         {
-            frmModificarAlumnos formModificarAlumnos = new ();
+            FrmModificarAlumnos formModificarAlumnos = new ();
             formModificarAlumnos.Show();
             this.Hide();
         }
@@ -186,21 +254,21 @@ namespace GUI_Login
 
         private void MenuModificarProfesores_Click(object sender, EventArgs e)
         {
-            frmModificarProfesores formModificarProfesores = new ();
+            FrmModificarProfesores formModificarProfesores = new ();
             formModificarProfesores.Show();
             this.Hide();
         }
 
         private void MenuEliminarProfesores_Click(object sender, EventArgs e)
         {
-            frmEliminarProfesores formEliminarProfesores = new ();
+            FrmEliminarProfesores formEliminarProfesores = new ();
             formEliminarProfesores.Show();
             this.Hide();
         }
 
         private void MenuEliminarInstrumentos_Click(object sender, EventArgs e)
         {
-            frmEliminarInstrumento formEliminarInstrumentos = new ();
+            FrmEliminarInstrumento formEliminarInstrumentos = new ();
             formEliminarInstrumentos.Show();
             this.Hide();
         }

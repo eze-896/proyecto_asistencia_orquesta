@@ -75,16 +75,16 @@ namespace GUI_Login
                     Nombre = usuario
                 };
                 ControlSesion cs = new ();
-                nuevoUser.Contrasena = cs.generarSHA1(pass); // Guardar encriptado
+                nuevoUser.Contrasena = ControlSesion.GenerarSHA1(pass); // Guardar encriptado
 
                 // Guardar en BD
                 ModeloSesion modelo = new ();
-                if (modelo.registrarUsuario(nuevoUser))
+                if (ModeloSesion.RegistrarUsuario(nuevoUser))
                 {
                     MessageBox.Show("Usuario registrado con éxito", "Registro",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    Login login = new ();
+                    Login login = new();
                     this.Visible = false;
                     login.Show();
                 }

@@ -81,7 +81,7 @@
             btnSalir.TabIndex = 2;
             btnSalir.Text = "×";
             btnSalir.UseVisualStyleBackColor = false;
-            btnSalir.Click += btnSalir_Click;
+            btnSalir.Click += BtnSalir_Click;
             // 
             // lblTitulo
             // 
@@ -145,7 +145,7 @@
             btnVolver.TabIndex = 2;
             btnVolver.Text = "VOLVER";
             btnVolver.UseVisualStyleBackColor = false;
-            btnVolver.Click += btnVolver_Click;
+            btnVolver.Click += BtnVolver_Click;
             // 
             // btnIngresar
             // 
@@ -161,7 +161,7 @@
             btnIngresar.TabIndex = 1;
             btnIngresar.Text = "INGRESAR";
             btnIngresar.UseVisualStyleBackColor = false;
-            btnIngresar.Click += btnIngresar_Click;
+            btnIngresar.Click += BtnIngresar_Click;
             // 
             // label1
             // 
@@ -188,7 +188,7 @@
             Name = "frmAgregarInstrumentos";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Agregar Instrumentos";
-            Load += frmAgregarInstrumentos_Load;
+            Load += FrmAgregarInstrumentos_Load;
             panelHeader.ResumeLayout(false);
             panelHeader.PerformLayout();
             panelMain.ResumeLayout(false);

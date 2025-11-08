@@ -1,6 +1,6 @@
 ﻿namespace GUI_Login.vista
 {
-    partial class frmListadoProfesores
+    partial class FrmListadoProfesores
     {
         private System.ComponentModel.IContainer components = null;
         private Panel panelHeader;

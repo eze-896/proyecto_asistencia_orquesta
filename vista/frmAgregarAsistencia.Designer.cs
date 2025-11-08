@@ -1,6 +1,6 @@
 ﻿namespace GUI_Login.vista
 {
-    partial class frmAgregarAsistencia
+    partial class FrmAgregarAsistencia
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmAgregarAsistencia));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmAgregarAsistencia));
             this.panelHeader = new System.Windows.Forms.Panel();
             this.lblTitulo = new System.Windows.Forms.Label();
             this.lblSubtitulo = new System.Windows.Forms.Label();
@@ -102,7 +102,7 @@
             this.btnSalir.TabIndex = 1;
             this.btnSalir.Text = "×";
             this.btnSalir.UseVisualStyleBackColor = false;
-            this.btnSalir.Click += new System.EventHandler(this.btnSalir_Click);
+            this.btnSalir.Click += new System.EventHandler(this.BtnSalir_Click);
 
             // 
             // panelMain
@@ -152,7 +152,7 @@
             this.btnVolver.TabIndex = 4;
             this.btnVolver.Text = "← VOLVER AL PRINCIPAL";
             this.btnVolver.UseVisualStyleBackColor = false;
-            this.btnVolver.Click += new System.EventHandler(this.btnVolver_Click);
+            this.btnVolver.Click += new System.EventHandler(this.BtnVolver_Click);
 
             // 
             // btnGuardar
@@ -170,7 +170,7 @@
             this.btnGuardar.TabIndex = 3;
             this.btnGuardar.Text = "💾 GUARDAR ASISTENCIAS";
             this.btnGuardar.UseVisualStyleBackColor = false;
-            this.btnGuardar.Click += new System.EventHandler(this.btnGuardar_Click);
+            this.btnGuardar.Click += new System.EventHandler(this.BtnGuardar_Click);
 
             // 
             // chkListaAlumnos
@@ -279,8 +279,8 @@
             this.Name = "frmAgregarAsistencia";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Control de Asistencias";
-            this.Load += new System.EventHandler(this.frmAgregarAsistencia_Load);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmAgregarAsistencia_KeyDown);
+            this.Load += new System.EventHandler(this.FrmAgregarAsistencia_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmAgregarAsistencia_KeyDown);
             this.panelHeader.ResumeLayout(false);
             this.panelHeader.PerformLayout();
             this.panelMain.ResumeLayout(false);

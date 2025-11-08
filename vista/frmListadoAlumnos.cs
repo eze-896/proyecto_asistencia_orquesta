@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GUI_Login.control;
+using System;
 using System.Data;
 using System.Windows.Forms;
 

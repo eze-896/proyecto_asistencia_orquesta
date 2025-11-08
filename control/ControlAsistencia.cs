@@ -1,81 +1,85 @@
-﻿using System;
+﻿using GUI_Login.modelo;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
-public class ControlAsistencia
+namespace GUI_Login.control
 {
-    private ModeloAsistencia modeloAsistencia;
-
-    public ControlAsistencia()
+    public class ControlAsistencia
     {
-        modeloAsistencia = new ModeloAsistencia();
-    }
+        private readonly ModeloAsistencia modeloAsistencia;
 
-    public List<Alumno> ObtenerAlumnos()
-    {
-        try
+        public ControlAsistencia()
         {
-            return modeloAsistencia.ListarAlumnos();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error en ObtenerAlumnos: " + ex.Message);
-            return new List<Alumno>();
-        }
-    }
-
-    public bool GuardarAsistencias(List<Asistencia> asistencias)
-    {
-        if (asistencias == null || asistencias.Count == 0)
-        {
-            Console.WriteLine("Lista de asistencias vacía");
-            return false;
+            modeloAsistencia = new ModeloAsistencia();
         }
 
-        bool todosGuardados = true;
-
-        foreach (Asistencia a in asistencias)
+        public List<Alumno> ObtenerAlumnos()
         {
             try
             {
-                if (a == null || !ValidarAsistencia(a))
-                {
-                    todosGuardados = false;
-                    continue;
-                }
-
-                // 🔹 Ahora guardamos tanto presentes como ausentes
-                bool ok = modeloAsistencia.MarcarAsistencia(a);
-                if (!ok) todosGuardados = false;
+                return modeloAsistencia.ListarAlumnos();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error guardando asistencia: {ex.Message}");
-                todosGuardados = false;
+                Console.WriteLine("Error en ObtenerAlumnos: " + ex.Message);
+                return [];
             }
         }
 
-        return todosGuardados;
-    }
-
-
-    private bool ValidarAsistencia(Asistencia asistencia)
-    {
-        return asistencia.IdAlumno > 0 &&
-               asistencia.Fecha != DateTime.MinValue &&
-               Enum.IsDefined(typeof(Asistencia.Tipo_Actividad), asistencia.TipoActividad);
-    }
-
-    public DataTable ObtenerDatosParaGrid()
-    {
-        try
+        public bool GuardarAsistencias(List<Asistencia> asistencias)
         {
-            return modeloAsistencia.ObtenerTablaAsistencia();
+            if (asistencias == null || asistencias.Count == 0)
+            {
+                Console.WriteLine("Lista de asistencias vacía");
+                return false;
+            }
+
+            bool todosGuardados = true;
+
+            foreach (Asistencia a in asistencias)
+            {
+                try
+                {
+                    if (a == null || !ValidarAsistencia(a))
+                    {
+                        todosGuardados = false;
+                        continue;
+                    }
+
+                    // 🔹 Ahora guardamos tanto presentes como ausentes
+                    bool ok = modeloAsistencia.MarcarAsistencia(a);
+                    if (!ok) todosGuardados = false;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error guardando asistencia: {ex.Message}");
+                    todosGuardados = false;
+                }
+            }
+
+            return todosGuardados;
         }
-        catch (Exception ex)
+
+
+        private static bool ValidarAsistencia(Asistencia asistencia)
         {
-            Console.WriteLine("Error en ObtenerDatosParaGrid: " + ex.Message);
-            return new DataTable();
+            return asistencia.IdAlumno > 0 &&
+                   asistencia.Fecha != DateTime.MinValue &&
+                   Enum.IsDefined(typeof(Asistencia.Tipo_Actividad), asistencia.TipoActividad);
+        }
+
+        public DataTable ObtenerDatosParaGrid()
+        {
+            try
+            {
+                return modeloAsistencia.ObtenerTablaAsistencia();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error en ObtenerDatosParaGrid: " + ex.Message);
+                return new DataTable();
+            }
         }
     }
 }
