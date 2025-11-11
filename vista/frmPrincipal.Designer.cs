@@ -54,6 +54,7 @@
             lblTitulo = new Label();
             panelMain = new Panel();
             panelGrid = new Panel();
+            txtBuscar = new TextBox();
             lblGridTitle = new Label();
             dgwTablaAsistencia = new DataGridView();
             menuStrip1.SuspendLayout();
@@ -280,6 +281,7 @@
             // panelGrid
             // 
             panelGrid.BackColor = Color.White;
+            panelGrid.Controls.Add(txtBuscar);
             panelGrid.Controls.Add(lblGridTitle);
             panelGrid.Controls.Add(dgwTablaAsistencia);
             panelGrid.Dock = DockStyle.Fill;
@@ -288,6 +290,18 @@
             panelGrid.Padding = new Padding(20);
             panelGrid.Size = new Size(840, 492);
             panelGrid.TabIndex = 1;
+            // 
+            // txtBuscar
+            // 
+            txtBuscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            txtBuscar.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtBuscar.ForeColor = Color.FromArgb(64, 64, 64);
+            txtBuscar.Location = new Point(500, 25);
+            txtBuscar.Name = "txtBuscar";
+            txtBuscar.PlaceholderText = "🔍 Buscar alumno...";
+            txtBuscar.Size = new Size(315, 25);
+            txtBuscar.TabIndex = 2;
+            txtBuscar.TextChanged += TxtBuscar_TextChanged;
             // 
             // lblGridTitle
             // 
@@ -305,6 +319,7 @@
             dgwTablaAsistencia.AllowUserToAddRows = false;
             dgwTablaAsistencia.AllowUserToDeleteRows = false;
             dgwTablaAsistencia.AllowUserToResizeRows = false;
+            dgwTablaAsistencia.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgwTablaAsistencia.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgwTablaAsistencia.BackgroundColor = Color.White;
             dgwTablaAsistencia.BorderStyle = BorderStyle.None;
@@ -328,7 +343,7 @@
             dataGridViewCellStyle2.Padding = new Padding(8);
             dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(230, 225, 245);
             dataGridViewCellStyle2.SelectionForeColor = Color.Black;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
             dgwTablaAsistencia.DefaultCellStyle = dataGridViewCellStyle2;
             dgwTablaAsistencia.EnableHeadersVisualStyles = false;
             dgwTablaAsistencia.GridColor = Color.FromArgb(240, 240, 240);
@@ -345,12 +360,13 @@
             dgwTablaAsistencia.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dgwTablaAsistencia.RowHeadersVisible = false;
             dgwTablaAsistencia.RowTemplate.Height = 40;
+            dgwTablaAsistencia.ScrollBars = ScrollBars.Both;
             dgwTablaAsistencia.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgwTablaAsistencia.Size = new Size(790, 400);
+            dgwTablaAsistencia.Size = new Size(790, 402);
             dgwTablaAsistencia.TabIndex = 0;
             dgwTablaAsistencia.Sorted += DgwTablaAsistencia_Sorted;
             // 
-            // frmPrincipal
+            // FrmPrincipal
             // 
             AutoScaleDimensions = new SizeF(9F, 21F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -363,7 +379,7 @@
             ForeColor = Color.FromArgb(164, 165, 169);
             FormBorderStyle = FormBorderStyle.None;
             MainMenuStrip = menuStrip1;
-            Name = "frmPrincipal";
+            Name = "FrmPrincipal";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Sistema de Gestión Orquestal";
             Load += FrmPrincipal_Load;
@@ -407,5 +423,6 @@
         private Panel panelGrid;
         private Label lblGridTitle;
         private DataGridView dgwTablaAsistencia;
+        private TextBox txtBuscar;
     }
 }

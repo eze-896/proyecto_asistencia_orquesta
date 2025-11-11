@@ -23,6 +23,7 @@ namespace GUI_Login
         private void FrmPrincipal_Load(object sender, EventArgs e)
         {
             CargarTablaAsistencia();
+            ConfigurarRendimientoGrid();
         }
 
         private void CargarTablaAsistencia()
@@ -32,7 +33,7 @@ namespace GUI_Login
                 datosOriginales = controlAsistencia.ObtenerDatosParaGrid();
                 dgwTablaAsistencia.DataSource = datosOriginales;
                 ConfigurarGrid();
-                ConfigurarGridParaMultiplesLineas(); // Nueva función
+                ConfigurarGridParaMultiplesLineas();
                 AplicarColoresPorcentaje();
             }
             catch (Exception ex)
@@ -45,6 +46,12 @@ namespace GUI_Login
         private void ConfigurarGrid()
         {
             dgwTablaAsistencia.ClearSelection();
+
+            // Configuración del scroll
+            dgwTablaAsistencia.ScrollBars = ScrollBars.Both;
+
+            // Mejorar el rendimiento con muchas filas
+            dgwTablaAsistencia.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
 
             // Ocultar columnas que no queremos mostrar
             if (dgwTablaAsistencia.Columns.Contains("id_alumno"))
@@ -69,7 +76,6 @@ namespace GUI_Login
             if (dgwTablaAsistencia.Columns.Contains("porcentaje_asistencia"))
             {
                 dgwTablaAsistencia.Columns["porcentaje_asistencia"].HeaderText = "%Asistencia";
-                // ⚠️ IMPORTANTE: Formatear la celda para mostrar el símbolo %
                 dgwTablaAsistencia.Columns["porcentaje_asistencia"].DefaultCellStyle.Format = "0.00'%'";
             }
 
@@ -105,7 +111,6 @@ namespace GUI_Login
             if (dgwTablaAsistencia.Columns.Contains("instrumentos"))
             {
                 dgwTablaAsistencia.Columns["instrumentos"].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                // Opcional: Centrar verticalmente el contenido
                 dgwTablaAsistencia.Columns["instrumentos"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             }
 
@@ -121,6 +126,12 @@ namespace GUI_Login
                 dgwTablaAsistencia.Columns["porcentaje_asistencia"].DefaultCellStyle.Alignment =
                     DataGridViewContentAlignment.MiddleCenter;
             }
+        }
+
+        private void ConfigurarRendimientoGrid()
+        {
+            // Mejorar rendimiento con muchos datos usando el método corregido
+            SetDoubleBuffered(dgwTablaAsistencia);
         }
 
         private void AplicarColoresPorcentaje()
@@ -191,6 +202,41 @@ namespace GUI_Login
             }
         }
 
+        private void TxtBuscar_TextChanged(object? sender, EventArgs e)
+        {
+            if (sender is TextBox txtBuscar)
+            {
+                string filtro = txtBuscar.Text.Trim();
+
+                if (string.IsNullOrEmpty(filtro))
+                {
+                    dgwTablaAsistencia.DataSource = datosOriginales;
+                }
+                else
+                {
+                    DataView vista = new(datosOriginales);
+                    vista.RowFilter = $"nombre_alumno LIKE '%{filtro}%' OR apellido_alumno LIKE '%{filtro}%' OR instrumentos LIKE '%{filtro}%'";
+                    dgwTablaAsistencia.DataSource = vista;
+                }
+
+                AplicarColoresPorcentaje();
+            }
+        }
+
+        // Método corregido para DoubleBuffered - usando un nombre diferente
+        private static void SetDoubleBuffered(DataGridView dgv)
+        {
+            Type dgvType = dgv.GetType();
+            System.Reflection.PropertyInfo? pi = dgvType.GetProperty("DoubleBuffered",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+
+            if (pi != null)
+            {
+                pi.SetValue(dgv, true, null);
+            }
+        }
+
+        #region Métodos de Navegación
         private void MenuAlumnos_Click(object sender, EventArgs e)
         {
             FrmAgregarAlumnos formAlumnos = new();
@@ -200,21 +246,21 @@ namespace GUI_Login
 
         private void MenuProfesor_Click(object sender, EventArgs e)
         {
-            FrmAgregarProfesores formProfesores = new ();
+            FrmAgregarProfesores formProfesores = new();
             formProfesores.Show();
             this.Hide();
         }
 
         private void MenuInstrumentos_Click(object sender, EventArgs e)
         {
-            frmAgregarInstrumentos formInstrumentos = new ();
+            frmAgregarInstrumentos formInstrumentos = new();
             formInstrumentos.Show();
             this.Hide();
         }
 
         private void MenuAsistencia_Click(object sender, EventArgs e)
         {
-            FrmAgregarAsistencia formAsistencia = new ();
+            FrmAgregarAsistencia formAsistencia = new();
             formAsistencia.Show();
             this.Hide();
         }
@@ -226,51 +272,52 @@ namespace GUI_Login
 
         private void MenuListadoAlumnos_Click(object sender, EventArgs e)
         {
-            FrmListadoAlumnos formListadoAlumnos = new ();
+            FrmListadoAlumnos formListadoAlumnos = new();
             formListadoAlumnos.Show();
             this.Hide();
         }
 
         private void MenuListadoProfesores_Click(object sender, EventArgs e)
         {
-            FrmListadoProfesores formListadoProfesores = new ();
+            FrmListadoProfesores formListadoProfesores = new();
             formListadoProfesores.Show();
             this.Hide();
         }
 
         private void MenuModificarAlumnos_Click(object sender, EventArgs e)
         {
-            FrmModificarAlumnos formModificarAlumnos = new ();
+            FrmModificarAlumnos formModificarAlumnos = new();
             formModificarAlumnos.Show();
             this.Hide();
         }
 
         private void MenuEliminarAlumnos_Click(object sender, EventArgs e)
         {
-            frmEliminarAlumnos formEliminarAlumnos = new ();
+            frmEliminarAlumnos formEliminarAlumnos = new();
             formEliminarAlumnos.Show();
             this.Hide();
         }
 
         private void MenuModificarProfesores_Click(object sender, EventArgs e)
         {
-            FrmModificarProfesores formModificarProfesores = new ();
+            FrmModificarProfesores formModificarProfesores = new();
             formModificarProfesores.Show();
             this.Hide();
         }
 
         private void MenuEliminarProfesores_Click(object sender, EventArgs e)
         {
-            FrmEliminarProfesores formEliminarProfesores = new ();
+            FrmEliminarProfesores formEliminarProfesores = new();
             formEliminarProfesores.Show();
             this.Hide();
         }
 
         private void MenuEliminarInstrumentos_Click(object sender, EventArgs e)
         {
-            FrmEliminarInstrumento formEliminarInstrumentos = new ();
+            FrmEliminarInstrumento formEliminarInstrumentos = new();
             formEliminarInstrumentos.Show();
             this.Hide();
         }
+        #endregion
     }
 }

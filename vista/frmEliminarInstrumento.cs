@@ -121,7 +121,10 @@ namespace GUI_Login.vista
 
         private void BtnVolver_Click(object sender, EventArgs e)
         {
-            this.Close(); // Cierra este formulario y vuelve al principal
+            // Cierra este formulario y vuelve al principal
+            this.Close();
+            FrmPrincipal formPrincipal = new ();
+            formPrincipal.Show();
         }
 
         private void BtnSalir_Click(object sender, EventArgs e)
