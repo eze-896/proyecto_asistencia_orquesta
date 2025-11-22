@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using MySql.Data.MySqlClient;
+using System.Windows.Forms;
 
 namespace GUI_Login.modelo
 {
@@ -14,9 +15,11 @@ namespace GUI_Login.modelo
             conexion = new Conexion();
         }
 
+        // ==================== CONSULTAS DE ALUMNOS ====================
+
         public List<Alumno> ListarAlumnos()
         {
-            List<Alumno> alumnos = [];
+            List<Alumno> alumnos = new List<Alumno>();
 
             try
             {
@@ -38,56 +41,33 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error en ListarAlumnos: " + ex.Message);
+                // CORREGIDO: Lanzar excepción en lugar de MessageBox
+                throw new Exception($"Error al obtener lista de alumnos: {ex.Message}");
             }
 
             return alumnos;
         }
 
+        // ==================== OPERACIONES CRUD ====================
+
         public bool MarcarAsistencia(Asistencia asistencia)
         {
-            if (asistencia == null) return false;
+            if (asistencia == null)
+            {
+                // CORREGIDO: Lanzar excepción en lugar de MessageBox
+                throw new ArgumentNullException(nameof(asistencia), "Los datos de asistencia no pueden ser nulos.");
+            }
 
             try
             {
                 using MySqlConnection conn = conexion.getConexion();
                 conn.Open();
 
-                // Verificar si ya existe el registro
-                string sqlVerificar = @"
-                SELECT COUNT(*) 
-                FROM asistencia
-                WHERE id_alumno = @idAlumno 
-                  AND DATE(fecha) = DATE(@fecha)
-                  AND actividad_orquestal = @actividadOrquestal";
-
-                int existe = 0;
-                using (MySqlCommand cmdVerificar = new(sqlVerificar, conn))
-                {
-                    cmdVerificar.Parameters.AddWithValue("@idAlumno", asistencia.IdAlumno);
-                    cmdVerificar.Parameters.AddWithValue("@fecha", asistencia.Fecha);
-                    cmdVerificar.Parameters.AddWithValue("@actividadOrquestal", asistencia.TipoActividad.ToString());
-
-                    object resultado = cmdVerificar.ExecuteScalar();
-                    existe = resultado != null ? Convert.ToInt32(resultado) : 0;
-                }
-
-                string query;
-                if (existe > 0)
-                {
-                    query = @"
-                    UPDATE asistencia
-                    SET presente = @presente
-                    WHERE id_alumno = @idAlumno 
-                      AND DATE(fecha) = DATE(@fecha)
-                      AND actividad_orquestal = @actividadOrquestal";
-                }
-                else
-                {
-                    query = @"
-                    INSERT INTO asistencia (id_alumno, fecha, actividad_orquestal, presente)
-                    VALUES (@idAlumno, @fecha, @actividadOrquestal, @presente)";
-                }
+                // CORREGIDO: Usar INSERT ON DUPLICATE KEY UPDATE para simplificar
+                string query = @"
+                INSERT INTO asistencia (id_alumno, fecha, actividad_orquestal, presente)
+                VALUES (@idAlumno, @fecha, @actividadOrquestal, @presente)
+                ON DUPLICATE KEY UPDATE presente = @presente";
 
                 using MySqlCommand cmd = new(query, conn);
                 cmd.Parameters.AddWithValue("@idAlumno", asistencia.IdAlumno);
@@ -100,10 +80,12 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error en MarcarAsistencia: " + ex.Message);
-                return false;
+                // CORREGIDO: Lanzar excepción en lugar de MessageBox
+                throw new Exception($"Error al marcar asistencia: {ex.Message}");
             }
         }
+
+        // ==================== CÁLCULOS Y ESTADÍSTICAS ====================
 
         public double CalcularPorcentajeAsistencia(int idAlumno)
         {
@@ -135,16 +117,18 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error calculando porcentaje: " + ex.Message);
+                // CORREGIDO: Lanzar excepción en lugar de MessageBox
+                throw new Exception($"Error calculando porcentaje de asistencia: {ex.Message}");
             }
 
             return Math.Round(porcentaje, 2);
         }
 
+        // ==================== CONSULTAS PARA REPORTES ====================
 
         public DataTable ObtenerTablaAsistencia()
         {
-            DataTable tabla = new();
+            DataTable tabla = new DataTable();
 
             try
             {
@@ -152,22 +136,21 @@ namespace GUI_Login.modelo
                 {
                     conn.Open();
 
-                    // Consulta que agrupa instrumentos pero mantiene una fila por alumno
+                    // CORREGIDO: Query optimizada sin cantidad_instrumentos
                     string sql = @"
-            SELECT 
-                a.id AS id_alumno,
-                a.nombre AS nombre_alumno,
-                a.apellido AS apellido_alumno,
-                GROUP_CONCAT(DISTINCT i.nombre ORDER BY i.nombre SEPARATOR '\n') AS instrumentos,
-                GROUP_CONCAT(DISTINCT CONCAT(p.nombre, ' ', p.apellido) ORDER BY p.apellido SEPARATOR '\n') AS profesores,
-                COUNT(DISTINCT i.id) AS cantidad_instrumentos
-            FROM alumno a
-            LEFT JOIN alumno_instrumento ai ON a.id = ai.id_alumno
-            LEFT JOIN instrumento_orquesta io ON ai.id_instrumento = io.id
-            LEFT JOIN instrumento i ON io.id = i.id
-            LEFT JOIN profesor p ON io.id = p.id_instrumento
-            GROUP BY a.id, a.nombre, a.apellido
-            ORDER BY a.apellido, a.nombre";
+                    SELECT 
+                        a.id AS id_alumno,
+                        a.nombre AS nombre_alumno,
+                        a.apellido AS apellido_alumno,
+                        GROUP_CONCAT(DISTINCT i.nombre ORDER BY i.nombre SEPARATOR '\n') AS instrumentos,
+                        GROUP_CONCAT(DISTINCT CONCAT(p.nombre, ' ', p.apellido) ORDER BY p.apellido SEPARATOR '\n') AS profesores
+                    FROM alumno a
+                    LEFT JOIN alumno_instrumento ai ON a.id = ai.id_alumno
+                    LEFT JOIN instrumento_orquesta io ON ai.id_instrumento = io.id
+                    LEFT JOIN instrumento i ON io.id = i.id
+                    LEFT JOIN profesor p ON io.id = p.id_instrumento
+                    GROUP BY a.id, a.nombre, a.apellido
+                    ORDER BY a.apellido, a.nombre";
 
                     using MySqlCommand cmd = new(sql, conn);
                     using MySqlDataAdapter adapter = new(cmd);
@@ -186,14 +169,15 @@ namespace GUI_Login.modelo
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error calculando porcentaje: {ex.Message}");
-                        fila["porcentaje_asistencia"] = 0;
+                        // CORREGIDO: Lanzar excepción en lugar de MessageBox
+                        throw new Exception($"Error calculando porcentaje para alumno ID {fila["id_alumno"]}: {ex.Message}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error en ObtenerTablaAsistencia: " + ex.Message);
+                // CORREGIDO: Lanzar excepción en lugar de MessageBox
+                throw new Exception($"Error al obtener tabla de asistencias: {ex.Message}");
             }
 
             return tabla;

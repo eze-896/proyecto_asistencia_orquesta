@@ -31,6 +31,13 @@ namespace GUI_Login
             try
             {
                 datosOriginales = controlAsistencia.ObtenerDatosParaGrid();
+
+                if (datosOriginales.Rows.Count == 0)
+                {
+                    MessageBox.Show("No hay datos de asistencia para mostrar.",
+                        "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
                 dgwTablaAsistencia.DataSource = datosOriginales;
                 ConfigurarGrid();
                 ConfigurarGridParaMultiplesLineas();
@@ -38,8 +45,49 @@ namespace GUI_Login
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar la tabla de asistencias: " + ex.Message,
+                // CORREGIDO: Ahora captura excepciones del Controlador
+                MessageBox.Show($"Error al cargar la tabla de asistencias: {ex.Message}",
                               "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Mejorar el método de búsqueda
+        private void TxtBuscar_TextChanged(object sender, EventArgs e)
+        {
+            if (sender is TextBox txtBuscar)
+            {
+                string filtro = txtBuscar.Text.Trim();
+
+                if (string.IsNullOrEmpty(filtro))
+                {
+                    dgwTablaAsistencia.DataSource = datosOriginales;
+                }
+                else
+                {
+                    try
+                    {
+                        // CORREGIDO: Escapar caracteres especiales para RowFilter
+                        string filtroEscapado = filtro.Replace("[", "[[]")
+                                                      .Replace("]", "[]]")
+                                                      .Replace("*", "[*]")
+                                                      .Replace("%", "[%]")
+                                                      .Replace("'", "''");
+
+                        DataView vista = new DataView(datosOriginales);
+                        vista.RowFilter = $@"nombre_alumno LIKE '%{filtroEscapado}%' OR 
+                                   apellido_alumno LIKE '%{filtroEscapado}%' OR 
+                                   instrumentos LIKE '%{filtroEscapado}%' OR
+                                   profesores LIKE '%{filtroEscapado}%'";
+                        dgwTablaAsistencia.DataSource = vista;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al aplicar filtro: {ex.Message}",
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+
+                AplicarColoresPorcentaje();
             }
         }
 
@@ -202,27 +250,6 @@ namespace GUI_Login
             }
         }
 
-        private void TxtBuscar_TextChanged(object? sender, EventArgs e)
-        {
-            if (sender is TextBox txtBuscar)
-            {
-                string filtro = txtBuscar.Text.Trim();
-
-                if (string.IsNullOrEmpty(filtro))
-                {
-                    dgwTablaAsistencia.DataSource = datosOriginales;
-                }
-                else
-                {
-                    DataView vista = new(datosOriginales);
-                    vista.RowFilter = $"nombre_alumno LIKE '%{filtro}%' OR apellido_alumno LIKE '%{filtro}%' OR instrumentos LIKE '%{filtro}%'";
-                    dgwTablaAsistencia.DataSource = vista;
-                }
-
-                AplicarColoresPorcentaje();
-            }
-        }
-
         // Método corregido para DoubleBuffered - usando un nombre diferente
         private static void SetDoubleBuffered(DataGridView dgv)
         {
@@ -267,7 +294,16 @@ namespace GUI_Login
 
         private void BtnSalir_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            DialogResult result = MessageBox.Show(
+                "¿Está seguro que desea salir del sistema?",
+                "Confirmar Salida",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
         }
 
         private void MenuListadoAlumnos_Click(object sender, EventArgs e)

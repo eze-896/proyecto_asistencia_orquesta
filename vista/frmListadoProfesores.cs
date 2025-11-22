@@ -6,265 +6,180 @@ using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
-    /// <summary>
-    /// Formulario para visualizar el listado completo de profesores
-    /// Muestra información detallada en un DataGridView con herramientas de visualización mejoradas
-    /// </summary>
     public partial class FrmListadoProfesores : Form
     {
         private readonly ControlProfesor controlProfesor;
+        private bool _formCargado = false;
 
-        /// <summary>
-        /// Constructor que inicializa el controlador de profesores
-        /// </summary>
         public FrmListadoProfesores()
         {
             InitializeComponent();
             controlProfesor = new ControlProfesor();
+            SuscribirEventos();
         }
 
-        // ==================== MÉTODOS DE CARGA Y CONFIGURACIÓN ====================
+        private void SuscribirEventos()
+        {
+            this.Load += (s, e) => FrmListadoProfesores_Load(s, e);
+            this.KeyDown += (s, e) => FrmListadoProfesores_KeyDown(s, e);
+            this.KeyPreview = true;
+        }
 
         private void FrmListadoProfesores_Load(object sender, EventArgs e)
         {
-            CargarDatosProfesores();
-            ConfigurarGridCompleto();
-            ConfigurarToolTipsMejorado();
-            dgvProfesores.CellDoubleClick += DgvProfesores_CellDoubleClick;
+            try
+            {
+                _formCargado = false;
+                CargarDatosProfesores();
+                ConfigurarGridCompleto();
+                _formCargado = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar el formulario: {ex.Message}", "Error",
+                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        /// <summary>
-        /// Carga los datos de profesores en el DataGridView
-        /// </summary>
         private void CargarDatosProfesores()
         {
-            DataTable datos = controlProfesor.ObtenerProfesoresParaGrid();
-            dgvProfesores.DataSource = datos;
+            try
+            {
+                DataTable datos = controlProfesor.ObtenerProfesoresParaGrid();
+
+                if (dgvProfesores != null && datos != null)
+                {
+                    dgvProfesores.DataSource = datos;
+
+                    if (datos.Rows.Count == 0)
+                    {
+                        MessageBox.Show("No se encontraron profesores en la base de datos.",
+                                      "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar datos: {ex.Message}", "Error",
+                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        // ==================== CONFIGURACIÓN DEL DATAGRIDVIEW ====================
-
-        /// <summary>
-        /// Configura completamente el DataGridView para una visualización óptima
-        /// </summary>
         private void ConfigurarGridCompleto()
         {
-            ConfigurarEstilosVisuales();
-            ConfigurarComportamiento();
-            ConfigurarColumnasIndividuales();
+            if (dgvProfesores == null) return;
+
+            try
+            {
+                ConfigurarColumnasIndividuales();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al configurar el grid: {ex.Message}", "Error",
+                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        /// <summary>
-        /// Configura los estilos visuales del DataGridView
-        /// </summary>
-        private void ConfigurarEstilosVisuales()
-        {
-            // Limpiar selección inicial
-            dgvProfesores.ClearSelection();
-
-            // Configuración visual uniforme para todas las celdas
-            dgvProfesores.DefaultCellStyle.Font = new Font("Segoe UI", 9f, FontStyle.Regular);
-            dgvProfesores.DefaultCellStyle.ForeColor = Color.Black;
-            dgvProfesores.DefaultCellStyle.BackColor = Color.White;
-            dgvProfesores.DefaultCellStyle.SelectionForeColor = Color.White;
-            dgvProfesores.DefaultCellStyle.SelectionBackColor = Color.FromArgb(116, 86, 174);
-
-            // Configurar estilo de encabezados
-            dgvProfesores.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
-            dgvProfesores.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvProfesores.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(116, 86, 174);
-            dgvProfesores.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
-            // Configurar filas alternas para mejor legibilidad
-            dgvProfesores.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 245, 245);
-
-            // Configurar wrap de texto para todas las celdas
-            dgvProfesores.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            dgvProfesores.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-        }
-
-        /// <summary>
-        /// Configura el comportamiento del DataGridView
-        /// </summary>
-        private void ConfigurarComportamiento()
-        {
-            dgvProfesores.BorderStyle = BorderStyle.None;
-            dgvProfesores.EnableHeadersVisualStyles = false;
-            dgvProfesores.AllowUserToResizeColumns = true;
-            dgvProfesores.AllowUserToResizeRows = false;
-            dgvProfesores.RowHeadersVisible = false;
-            dgvProfesores.ReadOnly = true;
-            dgvProfesores.MultiSelect = false;
-        }
-
-        /// <summary>
-        /// Configura las columnas individuales del DataGridView
-        /// </summary>
         private void ConfigurarColumnasIndividuales()
         {
-            if (dgvProfesores.Columns.Contains("id"))
-                dgvProfesores.Columns["id"].Visible = false;
+            if (dgvProfesores == null || dgvProfesores.Columns.Count == 0) return;
 
-            ConfigurarColumna("dni", "DNI", 80);
-            ConfigurarColumna("nombre", "Nombre", 100);
-            ConfigurarColumna("apellido", "Apellido", 100);
-            ConfigurarColumna("telefono", "Teléfono", 90);
-            ConfigurarColumna("instrumento", "Instrumento", 120);
-            ConfigurarColumna("catedra", "Cátedra", 150);
-            ConfigurarColumna("email", "Email", 200, 150);
+            try
+            {
+                if (dgvProfesores.Columns.Contains("id"))
+                    dgvProfesores.Columns["id"].Visible = false;
+
+                ConfigurarColumna("dni", "DNI", 100);
+                ConfigurarColumna("nombre", "Nombre", 120);
+                ConfigurarColumna("apellido", "Apellido", 120);
+                ConfigurarColumna("telefono", "Teléfono", 110);
+                ConfigurarColumna("instrumento", "Instrumento", 130);
+                ConfigurarColumna("catedra", "Cátedra", 150);
+                ConfigurarColumna("email", "Email", 200);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al configurar columnas: {ex.Message}", "Error",
+                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        /// <summary>
-        /// Configura una columna específica del DataGridView
-        /// </summary>
-        /// <param name="nombreColumna">Nombre de la columna en el DataSource</param>
-        /// <param name="headerText">Texto a mostrar en el encabezado</param>
-        /// <param name="ancho">Ancho de la columna</param>
-        /// <param name="anchoMinimo">Ancho mínimo de la columna (opcional)</param>
-        private void ConfigurarColumna(string nombreColumna, string headerText, int ancho, int? anchoMinimo = null)
+        private void ConfigurarColumna(string nombreColumna, string headerText, int anchoMinimo)
         {
-            if (dgvProfesores.Columns.Contains(nombreColumna))
+            if (dgvProfesores != null && dgvProfesores.Columns.Contains(nombreColumna))
             {
-                dgvProfesores.Columns[nombreColumna].HeaderText = headerText;
-                dgvProfesores.Columns[nombreColumna].Width = ancho;
+                var columna = dgvProfesores.Columns[nombreColumna];
+                columna.HeaderText = headerText;
+                columna.MinimumWidth = anchoMinimo;
 
-                if (anchoMinimo.HasValue)
+                // Configurar estilo para columnas de email y cátedra
+                if (nombreColumna == "email" || nombreColumna == "catedra")
                 {
-                    dgvProfesores.Columns[nombreColumna].MinimumWidth = anchoMinimo.Value;
+                    columna.DefaultCellStyle = new DataGridViewCellStyle
+                    {
+                        ForeColor = Color.FromArgb(64, 64, 64),
+                        SelectionForeColor = Color.Black,
+                        Font = new Font("Segoe UI", 9.5f, FontStyle.Regular),
+                        WrapMode = DataGridViewTriState.True
+                    };
                 }
             }
         }
 
-        // ==================== HERRAMIENTAS DE VISUALIZACIÓN ====================
+        // ==================== EVENTO DOBLE CLICK PARA VER CONTENIDO COMPLETO ====================
 
-        /// <summary>
-        /// Configura los ToolTips para mostrar contenido completo en celdas truncadas
-        /// </summary>
-        private void ConfigurarToolTipsMejorado()
+        private void DgvProfesores_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            using ToolTip toolTip = new()
-            {
-                AutoPopDelay = 15000,
-                InitialDelay = 200,
-                ReshowDelay = 100,
-                ShowAlways = true
-            };
+            if (!_formCargado) return;
 
-            dgvProfesores.CellMouseMove += (sender, e) =>
+            try
             {
-                MostrarToolTipEnCelda(e, toolTip);
-            };
-
-            dgvProfesores.CellMouseLeave += (sender, e) =>
-            {
-                toolTip.RemoveAll();
-            };
-        }
-
-        /// <summary>
-        /// Muestra el ToolTip cuando el mouse está sobre una celda
-        /// </summary>
-        /// <param name="e">Argumentos del evento del mouse</param>
-        /// <param name="toolTip">Instancia del ToolTip</param>
-        private void MostrarToolTipEnCelda(DataGridViewCellMouseEventArgs e, ToolTip toolTip)
-        {
-            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
-            {
-                var cell = dgvProfesores.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                string columnName = dgvProfesores.Columns[e.ColumnIndex].Name;
-
-                if (cell.Value != null)
+                if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && dgvProfesores != null)
                 {
-                    string cellValue = cell.Value.ToString() ?? string.Empty;
-                    DeterminarContenidoToolTip(columnName, cellValue, toolTip, cell);
+                    var cell = dgvProfesores.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                    string columnName = dgvProfesores.Columns[e.ColumnIndex].Name;
+
+                    if ((columnName == "email" || columnName == "catedra") && cell.Value != null)
+                    {
+                        string contenido = cell.Value.ToString() ?? string.Empty;
+                        MostrarContenidoCompleto(columnName, contenido);
+                    }
                 }
             }
-        }
-
-        /// <summary>
-        /// Determina qué contenido mostrar en el ToolTip según la columna
-        /// </summary>
-        /// <param name="nombreColumna">Nombre de la columna</param>
-        /// <param name="valorCelda">Valor de la celda</param>
-        /// <param name="toolTip">Instancia del ToolTip</param>
-        /// <param name="celda">Celda actual</param>
-        private void DeterminarContenidoToolTip(string nombreColumna, string valorCelda, ToolTip toolTip, DataGridViewCell celda)
-        {
-            if (nombreColumna == "email" && !string.IsNullOrEmpty(valorCelda))
+            catch (Exception ex)
             {
-                toolTip.SetToolTip(dgvProfesores, $"📧 Email completo:\n{valorCelda}");
-            }
-            else if (nombreColumna == "catedra" && valorCelda.Length > 50)
-            {
-                toolTip.SetToolTip(dgvProfesores, $"📚 Cátedra completa:\n{valorCelda}");
-            }
-            else
-            {
-                VerificarTextoTruncado(valorCelda, toolTip, celda);
+                MessageBox.Show($"Error al procesar doble click: {ex.Message}", "Error",
+                              MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        /// <summary>
-        /// Verifica si el texto está truncado y muestra ToolTip si es necesario
-        /// </summary>
-        /// <param name="texto">Texto a verificar</param>
-        /// <param name="toolTip">Instancia del ToolTip</param>
-        /// <param name="celda">Celda actual</param>
-        private void VerificarTextoTruncado(string texto, ToolTip toolTip, DataGridViewCell celda)
-        {
-            using Graphics g = dgvProfesores.CreateGraphics();
-            SizeF textSize = g.MeasureString(texto, dgvProfesores.DefaultCellStyle.Font);
-            if (textSize.Width > celda.Size.Width - 10)
-            {
-                toolTip.SetToolTip(dgvProfesores, texto);
-            }
-            else
-            {
-                toolTip.RemoveAll();
-            }
-        }
-
-        // ==================== EVENTOS DE INTERACCIÓN ====================
-
-        /// <summary>
-        /// Maneja el doble click en celdas para mostrar contenido completo
-        /// </summary>
-        private void DgvProfesores_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
-            {
-                var cell = dgvProfesores.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                string columnName = dgvProfesores.Columns[e.ColumnIndex].Name;
-
-                if ((columnName == "email" || columnName == "catedra") && cell.Value != null)
-                {
-                    string contenido = cell.Value.ToString() ?? string.Empty;
-                    MostrarContenidoCompleto(columnName, contenido);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Muestra el contenido completo de una celda en un MessageBox
-        /// </summary>
-        /// <param name="nombreColumna">Nombre de la columna</param>
-        /// <param name="contenido">Contenido a mostrar</param>
         private static void MostrarContenidoCompleto(string nombreColumna, string contenido)
         {
-            string titulo = nombreColumna == "email" ? "Email completo" : "Cátedra completa";
-            MessageBox.Show(contenido, titulo, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            string titulo = nombreColumna == "email" ? "📧 Email completo" : "📚 Cátedra completa";
+            string icono = nombreColumna == "email" ? "📧" : "📚";
+
+            MessageBox.Show($"{icono} {contenido}", titulo,
+                          MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         // ==================== NAVEGACIÓN Y CIERRE ====================
 
-        private void BtnVolver_Click(object? sender, EventArgs e)
+        private void BtnVolver_Click(object sender, EventArgs e)
         {
-            this.Close();
-            FrmPrincipal formPrincipal = new();
-            formPrincipal.Show();
+            try
+            {
+                this.Close();
+                FrmPrincipal formPrincipal = new FrmPrincipal();
+                formPrincipal.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al volver al menú principal: {ex.Message}", "Error",
+                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        private void BtnSalir_Click(object? sender, EventArgs e)
+        private void BtnSalir_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show(
                 "¿Está seguro que desea salir del sistema?",
@@ -278,12 +193,31 @@ namespace GUI_Login.vista
             }
         }
 
-        private void FrmListadoProfesores_KeyDown(object? sender, KeyEventArgs e)
+        private void FrmListadoProfesores_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape)
-                BtnVolver_Click(sender, e);
-            else if (e.KeyCode == Keys.F4 && e.Alt)
-                BtnSalir_Click(sender, e);
+            if (!_formCargado) return;
+
+            try
+            {
+                if (e.KeyCode == Keys.Escape)
+                    BtnVolver_Click(sender, e);
+                else if (e.KeyCode == Keys.F4 && e.Alt)
+                    BtnSalir_Click(sender, e);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al procesar tecla: {ex.Message}", "Error",
+                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            if (dgvProfesores != null)
+            {
+                dgvProfesores.DataSource = null;
+            }
+            base.OnFormClosed(e);
         }
     }
 }

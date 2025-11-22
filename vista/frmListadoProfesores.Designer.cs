@@ -29,6 +29,7 @@
             this.lblTitulo = new System.Windows.Forms.Label();
             this.lblSubtitulo = new System.Windows.Forms.Label();
             this.btnVolver = new System.Windows.Forms.Button();
+            this.btnSalir = new System.Windows.Forms.Button();
             this.panelMain = new System.Windows.Forms.Panel();
             this.dgvProfesores = new System.Windows.Forms.DataGridView();
             this.panelHeader.SuspendLayout();
@@ -95,7 +96,6 @@
             // 
             // btnSalir
             // 
-            this.btnSalir = new System.Windows.Forms.Button();
             this.btnSalir.BackColor = System.Drawing.Color.Transparent;
             this.btnSalir.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnSalir.FlatAppearance.BorderSize = 0;
@@ -175,9 +175,10 @@
             this.dgvProfesores.Size = new System.Drawing.Size(840, 520);
             this.dgvProfesores.TabIndex = 0;
             this.dgvProfesores.TabStop = false;
+            this.dgvProfesores.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvProfesores_CellDoubleClick);
 
             // 
-            // frmListadoProfesores
+            // FrmListadoProfesores
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -188,7 +189,7 @@
             this.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.KeyPreview = true;
-            this.Name = "frmListadoProfesores";
+            this.Name = "FrmListadoProfesores";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Listado de Profesores";
             this.Load += new System.EventHandler(this.FrmListadoProfesores_Load);

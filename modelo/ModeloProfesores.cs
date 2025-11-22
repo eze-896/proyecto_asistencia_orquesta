@@ -6,17 +6,10 @@ using System.Windows.Forms;
 
 namespace GUI_Login.modelo
 {
-    /// <summary>
-    /// Modelo para gestionar las operaciones de base de datos relacionadas con profesores
-    /// Maneja CRUD completo y validaciones de datos a nivel de base de datos
-    /// </summary>
     public class ModeloProfesor
     {
         private readonly Conexion conexion;
 
-        /// <summary>
-        /// Constructor que inicializa la conexión a la base de datos
-        /// </summary>
         public ModeloProfesor()
         {
             conexion = new Conexion();
@@ -24,11 +17,6 @@ namespace GUI_Login.modelo
 
         // ==================== OPERACIONES CRUD ====================
 
-        /// <summary>
-        /// Inserta un nuevo profesor en la base de datos
-        /// </summary>
-        /// <param name="profesor">Objeto Profesor con los datos a insertar</param>
-        /// <returns>True si la inserción fue exitosa</returns>
         public bool InsertarProfesor(Profesor profesor)
         {
             bool resultado = false;
@@ -53,16 +41,13 @@ namespace GUI_Login.modelo
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al insertar profesor: " + ex.Message);
+                    // CORREGIDO: Lanzar excepción en lugar de MessageBox
+                    throw new Exception($"Error al insertar profesor: {ex.Message}");
                 }
             }
             return resultado;
         }
 
-        /// <summary>
-        /// Obtiene la lista completa de todos los profesores
-        /// </summary>
-        /// <returns>Lista de objetos Profesor</returns>
         public List<Profesor> ListarProfesores()
         {
             var profesores = new List<Profesor>();
@@ -81,6 +66,7 @@ namespace GUI_Login.modelo
                         {
                             Id = reader.GetInt32("id"),
                             Dni = reader.GetInt32("dni"),
+                            // CORREGIDO: Manejo seguro de valores nulos
                             Nombre = reader.IsDBNull(reader.GetOrdinal("nombre")) ? "" : reader.GetString("nombre"),
                             Apellido = reader.IsDBNull(reader.GetOrdinal("apellido")) ? "" : reader.GetString("apellido"),
                             Telefono = reader.IsDBNull(reader.GetOrdinal("telefono")) ? "" : reader.GetString("telefono"),
@@ -92,17 +78,13 @@ namespace GUI_Login.modelo
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al listar profesores: " + ex.Message);
+                    // CORREGIDO: Lanzar excepción en lugar de MessageBox
+                    throw new Exception($"Error al listar profesores: {ex.Message}");
                 }
             }
             return profesores;
         }
 
-        /// <summary>
-        /// Busca un profesor específico por su ID
-        /// </summary>
-        /// <param name="id">ID del profesor a buscar</param>
-        /// <returns>Objeto Profesor si se encuentra, null si no existe</returns>
         public Profesor? BuscarProfesor(int id)
         {
             Profesor? profesor = null;
@@ -122,6 +104,7 @@ namespace GUI_Login.modelo
                         {
                             Id = reader.GetInt32("id"),
                             Dni = reader.GetInt32("dni"),
+                            // CORREGIDO: Manejo seguro de valores nulos
                             Nombre = reader.IsDBNull(reader.GetOrdinal("nombre")) ? "" : reader.GetString("nombre"),
                             Apellido = reader.IsDBNull(reader.GetOrdinal("apellido")) ? "" : reader.GetString("apellido"),
                             Telefono = reader.IsDBNull(reader.GetOrdinal("telefono")) ? "" : reader.GetString("telefono"),
@@ -132,17 +115,13 @@ namespace GUI_Login.modelo
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al buscar profesor: " + ex.Message);
+                    // CORREGIDO: Lanzar excepción en lugar de MessageBox
+                    throw new Exception($"Error al buscar profesor: {ex.Message}");
                 }
             }
             return profesor;
         }
 
-        /// <summary>
-        /// Actualiza los datos de un profesor existente
-        /// </summary>
-        /// <param name="profesor">Objeto Profesor con los datos actualizados</param>
-        /// <returns>True si la modificación fue exitosa</returns>
         public bool ModificarProfesor(Profesor profesor)
         {
             bool resultado = false;
@@ -169,17 +148,13 @@ namespace GUI_Login.modelo
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al modificar profesor: " + ex.Message);
+                    // CORREGIDO: Lanzar excepción en lugar de MessageBox
+                    throw new Exception($"Error al modificar profesor: {ex.Message}");
                 }
             }
             return resultado;
         }
 
-        /// <summary>
-        /// Elimina un profesor de la base de datos
-        /// </summary>
-        /// <param name="id">ID del profesor a eliminar</param>
-        /// <returns>True si la eliminación fue exitosa</returns>
         public bool EliminarProfesor(int id)
         {
             bool resultado = false;
@@ -197,7 +172,8 @@ namespace GUI_Login.modelo
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al eliminar profesor: " + ex.Message);
+                    // CORREGIDO: Lanzar excepción en lugar de MessageBox
+                    throw new Exception($"Error al eliminar profesor: {ex.Message}");
                 }
             }
             return resultado;
@@ -205,11 +181,6 @@ namespace GUI_Login.modelo
 
         // ==================== CONSULTAS ESPECIALIZADAS ====================
 
-        /// <summary>
-        /// Obtiene los datos de profesores en formato DataTable para mostrar en GridView
-        /// Incluye información de instrumentos y cátedras mediante JOIN
-        /// </summary>
-        /// <returns>DataTable con los datos formateados para visualización</returns>
         public DataTable ObtenerTablaProfesores()
         {
             DataTable tabla = new();
@@ -240,7 +211,8 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al obtener tabla de profesores: " + ex.Message);
+                // CORREGIDO: Lanzar excepción en lugar de MessageBox
+                throw new Exception($"Error al obtener tabla de profesores: {ex.Message}");
             }
 
             return tabla;
@@ -248,12 +220,6 @@ namespace GUI_Login.modelo
 
         // ==================== VALIDACIONES DE UNICIDAD ====================
 
-        /// <summary>
-        /// Verifica si ya existe un profesor con el mismo DNI
-        /// </summary>
-        /// <param name="dni">DNI a verificar</param>
-        /// <param name="idExcluir">ID a excluir (para modificaciones)</param>
-        /// <returns>True si el DNI ya existe</returns>
         public bool ExisteDni(int dni, int idExcluir = 0)
         {
             using MySqlConnection conn = conexion.getConexion();
@@ -268,12 +234,6 @@ namespace GUI_Login.modelo
             return count > 0;
         }
 
-        /// <summary>
-        /// Verifica si ya existe un profesor con el mismo email
-        /// </summary>
-        /// <param name="email">Email a verificar</param>
-        /// <param name="idExcluir">ID a excluir (para modificaciones)</param>
-        /// <returns>True si el email ya existe</returns>
         public bool ExisteEmail(string email, int idExcluir = 0)
         {
             using MySqlConnection conn = conexion.getConexion();
@@ -288,12 +248,6 @@ namespace GUI_Login.modelo
             return count > 0;
         }
 
-        /// <summary>
-        /// Verifica si ya existe un profesor con el mismo teléfono
-        /// </summary>
-        /// <param name="telefono">Teléfono a verificar</param>
-        /// <param name="idExcluir">ID a excluir (para modificaciones)</param>
-        /// <returns>True si el teléfono ya existe</returns>
         public bool ExisteTelefono(string telefono, int idExcluir = 0)
         {
             using MySqlConnection conn = conexion.getConexion();

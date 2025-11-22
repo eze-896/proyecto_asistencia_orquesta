@@ -5,27 +5,18 @@ using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
-    /// <summary>
-    /// Formulario para modificar datos de profesores existentes
-    /// Permite actualizar información personal y de instrumento de los profesores
-    /// </summary>
     public partial class FrmModificarProfesores : Form
     {
         private readonly ControlProfesor controlProfesor;
         private readonly ControlInstrumento controlInstrumento;
         private int idSeleccionado = -1;
 
-        /// <summary>
-        /// Constructor que inicializa los controladores necesarios
-        /// </summary>
         public FrmModificarProfesores()
         {
             InitializeComponent();
             controlProfesor = new ControlProfesor();
             controlInstrumento = new ControlInstrumento();
         }
-
-        // ==================== MÉTODOS DE CARGA Y CONFIGURACIÓN ====================
 
         private void FrmModificarProfesores_Load(object sender, EventArgs e)
         {
@@ -34,9 +25,6 @@ namespace GUI_Login.vista
             this.KeyPreview = true;
         }
 
-        /// <summary>
-        /// Carga la lista de profesores en el ListBox
-        /// </summary>
         private void CargarProfesores()
         {
             lstProfesoresModificar.Items.Clear();
@@ -48,9 +36,6 @@ namespace GUI_Login.vista
             }
         }
 
-        /// <summary>
-        /// Carga los instrumentos disponibles en el ComboBox
-        /// </summary>
         private void CargarInstrumentos()
         {
             cmbInstrumentos.DisplayMember = "Nombre";
@@ -59,8 +44,6 @@ namespace GUI_Login.vista
             cmbInstrumentos.SelectedIndex = -1;
         }
 
-        // ==================== MANEJO DE SELECCIONES ====================
-
         private void LstProfesoresModificar_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lstProfesoresModificar.SelectedItem == null) return;
@@ -68,20 +51,25 @@ namespace GUI_Login.vista
             string? seleccionado = lstProfesoresModificar.SelectedItem.ToString();
             if (!string.IsNullOrEmpty(seleccionado))
             {
-                idSeleccionado = Convert.ToInt32(seleccionado.Split('-')[0].Trim());
-
-                Profesor? prof = controlProfesor.BuscarProfesor(idSeleccionado);
-                if (prof != null)
+                // CORREGIDO: Parsing seguro usando TryParse
+                string idPart = seleccionado.Split('-')[0].Trim();
+                if (int.TryParse(idPart, out int id))
                 {
-                    CargarDatosProfesor(prof);
+                    idSeleccionado = id;
+                    Profesor? prof = controlProfesor.BuscarProfesor(idSeleccionado);
+                    if (prof != null)
+                    {
+                        CargarDatosProfesor(prof);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Error al obtener el ID del profesor seleccionado.",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
-        /// <summary>
-        /// Carga los datos del profesor seleccionado en los controles del formulario
-        /// </summary>
-        /// <param name="profesor">Profesor cuyos datos se cargarán</param>
         private void CargarDatosProfesor(Profesor profesor)
         {
             txtNombre.Text = profesor.Nombre;
@@ -92,8 +80,7 @@ namespace GUI_Login.vista
             cmbInstrumentos.SelectedValue = profesor.Id_instrumento;
         }
 
-        // ==================== OPERACIONES PRINCIPALES ====================
-
+        // Los demás métodos permanecen igual...
         private void BtnGuardarCambios_Click(object sender, EventArgs e)
         {
             if (!ValidarSeleccionProfesor())
@@ -123,10 +110,6 @@ namespace GUI_Login.vista
             }
         }
 
-        /// <summary>
-        /// Valida que se haya seleccionado un profesor para modificar
-        /// </summary>
-        /// <returns>True si la selección es válida</returns>
         private bool ValidarSeleccionProfesor()
         {
             if (idSeleccionado == -1)
@@ -138,10 +121,6 @@ namespace GUI_Login.vista
             return true;
         }
 
-        /// <summary>
-        /// Valida que todos los campos del formulario sean correctos
-        /// </summary>
-        /// <returns>True si todos los campos son válidos</returns>
         private bool ValidarCamposFormulario()
         {
             return ControlProfesor.ValidarProfesor(
@@ -153,11 +132,6 @@ namespace GUI_Login.vista
                 idInstrumento: cmbInstrumentos.SelectedValue as int?);
         }
 
-        /// <summary>
-        /// Crea un objeto Profesor con los datos del formulario
-        /// </summary>
-        /// <param name="idInstrumento">ID del instrumento seleccionado</param>
-        /// <returns>Objeto Profesor con los datos actualizados</returns>
         private Profesor CrearObjetoProfesor(int idInstrumento)
         {
             return new Profesor
@@ -172,11 +146,6 @@ namespace GUI_Login.vista
             };
         }
 
-        // ==================== MÉTODOS AUXILIARES ====================
-
-        /// <summary>
-        /// Limpia todos los campos del formulario
-        /// </summary>
         private void LimpiarFormulario()
         {
             txtNombre.Clear();
@@ -187,8 +156,6 @@ namespace GUI_Login.vista
             cmbInstrumentos.SelectedIndex = -1;
             idSeleccionado = -1;
         }
-
-        // ==================== NAVEGACIÓN Y CIERRE ====================
 
         private void BtnVolver_Click(object sender, EventArgs e)
         {

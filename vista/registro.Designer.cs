@@ -39,6 +39,8 @@
             btnRegistro = new Button();
             btnVolver = new Button();
             btnSalir = new Button();
+            lblFortaleza = new Label();
+            lblConfirmacion = new Label();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -80,7 +82,7 @@
             lblContraConfirm.AutoSize = true;
             lblContraConfirm.Font = new Font("MS UI Gothic", 20.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblContraConfirm.ForeColor = Color.FromArgb(116, 86, 174);
-            lblContraConfirm.Location = new Point(34, 319);
+            lblContraConfirm.Location = new Point(34, 350);
             lblContraConfirm.Name = "lblContraConfirm";
             lblContraConfirm.Size = new Size(270, 27);
             lblContraConfirm.TabIndex = 6;
@@ -103,12 +105,27 @@
             txtContraConfirm.BackColor = Color.FromArgb(230, 231, 233);
             txtContraConfirm.BorderStyle = BorderStyle.None;
             txtContraConfirm.Font = new Font("MS UI Gothic", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtContraConfirm.Location = new Point(34, 361);
+            txtContraConfirm.Location = new Point(34, 392);
             txtContraConfirm.Multiline = true;
             txtContraConfirm.Name = "txtContraConfirm";
             txtContraConfirm.PasswordChar = '*';
             txtContraConfirm.Size = new Size(270, 28);
             txtContraConfirm.TabIndex = 8;
+            // 
+            // checkMostrarContraseña
+            // 
+            checkMostrarContraseña.AutoSize = true;
+            checkMostrarContraseña.Cursor = Cursors.Hand;
+            checkMostrarContraseña.FlatStyle = FlatStyle.Flat;
+            checkMostrarContraseña.Font = new Font("Nirmala UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            checkMostrarContraseña.ForeColor = Color.FromArgb(164, 165, 169);
+            checkMostrarContraseña.Location = new Point(34, 445);
+            checkMostrarContraseña.Name = "checkMostrarContraseña";
+            checkMostrarContraseña.Size = new Size(145, 21);
+            checkMostrarContraseña.TabIndex = 13;
+            checkMostrarContraseña.Text = "Mostrar Contraseña";
+            checkMostrarContraseña.UseVisualStyleBackColor = true;
+            checkMostrarContraseña.CheckedChanged += CheckMostrarContraseña_CheckedChanged;
             // 
             // pictureBox1
             // 
@@ -128,27 +145,13 @@
             btnRegistro.FlatStyle = FlatStyle.Flat;
             btnRegistro.Font = new Font("Nirmala UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnRegistro.ForeColor = Color.White;
-            btnRegistro.Location = new Point(34, 425);
+            btnRegistro.Location = new Point(34, 480);
             btnRegistro.Name = "btnRegistro";
             btnRegistro.Size = new Size(270, 35);
             btnRegistro.TabIndex = 10;
             btnRegistro.Text = "REGISTRARSE";
             btnRegistro.UseVisualStyleBackColor = false;
             btnRegistro.Click += BtnRegistro_Click;
-            // 
-            // checkMostrarContraseña
-            // 
-            checkMostrarContraseña.AutoSize = true;
-            checkMostrarContraseña.Cursor = Cursors.Hand;
-            checkMostrarContraseña.FlatStyle = FlatStyle.Flat;
-            checkMostrarContraseña.Font = new Font("Nirmala UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            checkMostrarContraseña.ForeColor = Color.FromArgb(116, 86, 174);
-            checkMostrarContraseña.Location = new Point(34, 395);
-            checkMostrarContraseña.Name = "checkMostrarContraseña";
-            checkMostrarContraseña.Size = new Size(145, 19);
-            checkMostrarContraseña.TabIndex = 13;
-            checkMostrarContraseña.Text = "Mostrar Contraseñas";
-            checkMostrarContraseña.UseVisualStyleBackColor = true;
             // 
             // btnVolver
             // 
@@ -158,9 +161,9 @@
             btnVolver.FlatStyle = FlatStyle.Flat;
             btnVolver.Font = new Font("Nirmala UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnVolver.ForeColor = Color.White;
-            btnVolver.Location = new Point(33, 466);
+            btnVolver.Location = new Point(34, 521);
             btnVolver.Name = "btnVolver";
-            btnVolver.Size = new Size(271, 39);
+            btnVolver.Size = new Size(270, 35);
             btnVolver.TabIndex = 11;
             btnVolver.Text = "VOLVER";
             btnVolver.UseVisualStyleBackColor = false;
@@ -182,33 +185,58 @@
             btnSalir.UseVisualStyleBackColor = false;
             btnSalir.Click += BtnSalir_Click;
             // 
-            // registro
+            // lblFortaleza
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            lblFortaleza.AutoSize = true;
+            lblFortaleza.Font = new Font("Nirmala UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblFortaleza.ForeColor = Color.Gray;
+            lblFortaleza.Location = new Point(34, 309);
+            lblFortaleza.Name = "lblFortaleza";
+            lblFortaleza.Size = new Size(74, 17);
+            lblFortaleza.TabIndex = 14;
+            lblFortaleza.Text = "Fortaleza: -";
+            // 
+            // lblConfirmacion
+            // 
+            lblConfirmacion.AutoSize = true;
+            lblConfirmacion.Font = new Font("Nirmala UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblConfirmacion.ForeColor = Color.Gray;
+            lblConfirmacion.Location = new Point(34, 423);
+            lblConfirmacion.Name = "lblConfirmacion";
+            lblConfirmacion.Size = new Size(102, 17);
+            lblConfirmacion.TabIndex = 15;
+            lblConfirmacion.Text = "Confirmación: -";
+            // 
+            // Registro
+            // 
+            AutoScaleDimensions = new SizeF(8F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(338, 532);
+            ClientSize = new Size(338, 572);
+            Controls.Add(lblConfirmacion);
+            Controls.Add(lblFortaleza);
             Controls.Add(btnSalir);
             Controls.Add(btnVolver);
             Controls.Add(btnRegistro);
             Controls.Add(pictureBox1);
+            Controls.Add(checkMostrarContraseña);
             Controls.Add(txtContraConfirm);
             Controls.Add(txtContraRegistro);
             Controls.Add(lblContraConfirm);
             Controls.Add(lblContraseñaRegistro);
             Controls.Add(lblNombreRegistro);
             Controls.Add(txtNombreRegistro);
-            Controls.Add(checkMostrarContraseña);
+            Font = new Font("Nirmala UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             FormBorderStyle = FormBorderStyle.None;
-            Name = "registro";
+            Name = "Registro";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "registro";
+            Text = "Registro";
             Load += Registro_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
-
+        
         #endregion
 
         private CheckBox checkMostrarContraseña;
@@ -222,5 +250,7 @@
         private Button btnRegistro;
         private Button btnVolver;
         private Button btnSalir;
+        private Label lblFortaleza;
+        private Label lblConfirmacion;
     }
 }

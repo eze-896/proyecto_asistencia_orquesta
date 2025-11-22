@@ -7,25 +7,14 @@ using System.Windows.Forms;
 
 namespace GUI_Login.control
 {
-    /// <summary>
-    /// Controlador principal para la gestión de alumnos
-    /// Coordina todas las operaciones CRUD de alumnos y sus relaciones con instrumentos
-    /// </summary>
     public partial class ControlAlumno
     {
-        // Usar GeneratedRegexAttribute para mejor rendimiento
         [GeneratedRegex(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$")]
         private static partial Regex SoloLetrasRegex();
-
-        [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")]
-        private static partial Regex EmailRegex();
 
         private readonly ModeloAlumno modeloAlumno;
         private readonly ControlAlumnoInstrumento controlAlumnoInstrumento;
 
-        /// <summary>
-        /// Constructor que inicializa los modelos de alumno y alumno-instrumento
-        /// </summary>
         public ControlAlumno()
         {
             modeloAlumno = new ModeloAlumno();
@@ -34,19 +23,11 @@ namespace GUI_Login.control
 
         // ==================== OPERACIONES CRUD ====================
 
-        /// <summary>
-        /// Registra un nuevo alumno junto con sus instrumentos asignados
-        /// Realiza una transacción: si falla la inserción de instrumentos, hace rollback
-        /// </summary>
-        /// <param name="alumno">Objeto Alumno con los datos personales</param>
-        /// <param name="idsInstrumentos">Lista de instrumentos que toca el alumno</param>
-        /// <returns>True si el registro fue exitoso</returns>
         public bool RegistrarAlumnoConInstrumentos(Alumno alumno, List<int> idsInstrumentos)
         {
             if (!ValidarAlumno(alumno))
                 return false;
 
-            // Validar unicidad antes de registrar
             if (!ValidarUnicidadAlumno(alumno))
                 return false;
 
@@ -64,7 +45,6 @@ namespace GUI_Login.control
                     }
                     else
                     {
-                        // Rollback: eliminar alumno si fallan las relaciones
                         modeloAlumno.EliminarAlumno(idAlumno);
                         MessageBox.Show("Error al asociar los instrumentos al alumno.",
                             "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -80,18 +60,13 @@ namespace GUI_Login.control
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error inesperado al registrar alumno: {ex.Message}",
+                // CORREGIDO: Ahora captura excepciones del Modelo
+                MessageBox.Show($"Error al registrar alumno: {ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
 
-        /// <summary>
-        /// Modifica los datos de un alumno existente y actualiza sus instrumentos
-        /// </summary>
-        /// <param name="alumno">Objeto Alumno con los datos actualizados</param>
-        /// <param name="idsInstrumentos">Nueva lista de instrumentos del alumno</param>
-        /// <returns>True si la modificación fue exitosa</returns>
         public bool ModificarAlumnoConInstrumentos(Alumno alumno, List<int> idsInstrumentos)
         {
             if (!ValidarAlumno(alumno))
@@ -104,7 +79,6 @@ namespace GUI_Login.control
                 return false;
             }
 
-            // Validar unicidad excluyendo el alumno actual
             if (!ValidarUnicidadAlumno(alumno, alumno.Id))
                 return false;
 
@@ -128,18 +102,13 @@ namespace GUI_Login.control
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error inesperado al modificar alumno: {ex.Message}",
+                // CORREGIDO: Ahora captura excepciones del Modelo
+                MessageBox.Show($"Error al modificar alumno: {ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
 
-        /// <summary>
-        /// Elimina un alumno y todas sus relaciones con instrumentos
-        /// Primero elimina las relaciones para evitar errores de clave foránea
-        /// </summary>
-        /// <param name="id">ID del alumno a eliminar</param>
-        /// <returns>True si la eliminación fue exitosa</returns>
         public bool EliminarAlumno(int id)
         {
             if (id <= 0)
@@ -149,7 +118,6 @@ namespace GUI_Login.control
                 return false;
             }
 
-            // Diálogo de confirmación
             if (!ConfirmarEliminacionAlumno(id))
                 return false;
 
@@ -172,18 +140,74 @@ namespace GUI_Login.control
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error inesperado al eliminar alumno: {ex.Message}",
+                // CORREGIDO: Ahora captura excepciones del Modelo
+                MessageBox.Show($"Error al eliminar alumno: {ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
 
-        // ==================== CONSULTAS Y OBTENCIÓN DE DATOS ====================
+        // ==================== VALIDACIONES MEJORADAS ====================
 
-        /// <summary>
-        /// Obtiene todos los alumnos en formato DataTable para mostrar en GridView
-        /// </summary>
-        /// <returns>DataTable con los datos de todos los alumnos</returns>
+        public static bool ValidarAlumno(Alumno? alumno = null, string? nombre = null, string? apellido = null,
+                                       object? dni = null, string? telefono = null)
+        {
+            if (alumno != null)
+            {
+                nombre = alumno.Nombre;
+                apellido = alumno.Apellido;
+                dni = alumno.Dni;
+                telefono = alumno.Telefono_padres;
+            }
+
+            if (string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(apellido) ||
+                dni == null || string.IsNullOrWhiteSpace(telefono))
+            {
+                return MostrarValidacion("Todos los campos son obligatorios.");
+            }
+
+            int dniNum;
+            if (dni is string dniString)
+            {
+                if (!int.TryParse(dniString, out dniNum) || dniNum <= 0)
+                    return MostrarValidacion("El DNI debe ser un número válido.");
+            }
+            else if (dni is int dniInt)
+            {
+                dniNum = dniInt;
+            }
+            else
+            {
+                return MostrarValidacion("Formato de DNI no válido.");
+            }
+
+            // CORREGIDO: Mejor validación de DNI (ejemplo para Argentina)
+            string dniStr = dniNum.ToString();
+            if (dniStr.Length < 7 || dniStr.Length > 8)
+                return MostrarValidacion("El DNI debe tener entre 7 y 8 dígitos.");
+
+            // Validar teléfono
+            if (!long.TryParse(telefono, out _) || telefono.Length > 15 || telefono.Length < 8)
+                return MostrarValidacion("El teléfono debe contener solo números y entre 8 y 15 dígitos.");
+
+            if (nombre.Length > 25 || !SoloLetrasRegex().IsMatch(nombre))
+                return MostrarValidacion("El nombre solo puede contener letras y hasta 25 caracteres.");
+
+            if (apellido.Length > 25 || !SoloLetrasRegex().IsMatch(apellido))
+                return MostrarValidacion("El apellido solo puede contener letras y hasta 25 caracteres.");
+
+            return true;
+        }
+
+        // ==================== MÉTODOS AUXILIARES ====================
+
+        private static bool MostrarValidacion(string mensaje)
+        {
+            MessageBox.Show(mensaje, "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return false;
+        }
+
+        // Los demás métodos permanecen igual...
         public DataTable ObtenerAlumnosParaGrid()
         {
             try
@@ -198,10 +222,6 @@ namespace GUI_Login.control
             }
         }
 
-        /// <summary>
-        /// Obtiene todos los alumnos como lista de objetos
-        /// </summary>
-        /// <returns>Lista de objetos Alumno</returns>
         public List<Alumno> ObtenerAlumnos()
         {
             try
@@ -216,11 +236,6 @@ namespace GUI_Login.control
             }
         }
 
-        /// <summary>
-        /// Busca un alumno específico por su ID
-        /// </summary>
-        /// <param name="id">ID del alumno a buscar</param>
-        /// <returns>Objeto Alumno si se encuentra, null si no existe</returns>
         public Alumno? BuscarAlumno(int id)
         {
             try
@@ -235,11 +250,6 @@ namespace GUI_Login.control
             }
         }
 
-        /// <summary>
-        /// Obtiene los instrumentos asignados a un alumno específico
-        /// </summary>
-        /// <param name="idAlumno">ID del alumno a consultar</param>
-        /// <returns>Lista de IDs de instrumentos del alumno</returns>
         public List<int> ObtenerInstrumentosPorAlumno(int idAlumno)
         {
             try
@@ -254,79 +264,10 @@ namespace GUI_Login.control
             }
         }
 
-        // ==================== VALIDACIONES ====================
-
-        /// <summary>
-        /// Valida los datos de un alumno
-        /// </summary>
-        /// <param name="alumno">Objeto Alumno a validar (opcional)</param>
-        /// <param name="nombre">Nombre del alumno (opcional si se pasa objeto)</param>
-        /// <param name="apellido">Apellido del alumno (opcional si se pasa objeto)</param>
-        /// <param name="dni">DNI como string o int (opcional si se pasa objeto)</param>
-        /// <param name="telefono">Teléfono como string (opcional si se pasa objeto)</param>
-        /// <returns>True si todos los datos son válidos</returns>
-        public static bool ValidarAlumno(Alumno? alumno = null, string? nombre = null, string? apellido = null,
-                                       object? dni = null, string? telefono = null)
-        {
-            // Si se pasa un objeto Alumno, extraer los valores
-            if (alumno != null)
-            {
-                nombre = alumno.Nombre;
-                apellido = alumno.Apellido;
-                dni = alumno.Dni;
-                telefono = alumno.Telefono_padres;
-            }
-
-            // Validar campos obligatorios
-            if (string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(apellido) ||
-                dni == null || string.IsNullOrWhiteSpace(telefono))
-            {
-                return MostrarValidacion("Todos los campos son obligatorios.");
-            }
-
-            // Convertir y validar DNI
-            int dniNum;
-            if (dni is string dniString)
-            {
-                if (!int.TryParse(dniString, out dniNum) || dniNum <= 0)
-                    return MostrarValidacion("El DNI debe ser un número válido.");
-            }
-            else if (dni is int dniInt)
-            {
-                dniNum = dniInt;
-                if (dniNum <= 0 || dniNum.ToString().Length > 8)
-                    return MostrarValidacion("El DNI debe contener solo números y hasta 8 dígitos.");
-            }
-            else
-            {
-                return MostrarValidacion("Formato de DNI no válido.");
-            }
-
-            // Validar teléfono
-            if (!long.TryParse(telefono, out _) || telefono.Length > 15)
-                return MostrarValidacion("El teléfono debe contener solo números y hasta 15 dígitos.");
-
-            // Usar métodos generados de regex
-            if (nombre.Length > 25 || !SoloLetrasRegex().IsMatch(nombre))
-                return MostrarValidacion("El nombre solo puede contener letras y hasta 25 caracteres.");
-
-            if (apellido.Length > 25 || !SoloLetrasRegex().IsMatch(apellido))
-                return MostrarValidacion("El apellido solo puede contener letras y hasta 25 caracteres.");
-
-            return true;
-        }
-
-        /// <summary>
-        /// Valida la unicidad de DNI y teléfono para un alumno
-        /// </summary>
-        /// <param name="alumno">Alumno a validar</param>
-        /// <param name="idExcluir">ID a excluir (para modificaciones)</param>
-        /// <returns>True si todos los datos son únicos</returns>
         private bool ValidarUnicidadAlumno(Alumno alumno, int idExcluir = 0)
         {
             try
             {
-                // Verificar DNI único
                 if (modeloAlumno.ExisteDni(alumno.Dni, idExcluir))
                 {
                     MessageBox.Show($"Ya existe un alumno con el DNI {alumno.Dni}.",
@@ -334,7 +275,6 @@ namespace GUI_Login.control
                     return false;
                 }
 
-                // Verificar Teléfono único
                 if (modeloAlumno.ExisteTelefono(alumno.Telefono_padres, idExcluir))
                 {
                     MessageBox.Show($"Ya existe un alumno con el teléfono {alumno.Telefono_padres}.",
@@ -352,26 +292,6 @@ namespace GUI_Login.control
             }
         }
 
-        // ==================== MÉTODOS AUXILIARES ====================
-
-        /// <summary>
-        /// Muestra mensaje de validación estandarizado
-        /// </summary>
-        /// <param name="mensaje">Mensaje a mostrar</param>
-        /// <returns>Siempre retorna false para facilitar el return en validaciones</returns>
-        private static bool MostrarValidacion(string mensaje)
-        {
-            MessageBox.Show(mensaje, "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return false;
-        }
-
-        // ==================== DIÁLOGOS DE CONFIRMACIÓN ====================
-
-        /// <summary>
-        /// Muestra un diálogo de confirmación antes de eliminar un alumno
-        /// </summary>
-        /// <param name="idAlumno">ID del alumno a eliminar</param>
-        /// <returns>True si el usuario confirma la eliminación</returns>
         private bool ConfirmarEliminacionAlumno(int idAlumno)
         {
             Alumno? alumno = BuscarAlumno(idAlumno);
@@ -387,10 +307,6 @@ namespace GUI_Login.control
             return resultado == DialogResult.Yes;
         }
 
-        /// <summary>
-        /// Muestra un diálogo de confirmación antes de modificar un alumno
-        /// </summary>
-        /// <returns>True si el usuario confirma la modificación</returns>
         public static bool ConfirmarModificacion()
         {
             DialogResult resultado = MessageBox.Show(

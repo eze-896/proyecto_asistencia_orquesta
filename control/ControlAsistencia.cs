@@ -2,29 +2,21 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Windows.Forms;
 
 namespace GUI_Login.control
 {
-    /// <summary>
-    /// Controlador para la gestión de asistencias
-    /// Maneja el registro y consulta de asistencias a diferentes actividades del orquesta
-    /// </summary>
     public class ControlAsistencia
     {
         private readonly ModeloAsistencia modeloAsistencia;
 
-        /// <summary>
-        /// Constructor que inicializa el modelo de asistencias
-        /// </summary>
         public ControlAsistencia()
         {
             modeloAsistencia = new ModeloAsistencia();
         }
 
-        /// <summary>
-        /// Obtiene la lista completa de alumnos para el registro de asistencias
-        /// </summary>
-        /// Retorna una Lista de objetos Alumno
+        // ==================== CONSULTAS ====================
+
         public List<Alumno> ObtenerAlumnos()
         {
             try
@@ -33,67 +25,13 @@ namespace GUI_Login.control
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error en ObtenerAlumnos: " + ex.Message);
-                return [];
+                // CORREGIDO: Ahora captura excepciones del Modelo
+                MessageBox.Show($"Error al obtener lista de alumnos: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return new List<Alumno>();
             }
         }
 
-        /// <summary>
-        /// Guarda una lista de asistencias en la base de datos
-        /// Registra tanto presentes como ausentes para tener control completo
-        /// </summary>
-        /// asistencias: Lista de objetos Asistencia a guardar
-
-        public bool GuardarAsistencias(List<Asistencia> asistencias)
-        {
-            if (asistencias == null || asistencias.Count == 0)
-            {
-                Console.WriteLine("Lista de asistencias vacía");
-                return false;
-            }
-
-            bool todosGuardados = true;
-
-            foreach (Asistencia a in asistencias)
-            {
-                try
-                {
-                    if (a == null || !ValidarAsistencia(a))
-                    {
-                        todosGuardados = false;
-                        continue;
-                    }
-
-                    // Guarda a los presentes y ausentes
-                    bool ok = modeloAsistencia.MarcarAsistencia(a);
-                    if (!ok) todosGuardados = false;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error guardando asistencia: {ex.Message}");
-                    todosGuardados = false;
-                }
-            }
-
-            return todosGuardados;
-        }
-
-        /// <summary>
-        /// Valida que una asistencia tenga todos los datos requeridos
-        /// </summary>
-        /// asistencia: Objeto Asistencia a validar
-
-        private static bool ValidarAsistencia(Asistencia asistencia)
-        {
-            return asistencia.IdAlumno > 0 &&
-                   asistencia.Fecha != DateTime.MinValue &&
-                   Enum.IsDefined(typeof(Asistencia.Tipo_Actividad), asistencia.TipoActividad);
-        }
-
-        /// <summary>
-        /// Obtiene los datos de asistencias en formato DataTable para mostrar en GridView
-        /// </summary>
-        /// Retornar un DataTable con el historial de asistencias
         public DataTable ObtenerDatosParaGrid()
         {
             try
@@ -102,9 +40,94 @@ namespace GUI_Login.control
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error en ObtenerDatosParaGrid: " + ex.Message);
+                // CORREGIDO: Ahora captura excepciones del Modelo
+                MessageBox.Show($"Error al obtener datos para grid: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return new DataTable();
             }
+        }
+
+        // ==================== OPERACIONES PRINCIPALES ====================
+
+        public bool GuardarAsistencias(List<Asistencia> asistencias)
+        {
+            if (asistencias == null || asistencias.Count == 0)
+            {
+                MessageBox.Show("La lista de asistencias está vacía.",
+                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            bool todosGuardados = true;
+            int errores = 0;
+
+            foreach (Asistencia a in asistencias)
+            {
+                try
+                {
+                    // CORREGIDO: Validación directa sin método separado
+                    if (a == null || !ValidarAsistenciaDirectamente(a))
+                    {
+                        errores++;
+                        todosGuardados = false;
+                        continue;
+                    }
+
+                    bool ok = modeloAsistencia.MarcarAsistencia(a);
+                    if (!ok)
+                    {
+                        errores++;
+                        todosGuardados = false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // CORREGIDO: Ahora captura excepciones del Modelo
+                    MessageBox.Show($"Error guardando asistencia para alumno ID {a?.IdAlumno}: {ex.Message}",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    errores++;
+                    todosGuardados = false;
+                }
+            }
+
+            if (errores > 0)
+            {
+                MessageBox.Show($"Se produjeron {errores} errores al guardar las asistencias.",
+                    "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+            return todosGuardados;
+        }
+
+        // ==================== VALIDACIONES ====================
+
+        /// <summary>
+        /// Validación directa sin método separado redundante
+        /// </summary>
+        private static bool ValidarAsistenciaDirectamente(Asistencia asistencia)
+        {
+            if (asistencia.IdAlumno <= 0)
+            {
+                MessageBox.Show("ID de alumno no válido.",
+                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (asistencia.Fecha == DateTime.MinValue)
+            {
+                MessageBox.Show("Fecha de asistencia no válida.",
+                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (!Enum.IsDefined(typeof(Asistencia.Tipo_Actividad), asistencia.TipoActividad))
+            {
+                MessageBox.Show("Tipo de actividad no válido.",
+                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            return true;
         }
     }
 }

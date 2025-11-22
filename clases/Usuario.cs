@@ -2,7 +2,7 @@
 /// Clase que representa un usuario(preceptor de la orquesta escuela)
 /// Maneja la información de autenticación y acceso
 /// </summary>
-class Usuario
+public class Usuario
 {
     // Atributos para el control de acceso al sistema
     private int id;           // Identificador único del usuario
