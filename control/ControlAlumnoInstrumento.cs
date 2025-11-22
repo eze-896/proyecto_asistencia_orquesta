@@ -4,16 +4,28 @@ using System.Windows.Forms;
 
 namespace GUI_Login.control
 {
+    /// <summary>
+    /// Controlador para gestionar las relaciones entre alumnos e instrumentos
+    /// Coordina las operaciones CRUD de la relación muchos a muchos entre alumnos e instrumentos
+    /// </summary>
     public class ControlAlumnoInstrumento
     {
         private readonly ModeloAlumnoInstrumento modeloAlumnoInstrumento;
 
+        /// <summary>
+        /// Constructor que inicializa el modelo de datos para alumno-instrumento
+        /// </summary>
         public ControlAlumnoInstrumento()
         {
             modeloAlumnoInstrumento = new ModeloAlumnoInstrumento();
         }
 
-        // Registrar relación nueva
+        /// <summary>
+        /// Registra múltiples instrumentos para un alumno específico
+        /// Permite que un alumno tenga varios instrumentos asignados
+        /// </summary>
+        /// idAlumno:ID del alumno a relacionar
+        /// idsInstrumentos: Lista de IDs de instrumentos a asignar
         public bool RegistrarInstrumentosParaAlumno(int idAlumno, List<int> idsInstrumentos)
         {
             try
@@ -28,7 +40,12 @@ namespace GUI_Login.control
             }
         }
 
-        // Actualizar relación existente o insertar si no existe
+        /// <summary>
+        /// Actualiza una relación específica entre alumno e instrumento
+        /// Si no existe la relación, la crea
+        /// </summary>
+        /// idAlumno: ID del alumno
+        /// idInstrumento: ID del instrumento
         public bool ActualizarRelacion(int idAlumno, int idInstrumento)
         {
             try
@@ -57,6 +74,12 @@ namespace GUI_Login.control
             }
         }
 
+        /// <summary>
+        /// Actualiza todos los instrumentos de un alumno (reemplaza los existentes)
+        /// </summary>
+        /// idAlumno: ID del alumno
+        /// idsInstrumentos: Nueva lista de IDs de instrumentos
+
         public bool ActualizarInstrumentosDeAlumno(int idAlumno, List<int> idsInstrumentos)
         {
             try
@@ -71,7 +94,11 @@ namespace GUI_Login.control
             }
         }
 
-        // Eliminar relación por alumno
+        /// <summary>
+        /// Elimina todas las relaciones de instrumentos para un alumno específico
+        /// </summary>
+        /// idAlumno: ID del alumno cuyas relaciones se eliminarán
+        
         public bool EliminarRelacionPorAlumno(int idAlumno)
         {
             try
@@ -86,7 +113,11 @@ namespace GUI_Login.control
             }
         }
 
-        // Obtener el instrumento actual de un alumno
+        /// <summary>
+        /// Obtiene todos los instrumentos asignados a un alumno específico
+        /// </summary>
+        /// idAlumno: ID del alumno a consultar
+        /// Retorna Lista de IDs de instrumentos asignados al alumno
         public List<int> ObtenerInstrumentosPorAlumno(int idAlumno)
         {
             try

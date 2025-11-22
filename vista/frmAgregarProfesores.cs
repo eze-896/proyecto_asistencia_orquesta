@@ -5,11 +5,18 @@ using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
+    /// <summary>
+    /// Formulario para agregar nuevos profesores al sistema
+    /// Permite registrar profesores y asignarles el instrumento que enseñan
+    /// </summary>
     public partial class FrmAgregarProfesores : Form
     {
         private readonly ControlProfesor controlProfesor;
         private readonly ControlInstrumento controlInstrumento;
 
+        /// <summary>
+        /// Constructor que inicializa los controladores necesarios
+        /// </summary>
         public FrmAgregarProfesores()
         {
             InitializeComponent();
@@ -17,11 +24,16 @@ namespace GUI_Login.vista
             controlInstrumento = new ControlInstrumento();
         }
 
+        // ==================== MÉTODOS DE CARGA Y CONFIGURACIÓN ====================
+
         private void FrmAgregarProfesores_Load(object sender, EventArgs e)
         {
             CargarInstrumentos();
         }
 
+        /// <summary>
+        /// Carga los instrumentos disponibles en el ComboBox
+        /// </summary>
         private void CargarInstrumentos()
         {
             try
@@ -40,16 +52,22 @@ namespace GUI_Login.vista
             }
         }
 
+        // ==================== OPERACIONES PRINCIPALES ====================
+
         private void BtnIngresar_Click(object sender, EventArgs e)
         {
-            // Validar campos obligatorios
-            if (!ControlProfesor.ValidarCamposObligatorios(
-                txtNombre.Text, txtApellido.Text, txtDni.Text, txtTelefono.Text,
-                txtEmail.Text, cmbInstrumentos.SelectedValue as int?))
+            if (!ControlProfesor.ValidarProfesor(
+                nombre: txtNombre.Text,
+                apellido: txtApellido.Text,
+                dni: txtDni.Text,
+                telefono: txtTelefono.Text,
+                email: txtEmail.Text,
+                idInstrumento: cmbInstrumentos.SelectedValue as int?))
                 return;
+
             if (cmbInstrumentos.SelectedValue is int selectedValue)
             {
-                // Crear objeto profesor
+                // Crea objeto profesor
                 Profesor profesor = new()
                 {
                     Dni = int.Parse(txtDni.Text),
@@ -57,10 +75,10 @@ namespace GUI_Login.vista
                     Apellido = txtApellido.Text.Trim(),
                     Telefono = txtTelefono.Text.Trim(),
                     Email = txtEmail.Text.Trim(),
-                    Id_instrumento = selectedValue // ✅ Usar la variable ya verificada
+                    Id_instrumento = selectedValue
                 };
 
-                // Registrar profesor
+                // Registra profesor
                 bool exito = controlProfesor.RegistrarProfesor(profesor);
 
                 if (exito)
@@ -75,6 +93,9 @@ namespace GUI_Login.vista
             }
         }
 
+        /// <summary>
+        /// Limpia todos los campos del formulario
+        /// </summary>
         private void LimpiarFormulario()
         {
             txtDni.Clear();
@@ -86,7 +107,8 @@ namespace GUI_Login.vista
             txtNombre.Focus();
         }
 
-        // Eventos de validación en UI
+        // ==================== VALIDACIONES EN TIEMPO REAL ====================
+
         private void TxtDni_Leave(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtDni.Text) && !int.TryParse(txtDni.Text, out _))
@@ -109,16 +131,35 @@ namespace GUI_Login.vista
             }
         }
 
+        // ==================== NAVEGACIÓN Y CIERRE ====================
+
         private void BtnVolver_Click(object sender, EventArgs e)
         {
             this.Close();
             FrmPrincipal formPrincipal = new();
             formPrincipal.Show();
         }
-        private void BtnSalir_Click(object sender, EventArgs e) => Application.Exit();
+
+        private void BtnSalir_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show(
+                "¿Está seguro que desea salir del sistema?",
+                "Confirmar Salida",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
+        }
+
         private void FrmAgregarProfesores_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape) BtnVolver_Click(sender, e);
+            if (e.KeyCode == Keys.Escape)
+                BtnVolver_Click(sender, e);
+            else if (e.KeyCode == Keys.F4 && e.Alt)
+                BtnSalir_Click(sender, e);
         }
     }
 }

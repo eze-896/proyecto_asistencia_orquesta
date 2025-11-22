@@ -5,6 +5,9 @@ using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
+    /// <summary>
+    /// Formulario para eliminar instrumentos de la orquesta
+    /// </summary>
     public partial class FrmEliminarInstrumento : Form
     {
         private readonly ControlInstrumento controlInstrumento;
@@ -22,19 +25,21 @@ namespace GUI_Login.vista
             CargarInstrumentos();
             this.KeyPreview = true;
 
-            // Configurar navegación por teclado
             lstInstrumentos.TabStop = true;
             btnEliminar.TabStop = true;
             btnVolver.TabStop = true;
-            btnSalir.TabStop = false; // El botón de salir no debe estar en el ciclo TAB
+            btnSalir.TabStop = false; 
         }
 
+        /// <summary>
+        /// Carga los instrumentos que están actualmente en la orquesta
+        /// </summary>
         private void CargarInstrumentos()
         {
             try
             {
                 lstInstrumentos.Items.Clear();
-                // Obtener solo los instrumentos que están en la orquesta
+                // Obtiene solo los instrumentos que están en la orquesta
                 listaInstrumentos = controlInstrumento.ListarInstrumentosEnOrquesta();
 
                 foreach (var instrumento in listaInstrumentos)
@@ -59,6 +64,10 @@ namespace GUI_Login.vista
             }
         }
 
+        /// <summary>
+        /// Elimina el instrumento seleccionado con validaciones de uso
+        /// Verifica que no esté asignado a profesores ni alumnos antes de eliminar
+        /// </summary>
         private void BtnEliminar_Click(object sender, EventArgs e)
         {
             if (lstInstrumentos.SelectedIndex == -1)
@@ -71,7 +80,7 @@ namespace GUI_Login.vista
 
             Instrumento seleccionado = listaInstrumentos[lstInstrumentos.SelectedIndex];
 
-            // Verificar si el instrumento está siendo usado por algún profesor
+            // Verifica si el instrumento está siendo usado por algún profesor
             if (controlInstrumento.EstaInstrumentoEnUso(seleccionado.Id))
             {
                 MessageBox.Show($"No se puede eliminar el instrumento '{seleccionado.Nombre}' porque está asignado a uno o más profesores.",
@@ -79,7 +88,7 @@ namespace GUI_Login.vista
                 return;
             }
 
-            // Verificar si el instrumento está siendo usado por algún alumno
+            // Verifica si el instrumento está siendo usado por algún alumno
             if (controlInstrumento.EstaInstrumentoEnUsoPorAlumnos(seleccionado.Id))
             {
                 MessageBox.Show($"No se puede eliminar el instrumento '{seleccionado.Nombre}' porque está asignado a uno o más alumnos.",
@@ -87,6 +96,7 @@ namespace GUI_Login.vista
                 return;
             }
 
+            // Confirmacion de eliminar
             DialogResult resultado = MessageBox.Show(
                 $"¿Está seguro de eliminar el instrumento '{seleccionado.Nombre}' de la orquesta?\n\n" +
                 $"Cátedra: {seleccionado.Catedra}",
@@ -103,7 +113,7 @@ namespace GUI_Login.vista
                     {
                         MessageBox.Show("Instrumento eliminado de la orquesta correctamente.", "Éxito",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        CargarInstrumentos(); // Recargar la lista después de eliminar
+                        CargarInstrumentos(); // Recarga la lista después de eliminar
                     }
                     else
                     {
@@ -119,17 +129,19 @@ namespace GUI_Login.vista
             }
         }
 
+        // Navegación y cierre
         private void BtnVolver_Click(object sender, EventArgs e)
         {
-            // Cierra este formulario y vuelve al principal
             this.Close();
-            FrmPrincipal formPrincipal = new ();
+            FrmPrincipal formPrincipal = new();
             formPrincipal.Show();
         }
 
+        /// <summary>
+        /// Cierra la aplicación con confirmación
+        /// </summary>
         private void BtnSalir_Click(object sender, EventArgs e)
         {
-            // Pregunta antes de salir del sistema
             DialogResult result = MessageBox.Show(
                 "¿Está seguro que desea salir del sistema?",
                 "Confirmar Salida",
@@ -142,6 +154,12 @@ namespace GUI_Login.vista
             }
         }
 
+        /// <summary>
+        /// Maneja eventos de teclado para operaciones rápidas
+        /// - Delete: Eliminar instrumento seleccionado
+        /// - Escape: Volver al formulario principal
+        /// - Enter: Eliminar instrumento seleccionado (cuando el ListBox tiene foco)
+        /// </summary>
         private void LstInstrumentos_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
@@ -170,6 +188,10 @@ namespace GUI_Login.vista
             }
         }
 
+        /// <summary>
+        /// Maneja combinaciones de teclas especiales
+        /// Previene el cierre accidental con Alt+F4
+        /// </summary>
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             // Manejar Alt+F4 para prevenir el cierre accidental

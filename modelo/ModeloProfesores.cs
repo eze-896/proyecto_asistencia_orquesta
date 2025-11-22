@@ -1,19 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using MySql.Data.MySqlClient;
+using System.Windows.Forms;
 
 namespace GUI_Login.modelo
 {
+    /// <summary>
+    /// Modelo para gestionar las operaciones de base de datos relacionadas con profesores
+    /// Maneja CRUD completo y validaciones de datos a nivel de base de datos
+    /// </summary>
     public class ModeloProfesor
     {
         private readonly Conexion conexion;
 
+        /// <summary>
+        /// Constructor que inicializa la conexión a la base de datos
+        /// </summary>
         public ModeloProfesor()
         {
             conexion = new Conexion();
         }
 
-        // Insertar profesor
+        // ==================== OPERACIONES CRUD ====================
+
+        /// <summary>
+        /// Inserta un nuevo profesor en la base de datos
+        /// </summary>
+        /// <param name="profesor">Objeto Profesor con los datos a insertar</param>
+        /// <returns>True si la inserción fue exitosa</returns>
         public bool InsertarProfesor(Profesor profesor)
         {
             bool resultado = false;
@@ -44,7 +59,10 @@ namespace GUI_Login.modelo
             return resultado;
         }
 
-        // Listar profesores
+        /// <summary>
+        /// Obtiene la lista completa de todos los profesores
+        /// </summary>
+        /// <returns>Lista de objetos Profesor</returns>
         public List<Profesor> ListarProfesores()
         {
             var profesores = new List<Profesor>();
@@ -80,7 +98,11 @@ namespace GUI_Login.modelo
             return profesores;
         }
 
-        // Buscar profesor por ID
+        /// <summary>
+        /// Busca un profesor específico por su ID
+        /// </summary>
+        /// <param name="id">ID del profesor a buscar</param>
+        /// <returns>Objeto Profesor si se encuentra, null si no existe</returns>
         public Profesor? BuscarProfesor(int id)
         {
             Profesor? profesor = null;
@@ -116,7 +138,11 @@ namespace GUI_Login.modelo
             return profesor;
         }
 
-        // Modificar profesor
+        /// <summary>
+        /// Actualiza los datos de un profesor existente
+        /// </summary>
+        /// <param name="profesor">Objeto Profesor con los datos actualizados</param>
+        /// <returns>True si la modificación fue exitosa</returns>
         public bool ModificarProfesor(Profesor profesor)
         {
             bool resultado = false;
@@ -149,7 +175,11 @@ namespace GUI_Login.modelo
             return resultado;
         }
 
-        // Eliminar profesor
+        /// <summary>
+        /// Elimina un profesor de la base de datos
+        /// </summary>
+        /// <param name="id">ID del profesor a eliminar</param>
+        /// <returns>True si la eliminación fue exitosa</returns>
         public bool EliminarProfesor(int id)
         {
             bool resultado = false;
@@ -173,7 +203,13 @@ namespace GUI_Login.modelo
             return resultado;
         }
 
-        // Obtener tabla para DataGridView
+        // ==================== CONSULTAS ESPECIALIZADAS ====================
+
+        /// <summary>
+        /// Obtiene los datos de profesores en formato DataTable para mostrar en GridView
+        /// Incluye información de instrumentos y cátedras mediante JOIN
+        /// </summary>
+        /// <returns>DataTable con los datos formateados para visualización</returns>
         public DataTable ObtenerTablaProfesores()
         {
             DataTable tabla = new();
@@ -210,5 +246,66 @@ namespace GUI_Login.modelo
             return tabla;
         }
 
+        // ==================== VALIDACIONES DE UNICIDAD ====================
+
+        /// <summary>
+        /// Verifica si ya existe un profesor con el mismo DNI
+        /// </summary>
+        /// <param name="dni">DNI a verificar</param>
+        /// <param name="idExcluir">ID a excluir (para modificaciones)</param>
+        /// <returns>True si el DNI ya existe</returns>
+        public bool ExisteDni(int dni, int idExcluir = 0)
+        {
+            using MySqlConnection conn = conexion.getConexion();
+            conn.Open();
+
+            string query = "SELECT COUNT(*) FROM profesor WHERE dni = @dni AND id != @idExcluir";
+            using MySqlCommand command = new(query, conn);
+            command.Parameters.AddWithValue("@dni", dni);
+            command.Parameters.AddWithValue("@idExcluir", idExcluir);
+
+            int count = Convert.ToInt32(command.ExecuteScalar());
+            return count > 0;
+        }
+
+        /// <summary>
+        /// Verifica si ya existe un profesor con el mismo email
+        /// </summary>
+        /// <param name="email">Email a verificar</param>
+        /// <param name="idExcluir">ID a excluir (para modificaciones)</param>
+        /// <returns>True si el email ya existe</returns>
+        public bool ExisteEmail(string email, int idExcluir = 0)
+        {
+            using MySqlConnection conn = conexion.getConexion();
+            conn.Open();
+
+            string query = "SELECT COUNT(*) FROM profesor WHERE email = @email AND id != @idExcluir";
+            using MySqlCommand command = new(query, conn);
+            command.Parameters.AddWithValue("@email", email);
+            command.Parameters.AddWithValue("@idExcluir", idExcluir);
+
+            int count = Convert.ToInt32(command.ExecuteScalar());
+            return count > 0;
+        }
+
+        /// <summary>
+        /// Verifica si ya existe un profesor con el mismo teléfono
+        /// </summary>
+        /// <param name="telefono">Teléfono a verificar</param>
+        /// <param name="idExcluir">ID a excluir (para modificaciones)</param>
+        /// <returns>True si el teléfono ya existe</returns>
+        public bool ExisteTelefono(string telefono, int idExcluir = 0)
+        {
+            using MySqlConnection conn = conexion.getConexion();
+            conn.Open();
+
+            string query = "SELECT COUNT(*) FROM profesor WHERE telefono = @telefono AND id != @idExcluir";
+            using MySqlCommand command = new(query, conn);
+            command.Parameters.AddWithValue("@telefono", telefono);
+            command.Parameters.AddWithValue("@idExcluir", idExcluir);
+
+            int count = Convert.ToInt32(command.ExecuteScalar());
+            return count > 0;
+        }
     }
 }

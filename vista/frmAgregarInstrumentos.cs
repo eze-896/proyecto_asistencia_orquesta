@@ -5,6 +5,10 @@ using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
+    /// <summary>
+    /// Formulario para agregar instrumentos a la orquesta
+    /// Permite seleccionar instrumentos disponibles y agregarlos al inventario
+    /// </summary>
     public partial class frmAgregarInstrumentos : Form
     {
         private readonly ControlInstrumento controlInstrumento;
@@ -20,6 +24,9 @@ namespace GUI_Login.vista
             CargarComboInstrumentos();
         }
 
+        /// <summary>
+        /// Carga los instrumentos disponibles en el ComboBox
+        /// </summary>
         private void CargarComboInstrumentos()
         {
             try
@@ -49,27 +56,27 @@ namespace GUI_Login.vista
 
             try
             {
-                if (cmbInstrumento.SelectedValue is int idInstrumento)
-                {
-                    bool insertado = controlInstrumento.AgregarInstrumentoAOrquesta(idInstrumento);
-
-                    if (insertado)
-                    {
-                        MessageBox.Show("Instrumento agregado a la orquesta correctamente.",
-                            "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        CargarComboInstrumentos(); // refresca lista
-                    }
-                    else
-                    {
-                        MessageBox.Show("No se pudo agregar el instrumento. Quizás ya está en la orquesta.",
-                            "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                }
-                else
+                // Valida si SelectedValue es un int
+                if (!(cmbInstrumento.SelectedValue is int idInstrumento))
                 {
                     MessageBox.Show("No se pudo agregar el instrumento. Quizás ya está en la orquesta.",
                         "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
                 }
+
+                // Intenta insertar
+                bool insertado = controlInstrumento.AgregarInstrumentoAOrquesta(idInstrumento);
+
+                if (!insertado)
+                {
+                    MessageBox.Show("No se pudo agregar el instrumento. Quizás ya está en la orquesta.",
+                        "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                MessageBox.Show("Instrumento agregado a la orquesta correctamente.",
+                    "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                CargarComboInstrumentos();
             }
             catch (Exception ex)
             {
@@ -78,16 +85,17 @@ namespace GUI_Login.vista
             }
         }
 
+
+        // Navegación y cierre
         private void BtnVolver_Click(object sender, EventArgs e)
         {
-            this.Close(); 
+            this.Close();
             FrmPrincipal formPrincipal = new();
             formPrincipal.Show();
         }
 
         private void BtnSalir_Click(object sender, EventArgs e)
         {
-            // Cierra el sistema
             Application.Exit();
         }
     }

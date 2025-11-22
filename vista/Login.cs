@@ -5,27 +5,50 @@ namespace GUI_Login
         public Login()
         {
             InitializeComponent();
+            ConfigureEventHandlers();
+        }
+
+        private void ConfigureEventHandlers()
+        {
+            // Configurar eventos KeyPress para Enter
+            txtUsuario.KeyPress += UsuarioTextBox_KeyPress;
+            txtContraseña.KeyPress += ContraseñaTextBox_KeyPress;
         }
 
         private void BtnIniciarsesion_Click(object sender, EventArgs e)
         {
+            IniciarSesion();
+        }
+
+        private void IniciarSesion()
+        {
             try
             {
-                String usuario = txtUsuario.Text;
-                String pass = txtContraseña.Text;
-                String respuestaControlador = ControlSesion.CtrlLogin(usuario, pass);
-                ControlSesion control = new ();
+                string usuario = txtUsuario.Text.Trim();
+                string pass = txtContraseña.Text.Trim();
+
+                if (string.IsNullOrEmpty(usuario) || string.IsNullOrEmpty(pass))
+                {
+                    MessageBox.Show("Debe completar todos los campos", "Login",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtUsuario.Focus();
+                    return;
+                }
+
+                string respuestaControlador = ControlSesion.CtrlLogin(usuario, pass);
+
                 if (respuestaControlador == "¡Bienvenido!")
                 {
-                    FrmPrincipal p = new ();
-                    this.Visible = false; //Oculta el formulario de inicio de sesión.
+                    FrmPrincipal p = new();
+                    this.Hide();
                     p.Show();
                 }
                 else
                 {
                     MessageBox.Show(respuestaControlador, "Control de usuarios",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    if (txtUsuario.Text == "")
+
+                    if (string.IsNullOrEmpty(txtUsuario.Text))
                         txtUsuario.Focus();
                     else
                         txtContraseña.Focus();
@@ -33,44 +56,56 @@ namespace GUI_Login
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                MessageBox.Show($"Error al iniciar sesión: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void BtnSalir_Click(object sender, EventArgs e)
         {
-            // Boton salir
             DialogResult rta = MessageBox.Show("¿Seguro que desea salir?", "Control de usuarios",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (rta == DialogResult.Yes)
             {
-                Application.Exit(); // Cierra la aplicación
-            }
-            else
-            {
-                txtUsuario.Focus(); // Regresa el foco al campo de usuario
+                Application.Exit();
             }
         }
 
         private void BtnRegistro_Click(object sender, EventArgs e)
         {
-            // Ir al formulario de registro
-            Registro reg = new ();
-            this.Visible = false; // Oculta el formulario de inicio de sesión.
+            Registro reg = new();
+            this.Hide();
             reg.Show();
         }
 
         private void CheckBxMostrarContraseña_CheckedChanged(object sender, EventArgs e)
         {
-            // Mostrar u ocultar contraseña
-
-        if (checkBxMostrarContraseña.Checked)
+            if (checkBxMostrarContraseña.Checked)
             {
-                txtContraseña.PasswordChar = '\0'; // Mostrar contraseña
+                txtContraseña.PasswordChar = '\0';
             }
             else
             {
-                txtContraseña.PasswordChar = '•'; // Ocultar contraseña
+                txtContraseña.PasswordChar = '•';
+            }
+        }
+
+        // Eventos para manejar Enter
+        private void UsuarioTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                txtContraseña.Focus();
+            }
+        }
+
+        private void ContraseñaTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                IniciarSesion(); // Inicia sesión automáticamente al presionar Enter
             }
         }
     }

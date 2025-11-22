@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Asistencia_orq")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0ded8967705ba53621d49fee9f21d62c4f9c8f4d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5b6cddc95753c56c2b641dfad4d05a5449325dd0")]
 [assembly: System.Reflection.AssemblyProductAttribute("Asistencia_orq")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Asistencia_orq")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

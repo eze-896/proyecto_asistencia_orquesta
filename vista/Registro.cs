@@ -15,18 +15,29 @@ namespace GUI_Login
         public Registro()
         {
             InitializeComponent();
+            ConfigureEventHandlers();
+        }
+
+        private void ConfigureEventHandlers()
+        {
+            // Configurar eventos KeyPress para Enter
+            txtNombreRegistro.KeyPress += TextBox_KeyPress;
+            txtContraRegistro.KeyPress += TextBox_KeyPress;
+            txtContraConfirm.KeyPress += ConfirmTextBox_KeyPress;
+
+            // Configurar eventos para mostrar/ocultar contraseña
+            checkMostrarContraseña.CheckedChanged += CheckMostrarContraseña_CheckedChanged;
         }
 
         private void Registro_Load(object sender, EventArgs e)
         {
-            txtNombreRegistro.Focus(); // Cuando abre el formulario, pone el foco en usuario
+            txtNombreRegistro.Focus();
         }
 
         private void BtnVolver_Click(object sender, EventArgs e)
         {
-            // Volver al login
-            Login login = new ();
-            this.Visible = false;
+            Login login = new();
+            this.Hide(); // Mejor usar Hide() en lugar de Visible = false
             login.Show();
         }
 
@@ -38,13 +49,14 @@ namespace GUI_Login
             {
                 Application.Exit();
             }
-            else
-            {
-                txtNombreRegistro.Focus();
-            }
         }
 
         private void BtnRegistro_Click(object sender, EventArgs e)
+        {
+            RegistrarUsuario();
+        }
+
+        private void RegistrarUsuario()
         {
             try
             {
@@ -52,10 +64,11 @@ namespace GUI_Login
                 string pass = txtContraRegistro.Text.Trim();
                 string confirmar = txtContraConfirm.Text.Trim();
 
-                if (usuario == "" || pass == "" || confirmar == "")
+                if (string.IsNullOrEmpty(usuario) || string.IsNullOrEmpty(pass) || string.IsNullOrEmpty(confirmar))
                 {
                     MessageBox.Show("Debe completar todos los campos", "Registro",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtNombreRegistro.Focus();
                     return;
                 }
 
@@ -69,37 +82,83 @@ namespace GUI_Login
                     return;
                 }
 
+                // Validar longitud mínima de contraseña
+                if (pass.Length < 6)
+                {
+                    MessageBox.Show("La contraseña debe tener al menos 6 caracteres", "Registro",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtContraRegistro.Clear();
+                    txtContraConfirm.Clear();
+                    txtContraRegistro.Focus();
+                    return;
+                }
+
                 // Crear objeto Usuario
                 Usuario nuevoUser = new()
                 {
                     Nombre = usuario
                 };
-                ControlSesion cs = new ();
-                nuevoUser.Contrasena = ControlSesion.GenerarSHA1(pass); // Guardar encriptado
+
+                nuevoUser.Contrasena = ControlSesion.GenerarSHA1(pass);
 
                 // Guardar en BD
-                ModeloSesion modelo = new ();
                 if (ModeloSesion.RegistrarUsuario(nuevoUser))
                 {
                     MessageBox.Show("Usuario registrado con éxito", "Registro",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     Login login = new();
-                    this.Visible = false;
+                    this.Hide();
                     login.Show();
                 }
                 else
                 {
-                    MessageBox.Show("No se pudo registrar el usuario", "Registro",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("No se pudo registrar el usuario. El nombre de usuario puede estar en uso.",
+                        "Registro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtNombreRegistro.Focus();
+                    txtNombreRegistro.SelectAll();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "Error",
+                MessageBox.Show($"Error al registrar usuario: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Evento para manejar Enter en TextBoxes
+        private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                this.SelectNextControl((Control)sender, true, true, true, true);
+            }
+        }
+
+        // Evento especial para el último TextBox (registro automático)
+        private void ConfirmTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                e.Handled = true;
+                RegistrarUsuario(); // Registra automáticamente al presionar Enter en el último campo
+            }
+        }
+
+        // Mostrar/ocultar contraseña
+        private void CheckMostrarContraseña_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkMostrarContraseña.Checked)
+            {
+                txtContraRegistro.PasswordChar = '\0';
+                txtContraConfirm.PasswordChar = '\0';
+            }
+            else
+            {
+                txtContraRegistro.PasswordChar = '•';
+                txtContraConfirm.PasswordChar = '•';
             }
         }
     }
 }
-

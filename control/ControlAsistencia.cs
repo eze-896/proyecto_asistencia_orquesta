@@ -5,15 +5,26 @@ using System.Data;
 
 namespace GUI_Login.control
 {
+    /// <summary>
+    /// Controlador para la gestión de asistencias
+    /// Maneja el registro y consulta de asistencias a diferentes actividades del orquesta
+    /// </summary>
     public class ControlAsistencia
     {
         private readonly ModeloAsistencia modeloAsistencia;
 
+        /// <summary>
+        /// Constructor que inicializa el modelo de asistencias
+        /// </summary>
         public ControlAsistencia()
         {
             modeloAsistencia = new ModeloAsistencia();
         }
 
+        /// <summary>
+        /// Obtiene la lista completa de alumnos para el registro de asistencias
+        /// </summary>
+        /// Retorna una Lista de objetos Alumno
         public List<Alumno> ObtenerAlumnos()
         {
             try
@@ -26,6 +37,12 @@ namespace GUI_Login.control
                 return [];
             }
         }
+
+        /// <summary>
+        /// Guarda una lista de asistencias en la base de datos
+        /// Registra tanto presentes como ausentes para tener control completo
+        /// </summary>
+        /// asistencias: Lista de objetos Asistencia a guardar
 
         public bool GuardarAsistencias(List<Asistencia> asistencias)
         {
@@ -47,7 +64,7 @@ namespace GUI_Login.control
                         continue;
                     }
 
-                    // 🔹 Ahora guardamos tanto presentes como ausentes
+                    // Guarda a los presentes y ausentes
                     bool ok = modeloAsistencia.MarcarAsistencia(a);
                     if (!ok) todosGuardados = false;
                 }
@@ -61,6 +78,10 @@ namespace GUI_Login.control
             return todosGuardados;
         }
 
+        /// <summary>
+        /// Valida que una asistencia tenga todos los datos requeridos
+        /// </summary>
+        /// asistencia: Objeto Asistencia a validar
 
         private static bool ValidarAsistencia(Asistencia asistencia)
         {
@@ -69,6 +90,10 @@ namespace GUI_Login.control
                    Enum.IsDefined(typeof(Asistencia.Tipo_Actividad), asistencia.TipoActividad);
         }
 
+        /// <summary>
+        /// Obtiene los datos de asistencias en formato DataTable para mostrar en GridView
+        /// </summary>
+        /// Retornar un DataTable con el historial de asistencias
         public DataTable ObtenerDatosParaGrid()
         {
             try

@@ -34,6 +34,7 @@
             lblContraConfirm = new Label();
             txtContraRegistro = new TextBox();
             txtContraConfirm = new TextBox();
+            checkMostrarContraseña = new CheckBox();
             pictureBox1 = new PictureBox();
             btnRegistro = new Button();
             btnVolver = new Button();
@@ -127,13 +128,27 @@
             btnRegistro.FlatStyle = FlatStyle.Flat;
             btnRegistro.Font = new Font("Nirmala UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnRegistro.ForeColor = Color.White;
-            btnRegistro.Location = new Point(34, 408);
+            btnRegistro.Location = new Point(34, 425);
             btnRegistro.Name = "btnRegistro";
             btnRegistro.Size = new Size(270, 35);
             btnRegistro.TabIndex = 10;
             btnRegistro.Text = "REGISTRARSE";
             btnRegistro.UseVisualStyleBackColor = false;
             btnRegistro.Click += BtnRegistro_Click;
+            // 
+            // checkMostrarContraseña
+            // 
+            checkMostrarContraseña.AutoSize = true;
+            checkMostrarContraseña.Cursor = Cursors.Hand;
+            checkMostrarContraseña.FlatStyle = FlatStyle.Flat;
+            checkMostrarContraseña.Font = new Font("Nirmala UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            checkMostrarContraseña.ForeColor = Color.FromArgb(116, 86, 174);
+            checkMostrarContraseña.Location = new Point(34, 395);
+            checkMostrarContraseña.Name = "checkMostrarContraseña";
+            checkMostrarContraseña.Size = new Size(145, 19);
+            checkMostrarContraseña.TabIndex = 13;
+            checkMostrarContraseña.Text = "Mostrar Contraseñas";
+            checkMostrarContraseña.UseVisualStyleBackColor = true;
             // 
             // btnVolver
             // 
@@ -143,7 +158,7 @@
             btnVolver.FlatStyle = FlatStyle.Flat;
             btnVolver.Font = new Font("Nirmala UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnVolver.ForeColor = Color.White;
-            btnVolver.Location = new Point(33, 449);
+            btnVolver.Location = new Point(33, 466);
             btnVolver.Name = "btnVolver";
             btnVolver.Size = new Size(271, 39);
             btnVolver.TabIndex = 11;
@@ -183,8 +198,10 @@
             Controls.Add(lblContraseñaRegistro);
             Controls.Add(lblNombreRegistro);
             Controls.Add(txtNombreRegistro);
+            Controls.Add(checkMostrarContraseña);
             FormBorderStyle = FormBorderStyle.None;
             Name = "registro";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "registro";
             Load += Registro_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
@@ -194,6 +211,7 @@
 
         #endregion
 
+        private CheckBox checkMostrarContraseña;
         private TextBox txtNombreRegistro;
         private Label lblNombreRegistro;
         private Label lblContraseñaRegistro;

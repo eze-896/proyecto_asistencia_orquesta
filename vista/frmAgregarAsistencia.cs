@@ -5,6 +5,10 @@ using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
+    /// <summary>
+    /// Formulario para registrar asistencias de alumnos a actividades
+    /// Permite marcar presentes/ausentes para diferentes tipos de actividades
+    /// </summary>
     public partial class FrmAgregarAsistencia : Form
     {
         private readonly ControlAsistencia controlAsistencia;
@@ -19,16 +23,32 @@ namespace GUI_Login.vista
 
         private void FrmAgregarAsistencia_Load(object sender, EventArgs e)
         {
+            // Configura valores iniciales
             datePicker.Value = DateTime.Today;
             cmbActividad.DataSource = Enum.GetValues(typeof(Asistencia.Tipo_Actividad));
 
-            // Cargar alumnos
-            listaAlumnos = controlAsistencia.ObtenerAlumnos();
-            chkListaAlumnos.Items.Clear();
+            CargarAlumnos();
+        }
 
-            foreach (Alumno alumno in listaAlumnos)
+        /// <summary>
+        /// Carga la lista de alumnos en el CheckedListBox
+        /// </summary>
+        private void CargarAlumnos()
+        {
+            try
             {
-                chkListaAlumnos.Items.Add($"{alumno.Nombre} {alumno.Apellido}", false);
+                listaAlumnos = controlAsistencia.ObtenerAlumnos();
+                chkListaAlumnos.Items.Clear();
+
+                foreach (Alumno alumno in listaAlumnos)
+                {
+                    chkListaAlumnos.Items.Add($"{alumno.Nombre} {alumno.Apellido}", false);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar alumnos: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -36,83 +56,89 @@ namespace GUI_Login.vista
         {
             try
             {
-                // Validaciones...
+                // Validación: actividad
                 if (cmbActividad.SelectedIndex == -1)
                 {
                     MessageBox.Show("Seleccione una actividad.", "Validación",
-                                  MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     cmbActividad.Focus();
                     return;
                 }
 
+                // Validación: alumnos cargados
                 if (chkListaAlumnos.Items.Count == 0)
                 {
                     MessageBox.Show("No hay alumnos cargados.", "Validación",
-                                  MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
                 DateTime fecha = datePicker.Value.Date;
-                Asistencia.Tipo_Actividad actividad = (Asistencia.Tipo_Actividad)cmbActividad.SelectedItem!;
+                Asistencia.Tipo_Actividad actividad =
+                    (Asistencia.Tipo_Actividad)cmbActividad.SelectedItem!;
 
                 List<Asistencia> asistencias = [];
 
-                // 🔹 Guardar todos los alumnos (presentes e inasistentes)
+                // Crea lista de asistencias
                 for (int i = 0; i < chkListaAlumnos.Items.Count; i++)
                 {
-                    if (i < listaAlumnos.Count)
+                    if (i >= listaAlumnos.Count)
+                        continue;
+
+                    bool estaPresente = chkListaAlumnos.GetItemChecked(i);
+
+                    asistencias.Add(new Asistencia
                     {
-                        bool estaPresente = chkListaAlumnos.GetItemChecked(i);
-
-                        Asistencia a = new()
-                        {
-                            IdAlumno = listaAlumnos[i].Id,
-                            Fecha = fecha,
-                            TipoActividad = actividad,
-                            Presente = estaPresente
-                        };
-
-                        asistencias.Add(a);
-                    }
+                        IdAlumno = listaAlumnos[i].Id,
+                        Fecha = fecha,
+                        TipoActividad = actividad,
+                        Presente = estaPresente
+                    });
                 }
+
+                // Previsualización de resumen
+                int presentes = asistencias.FindAll(a => a.Presente).Count;
+                int ausentes = asistencias.Count - presentes;
 
                 DialogResult resultado = MessageBox.Show(
                     $"¿Guardar asistencias para {fecha:dd/MM/yyyy} - {actividad}?\n" +
-                    $"Presentes: {asistencias.FindAll(a => a.Presente).Count} | " +
-                    $"Ausentes: {asistencias.FindAll(a => !a.Presente).Count}",
+                    $"Presentes: {presentes} | Ausentes: {ausentes}",
                     "Confirmar",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
 
-                if (resultado == DialogResult.Yes)
+                // Si NO confirma → cortar
+                if (resultado != DialogResult.Yes)
+                    return;
+
+                // Intenta guardar
+                bool guardado = controlAsistencia.GuardarAsistencias(asistencias);
+
+                if (!guardado)
                 {
-                    bool guardado = controlAsistencia.GuardarAsistencias(asistencias);
+                    MessageBox.Show("Hubo errores al guardar algunas asistencias.",
+                                    "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
-                    if (guardado)
-                    {
-                        MessageBox.Show("Asistencias guardadas correctamente.",
-                                      "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Asistencias guardadas correctamente.",
+                                "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                        // Limpiar selección
-                        for (int i = 0; i < chkListaAlumnos.Items.Count; i++)
-                        {
-                            chkListaAlumnos.SetItemChecked(i, false);
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Hubo errores al guardar algunas asistencias.",
-                                      "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
+                // Limpia selección
+                for (int i = 0; i < chkListaAlumnos.Items.Count; i++)
+                {
+                    chkListaAlumnos.SetItemChecked(i, false);
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error inesperado: {ex.Message}", "Error",
-                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+
+        // Navegación y cierre
         private void BtnVolver_Click(object sender, EventArgs e)
         {
             this.Hide();
