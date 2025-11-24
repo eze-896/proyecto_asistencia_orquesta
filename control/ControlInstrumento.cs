@@ -5,10 +5,16 @@ using System.Windows.Forms;
 
 namespace GUI_Login.control
 {
+    /// <summary>
+    /// Controlador para gestionar las operaciones relacionadas con instrumentos
+    /// </summary>
     public class ControlInstrumento
     {
         private readonly ModeloInstrumento modeloInstrumento;
 
+        /// <summary>
+        /// Constructor que inicializa el modelo de instrumentos
+        /// </summary>
         public ControlInstrumento()
         {
             modeloInstrumento = new ModeloInstrumento();
@@ -16,20 +22,60 @@ namespace GUI_Login.control
 
         // ==================== OPERACIONES CRUD ====================
 
-        public bool EliminarInstrumentoDeOrquesta(int idInstrumento)
+        /// <summary>
+        /// Elimina un instrumento de la orquesta con validaciones completas
+        /// </summary>
+        public bool EliminarInstrumentoDeOrquesta(int idInstrumento, string nombreInstrumento = "")
         {
-            if (!ValidarIdInstrumento(idInstrumento))
+            // Validar ID del instrumento
+            if (idInstrumento <= 0)
+            {
+                MessageBox.Show("ID de instrumento no válido.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
+            }
 
             try
             {
-                bool resultado = modeloInstrumento.EliminarInstrumentoOrquesta(idInstrumento);
-                if (!resultado)
+                // Verificar si el instrumento está siendo usado por profesores
+                if (modeloInstrumento.EstaInstrumentoEnUso(idInstrumento))
+                {
+                    MessageBox.Show($"No se puede eliminar el instrumento '{nombreInstrumento}' porque está asignado a uno o más profesores.",
+                        "No se puede eliminar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+
+                // Verificar si el instrumento está siendo usado por alumnos
+                if (modeloInstrumento.EstaInstrumentoEnUsoPorAlumnos(idInstrumento))
+                {
+                    MessageBox.Show($"No se puede eliminar el instrumento '{nombreInstrumento}' porque está asignado a uno o más alumnos.",
+                        "No se puede eliminar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+
+                // Solicitar confirmación antes de eliminar
+                DialogResult resultado = MessageBox.Show(
+                    $"¿Está seguro de eliminar el instrumento '{nombreInstrumento}' de la orquesta?",
+                    "Confirmar Eliminación",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (resultado != DialogResult.Yes)
+                    return false;
+
+                // Ejecutar eliminación en la base de datos
+                bool exito = modeloInstrumento.EliminarInstrumentoOrquesta(idInstrumento);
+                if (exito)
+                {
+                    MessageBox.Show("Instrumento eliminado de la orquesta correctamente.", "Éxito",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
                 {
                     MessageBox.Show("No se pudo eliminar el instrumento de la orquesta.",
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                return resultado;
+                return exito;
             }
             catch (Exception ex)
             {
@@ -39,13 +85,22 @@ namespace GUI_Login.control
             }
         }
 
+        /// <summary>
+        /// Agrega un instrumento a la orquesta después de validar el ID
+        /// </summary>
         public bool AgregarInstrumentoAOrquesta(int idInstrumento)
         {
-            if (!ValidarIdInstrumento(idInstrumento))
+            // Validar ID del instrumento
+            if (idInstrumento <= 0)
+            {
+                MessageBox.Show("ID de instrumento no válido.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
+            }
 
             try
             {
+                // Ejecutar inserción en la base de datos
                 bool resultado = modeloInstrumento.AgregarInstrumentoOrquesta(idInstrumento);
                 if (!resultado)
                 {
@@ -56,7 +111,7 @@ namespace GUI_Login.control
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Manejo específico para el error de duplicado
+                // Manejo específico para el error de duplicado
                 if (ex.Message.Contains("ya está en la orquesta"))
                 {
                     MessageBox.Show(ex.Message, "Advertencia",
@@ -71,44 +126,11 @@ namespace GUI_Login.control
             }
         }
 
-        // ==================== VALIDACIONES DE USO ====================
+        // ==================== CONSULTAS DE LISTADOS ====================
 
-        public bool EstaInstrumentoEnUso(int idInstrumento)
-        {
-            if (!ValidarIdInstrumento(idInstrumento))
-                return true;
-
-            try
-            {
-                return modeloInstrumento.EstaInstrumentoEnUso(idInstrumento);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al verificar uso del instrumento: {ex.Message}",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return true;
-            }
-        }
-
-        public bool EstaInstrumentoEnUsoPorAlumnos(int idInstrumento)
-        {
-            if (!ValidarIdInstrumento(idInstrumento))
-                return true;
-
-            try
-            {
-                return modeloInstrumento.EstaInstrumentoEnUsoPorAlumnos(idInstrumento);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al verificar uso del instrumento por alumnos: {ex.Message}",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return true;
-            }
-        }
-
-        // ==================== CONSULTAS ====================
-
+        /// <summary>
+        /// Obtiene la lista de instrumentos que actualmente están en la orquesta
+        /// </summary>
         public List<Instrumento> ListarInstrumentosEnOrquesta()
         {
             try
@@ -123,6 +145,9 @@ namespace GUI_Login.control
             }
         }
 
+        /// <summary>
+        /// Obtiene la lista de instrumentos disponibles para agregar a la orquesta
+        /// </summary>
         public List<Instrumento> ListarInstrumentosDisponibles()
         {
             try
@@ -135,19 +160,6 @@ namespace GUI_Login.control
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return new List<Instrumento>();
             }
-        }
-
-        // ==================== MÉTODOS AUXILIARES ====================
-
-        private bool ValidarIdInstrumento(int idInstrumento)
-        {
-            if (idInstrumento <= 0)
-            {
-                MessageBox.Show("ID de instrumento no válido.",
-                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
-            }
-            return true;
         }
     }
 }

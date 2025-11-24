@@ -4,12 +4,20 @@ using System.Collections.Generic;
 
 namespace GUI_Login.modelo
 {
+    /// <summary>
+    /// Modelo para gestionar las relaciones entre alumnos e instrumentos
+    /// </summary>
     public class ModeloAlumnoInstrumento
     {
         private readonly Conexion conexion = new();
 
         // ==================== OPERACIONES CRUD ====================
 
+        /// <summary>
+        /// Inserta una relación alumno-instrumento
+        /// </summary>
+        /// <param name="relacion">Objeto con la relación a insertar</param>
+        /// <returns>True si la inserción fue exitosa</returns>
         public bool InsertarAlumnoInstrumento(AlumnoInstrumento relacion)
         {
             bool insertado = false;
@@ -28,13 +36,18 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new Exception($"Error al insertar relación alumno-instrumento: {ex.Message}");
             }
 
             return insertado;
         }
 
+        /// <summary>
+        /// Registra múltiples instrumentos para un alumno en una transacción
+        /// </summary>
+        /// <param name="idAlumno">ID del alumno</param>
+        /// <param name="idsInstrumentos">Lista de IDs de instrumentos</param>
+        /// <returns>True si el registro fue exitoso</returns>
         public bool RegistrarInstrumentosParaAlumno(int idAlumno, List<int> idsInstrumentos)
         {
             bool resultado = false;
@@ -62,7 +75,6 @@ namespace GUI_Login.modelo
                 }
                 catch (Exception ex)
                 {
-                    // CORREGIDO: Manejo seguro del rollback
                     try
                     {
                         transaction.Rollback();
@@ -76,13 +88,17 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new Exception($"Error al registrar instrumentos para alumno: {ex.Message}");
             }
 
             return resultado;
         }
 
+        /// <summary>
+        /// Actualiza o inserta una relación alumno-instrumento
+        /// </summary>
+        /// <param name="relacion">Objeto con la relación a actualizar</param>
+        /// <returns>True si la operación fue exitosa</returns>
         public bool ActualizarAlumnoInstrumento(AlumnoInstrumento relacion)
         {
             bool resultado = false;
@@ -112,13 +128,18 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new Exception($"Error al actualizar relación alumno-instrumento: {ex.Message}");
             }
 
             return resultado;
         }
 
+        /// <summary>
+        /// Actualiza todos los instrumentos de un alumno (elimina los anteriores y agrega los nuevos)
+        /// </summary>
+        /// <param name="idAlumno">ID del alumno</param>
+        /// <param name="idsInstrumentos">Lista de nuevos IDs de instrumentos</param>
+        /// <returns>True si la actualización fue exitosa</returns>
         public bool ActualizarInstrumentosDeAlumno(int idAlumno, List<int> idsInstrumentos)
         {
             bool resultado = false;
@@ -152,7 +173,6 @@ namespace GUI_Login.modelo
                 }
                 catch (Exception ex)
                 {
-                    // CORREGIDO: Manejo seguro del rollback
                     try
                     {
                         transaction.Rollback();
@@ -166,7 +186,6 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new Exception($"Error al actualizar instrumentos del alumno: {ex.Message}");
             }
 
@@ -175,6 +194,11 @@ namespace GUI_Login.modelo
 
         // ==================== CONSULTAS ====================
 
+        /// <summary>
+        /// Obtiene los IDs de los instrumentos asociados a un alumno
+        /// </summary>
+        /// <param name="idAlumno">ID del alumno</param>
+        /// <returns>Lista de IDs de instrumentos</returns>
         public List<int> ObtenerInstrumentosPorAlumno(int idAlumno)
         {
             List<int> instrumentos = new List<int>();
@@ -195,7 +219,6 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new Exception($"Error al obtener instrumentos del alumno: {ex.Message}");
             }
 
@@ -204,6 +227,11 @@ namespace GUI_Login.modelo
 
         // ==================== OPERACIONES DE ELIMINACIÓN ====================
 
+        /// <summary>
+        /// Elimina todas las relaciones de instrumentos de un alumno
+        /// </summary>
+        /// <param name="idAlumno">ID del alumno</param>
+        /// <returns>True si la eliminación fue exitosa</returns>
         public bool EliminarRelacionPorAlumno(int idAlumno)
         {
             bool eliminado = false;
@@ -216,36 +244,11 @@ namespace GUI_Login.modelo
 
                 using MySqlCommand cmd = new(sql, conn);
                 cmd.Parameters.AddWithValue("@idAlumno", idAlumno);
-                eliminado = cmd.ExecuteNonQuery() >= 0; // CORREGIDO: >= 0 en lugar de > 0
+                eliminado = cmd.ExecuteNonQuery() >= 0;
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new Exception($"Error al eliminar relaciones del alumno: {ex.Message}");
-            }
-
-            return eliminado;
-        }
-
-        public bool EliminarRelacionEspecifica(int idAlumno, int idInstrumento)
-        {
-            bool eliminado = false;
-
-            using MySqlConnection conn = conexion.getConexion();
-            try
-            {
-                conn.Open();
-                string sql = "DELETE FROM alumno_instrumento WHERE id_alumno = @idAlumno AND id_instrumento = @idInstrumento";
-
-                using MySqlCommand cmd = new(sql, conn);
-                cmd.Parameters.AddWithValue("@idAlumno", idAlumno);
-                cmd.Parameters.AddWithValue("@idInstrumento", idInstrumento);
-                eliminado = cmd.ExecuteNonQuery() > 0;
-            }
-            catch (Exception ex)
-            {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
-                throw new Exception($"Error al eliminar relación específica: {ex.Message}");
             }
 
             return eliminado;

@@ -15,6 +15,9 @@ namespace GUI_Login.control
         private readonly ModeloAlumno modeloAlumno;
         private readonly ControlAlumnoInstrumento controlAlumnoInstrumento;
 
+        /// <summary>
+        /// Constructor que inicializa los modelos necesarios
+        /// </summary>
         public ControlAlumno()
         {
             modeloAlumno = new ModeloAlumno();
@@ -23,19 +26,37 @@ namespace GUI_Login.control
 
         // ==================== OPERACIONES CRUD ====================
 
+        /// <summary>
+        /// Registra un nuevo alumno junto con sus instrumentos asociados
+        /// </summary>
         public bool RegistrarAlumnoConInstrumentos(Alumno alumno, List<int> idsInstrumentos)
         {
+            // Validar datos del alumno
             if (!ValidarAlumno(alumno))
                 return false;
 
-            if (!ValidarUnicidadAlumno(alumno))
+            // Verificar que no exista otro alumno con los mismos datos únicos
+            if (modeloAlumno.ExisteDni(alumno.Dni, 0))
+            {
+                MessageBox.Show($"Ya existe un alumno con el DNI {alumno.Dni}.", "DNI Duplicado",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
+            }
+
+            if (modeloAlumno.ExisteTelefono(alumno.Telefono_padres, 0))
+            {
+                MessageBox.Show($"Ya existe un alumno con el teléfono {alumno.Telefono_padres}.", "Teléfono Duplicado",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
 
             try
             {
+                // Insertar alumno en la base de datos
                 int idAlumno = modeloAlumno.InsertarAlumno(alumno);
                 if (idAlumno > 0)
                 {
+                    // Asociar instrumentos al alumno
                     bool relacionesInsertadas = controlAlumnoInstrumento.RegistrarInstrumentosParaAlumno(idAlumno, idsInstrumentos);
                     if (relacionesInsertadas)
                     {
@@ -45,6 +66,7 @@ namespace GUI_Login.control
                     }
                     else
                     {
+                        // Revertir inserción si falla la asociación de instrumentos
                         modeloAlumno.EliminarAlumno(idAlumno);
                         MessageBox.Show("Error al asociar los instrumentos al alumno.",
                             "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -60,30 +82,57 @@ namespace GUI_Login.control
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Ahora captura excepciones del Modelo
                 MessageBox.Show($"Error al registrar alumno: {ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
 
+        /// <summary>
+        /// Modifica los datos de un alumno existente y sus instrumentos asociados
+        /// </summary>
         public bool ModificarAlumnoConInstrumentos(Alumno alumno, List<int> idsInstrumentos)
         {
+            // Validar datos del alumno
             if (!ValidarAlumno(alumno))
                 return false;
 
+            // Verificar ID válido
             if (alumno.Id <= 0)
             {
-                MessageBox.Show("ID de alumno no válido.",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("ID de alumno no válido.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
-            if (!ValidarUnicidadAlumno(alumno, alumno.Id))
+            // Solicitar confirmación antes de modificar
+            DialogResult confirmacion = MessageBox.Show(
+                "¿Está seguro que desea modificar los datos del alumno?",
+                "Confirmar Modificación",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirmacion != DialogResult.Yes)
                 return false;
+
+            // Verificar que no exista otro alumno con los mismos datos únicos
+            if (modeloAlumno.ExisteDni(alumno.Dni, alumno.Id))
+            {
+                MessageBox.Show($"Ya existe un alumno con el DNI {alumno.Dni}.", "DNI Duplicado",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (modeloAlumno.ExisteTelefono(alumno.Telefono_padres, alumno.Id))
+            {
+                MessageBox.Show($"Ya existe un alumno con el teléfono {alumno.Telefono_padres}.", "Teléfono Duplicado",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
 
             try
             {
+                // Actualizar alumno y sus instrumentos
                 bool alumnoModificado = modeloAlumno.ActualizarAlumno(alumno);
                 bool instrumentosActualizados = controlAlumnoInstrumento.ActualizarInstrumentosDeAlumno(alumno.Id, idsInstrumentos);
 
@@ -102,29 +151,48 @@ namespace GUI_Login.control
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Ahora captura excepciones del Modelo
                 MessageBox.Show($"Error al modificar alumno: {ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
 
+        /// <summary>
+        /// Elimina un alumno del sistema con confirmación previa
+        /// </summary>
         public bool EliminarAlumno(int id)
         {
+            // Validar ID
             if (id <= 0)
             {
-                MessageBox.Show("Seleccione un alumno válido para eliminar.",
-                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Seleccione un alumno válido para eliminar.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
-            if (!ConfirmarEliminacionAlumno(id))
+            // Buscar alumno para mostrar su nombre en la confirmación
+            Alumno? alumno = modeloAlumno.BuscarAlumno(id);
+            if (alumno == null)
+            {
+                MessageBox.Show("No se encontró el alumno a eliminar.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            // Solicitar confirmación antes de eliminar
+            DialogResult resultado = MessageBox.Show(
+                $"¿Está seguro de eliminar a {alumno.Nombre} {alumno.Apellido}?",
+                "Confirmar Eliminación",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (resultado != DialogResult.Yes)
                 return false;
 
             try
             {
+                // Eliminar alumno de la base de datos
                 bool alumnoEliminado = modeloAlumno.EliminarAlumno(id);
-
                 if (alumnoEliminado)
                 {
                     MessageBox.Show("Alumno eliminado correctamente.",
@@ -140,74 +208,69 @@ namespace GUI_Login.control
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Ahora captura excepciones del Modelo
                 MessageBox.Show($"Error al eliminar alumno: {ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
 
-        // ==================== VALIDACIONES MEJORADAS ====================
+        // ==================== VALIDACIONES ====================
 
-        public static bool ValidarAlumno(Alumno? alumno = null, string? nombre = null, string? apellido = null,
-                                       object? dni = null, string? telefono = null)
+        /// <summary>
+        /// Valida todos los datos de un alumno
+        /// </summary>
+        public static bool ValidarAlumno(Alumno alumno)
         {
-            if (alumno != null)
+            // Validar campos obligatorios
+            if (string.IsNullOrWhiteSpace(alumno.Nombre) || string.IsNullOrWhiteSpace(alumno.Apellido) ||
+                alumno.Dni <= 0 || string.IsNullOrWhiteSpace(alumno.Telefono_padres))
             {
-                nombre = alumno.Nombre;
-                apellido = alumno.Apellido;
-                dni = alumno.Dni;
-                telefono = alumno.Telefono_padres;
+                MessageBox.Show("Todos los campos son obligatorios.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
             }
 
-            if (string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(apellido) ||
-                dni == null || string.IsNullOrWhiteSpace(telefono))
-            {
-                return MostrarValidacion("Todos los campos son obligatorios.");
-            }
-
-            int dniNum;
-            if (dni is string dniString)
-            {
-                if (!int.TryParse(dniString, out dniNum) || dniNum <= 0)
-                    return MostrarValidacion("El DNI debe ser un número válido.");
-            }
-            else if (dni is int dniInt)
-            {
-                dniNum = dniInt;
-            }
-            else
-            {
-                return MostrarValidacion("Formato de DNI no válido.");
-            }
-
-            // CORREGIDO: Mejor validación de DNI (ejemplo para Argentina)
-            string dniStr = dniNum.ToString();
+            // Validar formato del DNI (7-8 dígitos)
+            string dniStr = alumno.Dni.ToString();
             if (dniStr.Length < 7 || dniStr.Length > 8)
-                return MostrarValidacion("El DNI debe tener entre 7 y 8 dígitos.");
+            {
+                MessageBox.Show("El DNI debe tener entre 7 y 8 dígitos.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
 
-            // Validar teléfono
-            if (!long.TryParse(telefono, out _) || telefono.Length > 15 || telefono.Length < 8)
-                return MostrarValidacion("El teléfono debe contener solo números y entre 8 y 15 dígitos.");
+            // Validar teléfono (solo números, 8-15 dígitos)
+            if (!long.TryParse(alumno.Telefono_padres, out _) || alumno.Telefono_padres.Length > 15 || alumno.Telefono_padres.Length < 8)
+            {
+                MessageBox.Show("El teléfono debe contener solo números y entre 8 y 15 dígitos.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
 
-            if (nombre.Length > 25 || !SoloLetrasRegex().IsMatch(nombre))
-                return MostrarValidacion("El nombre solo puede contener letras y hasta 25 caracteres.");
+            // Validar nombre (solo letras, máximo 25 caracteres)
+            if (alumno.Nombre.Length > 25 || !SoloLetrasRegex().IsMatch(alumno.Nombre))
+            {
+                MessageBox.Show("El nombre solo puede contener letras y hasta 25 caracteres.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
 
-            if (apellido.Length > 25 || !SoloLetrasRegex().IsMatch(apellido))
-                return MostrarValidacion("El apellido solo puede contener letras y hasta 25 caracteres.");
+            // Validar apellido (solo letras, máximo 25 caracteres)
+            if (alumno.Apellido.Length > 25 || !SoloLetrasRegex().IsMatch(alumno.Apellido))
+            {
+                MessageBox.Show("El apellido solo puede contener letras y hasta 25 caracteres.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
 
             return true;
         }
 
-        // ==================== MÉTODOS AUXILIARES ====================
+        // ==================== CONSULTAS ====================
 
-        private static bool MostrarValidacion(string mensaje)
-        {
-            MessageBox.Show(mensaje, "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return false;
-        }
-
-        // Los demás métodos permanecen igual...
+        /// <summary>
+        /// Obtiene los alumnos en formato DataTable para mostrar en grids
+        /// </summary>
         public DataTable ObtenerAlumnosParaGrid()
         {
             try
@@ -222,6 +285,9 @@ namespace GUI_Login.control
             }
         }
 
+        /// <summary>
+        /// Obtiene la lista completa de alumnos
+        /// </summary>
         public List<Alumno> ObtenerAlumnos()
         {
             try
@@ -236,6 +302,9 @@ namespace GUI_Login.control
             }
         }
 
+        /// <summary>
+        /// Busca un alumno por su ID
+        /// </summary>
         public Alumno? BuscarAlumno(int id)
         {
             try
@@ -250,6 +319,9 @@ namespace GUI_Login.control
             }
         }
 
+        /// <summary>
+        /// Obtiene los IDs de los instrumentos asociados a un alumno
+        /// </summary>
         public List<int> ObtenerInstrumentosPorAlumno(int idAlumno)
         {
             try
@@ -262,60 +334,6 @@ namespace GUI_Login.control
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return new List<int>();
             }
-        }
-
-        private bool ValidarUnicidadAlumno(Alumno alumno, int idExcluir = 0)
-        {
-            try
-            {
-                if (modeloAlumno.ExisteDni(alumno.Dni, idExcluir))
-                {
-                    MessageBox.Show($"Ya existe un alumno con el DNI {alumno.Dni}.",
-                        "DNI Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return false;
-                }
-
-                if (modeloAlumno.ExisteTelefono(alumno.Telefono_padres, idExcluir))
-                {
-                    MessageBox.Show($"Ya existe un alumno con el teléfono {alumno.Telefono_padres}.",
-                        "Teléfono Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return false;
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al validar unicidad: {ex.Message}",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-        }
-
-        private bool ConfirmarEliminacionAlumno(int idAlumno)
-        {
-            Alumno? alumno = BuscarAlumno(idAlumno);
-            if (alumno == null)
-                return false;
-
-            DialogResult resultado = MessageBox.Show(
-                $"¿Está seguro de eliminar a {alumno.Nombre} {alumno.Apellido}?",
-                "Confirmar Eliminación",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            return resultado == DialogResult.Yes;
-        }
-
-        public static bool ConfirmarModificacion()
-        {
-            DialogResult resultado = MessageBox.Show(
-                "¿Está seguro que desea modificar los datos del alumno?",
-                "Confirmar Modificación",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            return resultado == DialogResult.Yes;
         }
     }
 }

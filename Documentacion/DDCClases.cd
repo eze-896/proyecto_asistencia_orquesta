@@ -8,7 +8,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Asistencia">
-    <Position X="9" Y="0.5" Width="3.25" />
+    <Position X="9" Y="0.5" Width="3" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>

@@ -40,9 +40,6 @@
     <Compile Update="vista\frmPrincipal.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="vista\frmUsuarios.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="vista\Registro.cs">
       <SubType>Form</SubType>
     </Compile>

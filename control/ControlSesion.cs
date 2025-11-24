@@ -7,72 +7,103 @@ using System.Windows.Forms;
 
 namespace GUI_Login.control
 {
-    public static class ControlSesion
+    /// <summary>
+    /// Controlador para gestionar la autenticación, registro y seguridad de usuarios
+    /// </summary>
+    public class ControlSesion
     {
+        private ModeloSesion _modelo;
+
+        /// <summary>
+        /// Constructor que inicializa el modelo de sesión
+        /// </summary>
+        public ControlSesion()
+        {
+            _modelo = new ModeloSesion();
+        }
+
         // ==================== AUTENTICACIÓN ====================
 
-        public static string CtrlLogin(string usuario, string pass)
+        /// <summary>
+        /// Controla el proceso de login validando usuario y contraseña
+        /// </summary>
+        public string CtrlLogin(string usuario, string pass)
         {
-            ModeloSesion modelo = new();
-            string respuesta;
-
-            if (!ValidarCredenciales(usuario, pass))
+            // Validar que los campos no estén vacíos
+            if (string.IsNullOrEmpty(usuario) || string.IsNullOrEmpty(pass))
             {
-                respuesta = "Datos incompletos";
-            }
-            else
-            {
-                try
-                {
-                    // CORREGIDO: Usar nuevo nombre del método
-                    Usuario? userResult = modelo.ObtenerUsuarioPorNombre(usuario);
-                    respuesta = ProcesarResultadoAutenticacion(userResult, pass);
-                }
-                catch (Exception ex)
-                {
-                    // CORREGIDO: Ahora captura excepciones del Modelo
-                    respuesta = $"Error al autenticar: {ex.Message}";
-                }
+                return "Datos incompletos";
             }
 
-            return respuesta;
+            try
+            {
+                // Buscar usuario en la base de datos
+                Usuario? userResult = _modelo.ObtenerUsuarioPorNombre(usuario);
+
+                if (userResult == null)
+                {
+                    return "Usuario no existe";
+                }
+
+                // Verificar contraseña comparando hashes SHA1
+                string hashContrasena = GenerarSHA1(pass);
+                if (userResult.Contrasena == hashContrasena)
+                {
+                    return "¡Bienvenido!";
+                }
+                else
+                {
+                    return "Clave incorrecta";
+                }
+            }
+            catch (Exception ex)
+            {
+                return $"Error al autenticar: {ex.Message}";
+            }
         }
 
-        private static bool ValidarCredenciales(string usuario, string pass)
-        {
-            return !string.IsNullOrEmpty(usuario) && !string.IsNullOrEmpty(pass);
-        }
+        // ==================== REGISTRO ====================
 
-        private static string ProcesarResultadoAutenticacion(Usuario? usuario, string pass)
+        /// <summary>
+        /// Registra un nuevo usuario en el sistema con contraseña hasheada
+        /// </summary>
+        public bool RegistrarUsuario(string usuario, string password)
         {
-            if (usuario == null)
+            try
             {
-                return "Usuario no existe";
-            }
+                string hashContrasena = GenerarSHA1(password);
 
-            string hashContrasena = GenerarSHA1(pass);
-            if (usuario.Contrasena == hashContrasena)
-            {
-                return "¡Bienvenido!";
+                Usuario nuevoUser = new Usuario
+                {
+                    Nombre = usuario,
+                    Contrasena = hashContrasena
+                };
+
+                return _modelo.RegistrarUsuario(nuevoUser);
             }
-            else
+            catch (Exception ex)
             {
-                return "Clave incorrecta";
+                throw new Exception($"Error en el registro: {ex.Message}");
             }
         }
 
         // ==================== SEGURIDAD Y CRIPTOGRAFÍA ====================
 
-        public static string GenerarSHA1(string cadena)
+        /// <summary>
+        /// Genera un hash SHA1 de una cadena de texto
+        /// </summary>
+        public string GenerarSHA1(string cadena)
         {
             if (string.IsNullOrEmpty(cadena))
                 return string.Empty;
 
             try
             {
+                // Generar hash SHA1 de la cadena
                 byte[] data = Encoding.UTF8.GetBytes(cadena);
                 byte[] hash = SHA1.HashData(data);
 
+                // Convertir hash a string hexadecimal
                 StringBuilder sb = new StringBuilder();
                 foreach (byte b in hash)
                 {
@@ -82,90 +113,68 @@ namespace GUI_Login.control
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new Exception($"Error al generar hash: {ex.Message}");
             }
         }
 
-        // ==================== VALIDACIONES DE FORTALEZA DE CONTRASEÑA ====================
+        // ==================== VALIDACIONES DE CONTRASEÑA ====================
 
-        public static (bool EsValida, string Mensaje) ValidarFortalezaContrasena(string password)
+        /// <summary>
+        /// Valida la fortaleza de una contraseña
+        /// </summary>
+        public (bool EsValida, string Mensaje) ValidarFortalezaContrasena(string password)
         {
             if (string.IsNullOrEmpty(password))
                 return (false, "La contraseña no puede estar vacía");
 
-            // CORREGIDO: Validaciones simplificadas usando LINQ
+            // Validaciones básicas de longitud
             if (password.Length < 8)
                 return (false, "La contraseña debe tener al menos 8 caracteres");
-
             if (password.Length > 50)
                 return (false, "La contraseña no puede tener más de 50 caracteres");
 
-            // CORREGIDO: Usar métodos de char para mejor legibilidad
+            // Validaciones de complejidad
             if (!password.Any(char.IsUpper))
                 return (false, "La contraseña debe contener al menos una letra mayúscula");
-
             if (!password.Any(char.IsLower))
                 return (false, "La contraseña debe contener al menos una letra minúscula");
-
             if (!password.Any(char.IsDigit))
                 return (false, "La contraseña debe contener al menos un número");
-
-            // CORREGIDO: Regex simplificado para caracteres especiales
-            if (!Regex.IsMatch(password, @"[\p{P}\p{S}]")) // Caracteres de puntuación y símbolos
+            if (!Regex.IsMatch(password, @"[\p{P}\p{S}]"))
                 return (false, "La contraseña debe contener al menos un carácter especial (!@#$%^&* etc.)");
-
             if (password.Contains(" "))
                 return (false, "La contraseña no puede contener espacios en blanco");
 
+            // Verificar si es una contraseña común o secuencia simple
             if (EsSecuenciaSimple(password))
                 return (false, "La contraseña es demasiado simple o común");
 
             return (true, "Contraseña válida");
         }
 
-        private static bool EsSecuenciaSimple(string password)
-        {
-            string[] contraseñasComunes = {
-                "12345678", "password", "qwertyui", "abcdefgh",
-                "11111111", "00000000", "admin123", "contraseña"
-            };
-
-            if (Array.Exists(contraseñasComunes, common => password.ToLower() == common))
-                return true;
-
-            if (Regex.IsMatch(password, "^12345678$|^87654321$"))
-                return true;
-
-            string[] secuenciasTeclado = { "qwerty", "asdfgh", "zxcvbn", "poiuyt" };
-            if (Array.Exists(secuenciasTeclado, seq => password.ToLower().Contains(seq)))
-                return true;
-
-            if (Regex.IsMatch(password, @"(.)\1{3,}"))
-                return true;
-
-            return false;
-        }
-
-        // CORREGIDO: Método simplificado usando switch expression
-        public static string EvaluarNivelFortaleza(string password)
+        /// <summary>
+        /// Evalúa el nivel de fortaleza de una contraseña
+        /// </summary>
+        public string EvaluarNivelFortaleza(string password)
         {
             if (string.IsNullOrEmpty(password))
                 return "Débil";
 
+            // Calcular puntaje basado en longitud y complejidad
             int score = 0;
 
-            // Longitud
+            // Puntos por longitud
             if (password.Length >= 8) score++;
             if (password.Length >= 12) score++;
             if (password.Length >= 16) score++;
 
-            // Complejidad
+            // Puntos por complejidad
             if (password.Any(char.IsLower)) score++;
             if (password.Any(char.IsUpper)) score++;
             if (password.Any(char.IsDigit)) score++;
             if (Regex.IsMatch(password, @"[\p{P}\p{S}]")) score++;
 
+            // Clasificar según el puntaje obtenido
             return score switch
             {
                 <= 3 => "Débil",
@@ -173,6 +182,37 @@ namespace GUI_Login.control
                 <= 7 => "Fuerte",
                 _ => "Muy Fuerte"
             };
+        }
+
+        /// <summary>
+        /// Verifica si una contraseña es demasiado simple o común
+        /// </summary>
+        private bool EsSecuenciaSimple(string password)
+        {
+            // Lista de contraseñas comunes a evitar
+            string[] contraseñasComunes = {
+                "12345678", "password", "qwertyui", "abcdefgh",
+                "11111111", "00000000", "admin123", "contraseña"
+            };
+
+            // Verificar contra contraseñas comunes
+            if (Array.Exists(contraseñasComunes, common => password.ToLower() == common))
+                return true;
+
+            // Verificar secuencias numéricas
+            if (Regex.IsMatch(password, "^12345678$|^87654321$"))
+                return true;
+
+            // Verificar secuencias de teclado
+            string[] secuenciasTeclado = { "qwerty", "asdfgh", "zxcvbn", "poiuyt" };
+            if (Array.Exists(secuenciasTeclado, seq => password.ToLower().Contains(seq)))
+                return true;
+
+            // Verificar caracteres repetidos (ej: aaaa, 1111)
+            if (Regex.IsMatch(password, @"(.)\1{3,}"))
+                return true;
+
+            return false;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace GUI_Login.vista
 {
     /// <summary>
     /// Formulario para eliminar profesores del sistema
-    /// Permite seleccionar y eliminar profesores con confirmación previa
+    /// Permite seleccionar y eliminar profesores
     /// </summary>
     public partial class FrmEliminarProfesores : Form
     {
@@ -24,8 +24,9 @@ namespace GUI_Login.vista
             listaProfesores = [];
         }
 
-        // ==================== MÉTODOS DE CARGA Y CONFIGURACIÓN ====================
-
+        /// <summary>
+        /// Carga inicial del formulario
+        /// </summary>
         private void FrmEliminarProfesores_Load(object sender, EventArgs e)
         {
             CargarProfesores();
@@ -33,19 +34,11 @@ namespace GUI_Login.vista
         }
 
         /// <summary>
-        /// Carga la lista de profesores en el ListBox
+        /// Carga y actualiza la lista de profesores en el ListBox
         /// </summary>
         private void CargarProfesores()
         {
             listaProfesores = controlProfesor.ObtenerProfesores();
-            ActualizarListaVisual();
-        }
-
-        /// <summary>
-        /// Actualiza el ListBox con los datos actualizados de profesores
-        /// </summary>
-        private void ActualizarListaVisual()
-        {
             lstProfesores.Items.Clear();
 
             foreach (var profesor in listaProfesores)
@@ -59,60 +52,32 @@ namespace GUI_Login.vista
             }
         }
 
-        // ==================== OPERACIONES PRINCIPALES ====================
-
+        /// <summary>
+        /// Maneja el evento de clic en el botón Eliminar
+        /// </summary>
         private void BtnEliminar_Click(object sender, EventArgs e)
         {
-            if (!ValidarSeleccionProfesor())
-                return;
-
-            Profesor seleccionado = ObtenerProfesorSeleccionado();
-
-            if (ControlProfesor.ConfirmarEliminacion(seleccionado.Nombre, seleccionado.Apellido))
-            {
-                EjecutarEliminacion(seleccionado);
-            }
-        }
-
-        /// <summary>
-        /// Valida que se haya seleccionado un profesor para eliminar
-        /// </summary>
-        /// <returns>True si la selección es válida</returns>
-        private bool ValidarSeleccionProfesor()
-        {
+            // Validar que se haya seleccionado un profesor
             if (lstProfesores.SelectedIndex == -1)
             {
-                MessageBox.Show("Seleccione un profesor para eliminar.",
-                    "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
+                MessageBox.Show("Seleccione un profesor para eliminar.", "Atención",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
-            return true;
-        }
 
-        /// <summary>
-        /// Obtiene el profesor seleccionado en el ListBox
-        /// </summary>
-        /// <returns>Objeto Profesor seleccionado</returns>
-        private Profesor ObtenerProfesorSeleccionado()
-        {
-            return listaProfesores[lstProfesores.SelectedIndex];
-        }
+            // Obtener profesor seleccionado y ejecutar eliminación
+            Profesor seleccionado = listaProfesores[lstProfesores.SelectedIndex];
+            bool exito = controlProfesor.EliminarProfesor(seleccionado.Id);
 
-        /// <summary>
-        /// Ejecuta el proceso de eliminación del profesor
-        /// </summary>
-        /// <param name="profesor">Profesor a eliminar</param>
-        private void EjecutarEliminacion(Profesor profesor)
-        {
-            bool exito = controlProfesor.EliminarProfesor(profesor.Id);
             if (exito)
             {
-                CargarProfesores();
+                CargarProfesores(); // Recargar lista actualizada
             }
         }
 
-        // ==================== NAVEGACIÓN Y CIERRE ====================
-
+        /// <summary>
+        /// Regresa al formulario principal
+        /// </summary>
         private void BtnVolver_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -120,6 +85,9 @@ namespace GUI_Login.vista
             formPrincipal.Show();
         }
 
+        /// <summary>
+        /// Sale del sistema con confirmación
+        /// </summary>
         private void BtnSalir_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show(
@@ -134,8 +102,9 @@ namespace GUI_Login.vista
             }
         }
 
-        // ==================== MANEJO DE TECLADO ====================
-
+        /// <summary>
+        /// Maneja atajos de teclado en el ListBox
+        /// </summary>
         private void LstProfesores_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete && lstProfesores.SelectedIndex != -1)
@@ -155,6 +124,9 @@ namespace GUI_Login.vista
             }
         }
 
+        /// <summary>
+        /// Maneja atajos de teclado en el formulario
+        /// </summary>
         private void FrmEliminarProfesores_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)

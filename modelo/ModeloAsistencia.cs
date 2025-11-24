@@ -6,10 +6,16 @@ using System.Windows.Forms;
 
 namespace GUI_Login.modelo
 {
+    /// <summary>
+    /// Modelo para gestionar las operaciones de base de datos relacionadas con asistencias
+    /// </summary>
     public class ModeloAsistencia
     {
         private readonly Conexion conexion;
 
+        /// <summary>
+        /// Constructor que inicializa la conexión a la base de datos
+        /// </summary>
         public ModeloAsistencia()
         {
             conexion = new Conexion();
@@ -17,6 +23,10 @@ namespace GUI_Login.modelo
 
         // ==================== CONSULTAS DE ALUMNOS ====================
 
+        /// <summary>
+        /// Obtiene la lista de todos los alumnos para el control de asistencia
+        /// </summary>
+        /// <returns>Lista de objetos Alumno</returns>
         public List<Alumno> ListarAlumnos()
         {
             List<Alumno> alumnos = new List<Alumno>();
@@ -41,7 +51,6 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new Exception($"Error al obtener lista de alumnos: {ex.Message}");
             }
 
@@ -50,11 +59,15 @@ namespace GUI_Login.modelo
 
         // ==================== OPERACIONES CRUD ====================
 
+        /// <summary>
+        /// Marca la asistencia de un alumno en una fecha específica
+        /// </summary>
+        /// <param name="asistencia">Objeto Asistencia con los datos a guardar</param>
+        /// <returns>True si la operación fue exitosa</returns>
         public bool MarcarAsistencia(Asistencia asistencia)
         {
             if (asistencia == null)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new ArgumentNullException(nameof(asistencia), "Los datos de asistencia no pueden ser nulos.");
             }
 
@@ -63,7 +76,7 @@ namespace GUI_Login.modelo
                 using MySqlConnection conn = conexion.getConexion();
                 conn.Open();
 
-                // CORREGIDO: Usar INSERT ON DUPLICATE KEY UPDATE para simplificar
+                // Usar INSERT ON DUPLICATE KEY UPDATE para manejar actualizaciones
                 string query = @"
                 INSERT INTO asistencia (id_alumno, fecha, actividad_orquestal, presente)
                 VALUES (@idAlumno, @fecha, @actividadOrquestal, @presente)
@@ -80,13 +93,17 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new Exception($"Error al marcar asistencia: {ex.Message}");
             }
         }
 
         // ==================== CÁLCULOS Y ESTADÍSTICAS ====================
 
+        /// <summary>
+        /// Calcula el porcentaje de asistencia de un alumno
+        /// </summary>
+        /// <param name="idAlumno">ID del alumno</param>
+        /// <returns>Porcentaje de asistencia redondeado a 2 decimales</returns>
         public double CalcularPorcentajeAsistencia(int idAlumno)
         {
             double porcentaje = 0;
@@ -97,19 +114,18 @@ namespace GUI_Login.modelo
                 conn.Open();
 
                 string sql = @"
-                SELECT 
-                    SUM(presente = 1) AS cantidad_presentes,
-                    COUNT(*) AS total
-                FROM asistencia
-                WHERE id_alumno = @idAlumno";
-
+                                SELECT 
+                                    COALESCE(SUM(presente = 1), 0) AS cantidad_presentes,
+                                    COALESCE(COUNT(*), 0) AS total
+                                FROM asistencia
+                                WHERE id_alumno = @idAlumno";
                 using MySqlCommand cmd = new(sql, conn);
                 cmd.Parameters.AddWithValue("@idAlumno", idAlumno);
                 using MySqlDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    int presentes = Convert.ToInt32(reader["cantidad_presentes"]);
-                    int total = Convert.ToInt32(reader["total"]);
+                    int presentes = reader.GetInt32("cantidad_presentes");
+                    int total = reader.GetInt32("total");
 
                     if (total > 0)
                         porcentaje = (double)presentes / total * 100;
@@ -117,7 +133,6 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new Exception($"Error calculando porcentaje de asistencia: {ex.Message}");
             }
 
@@ -126,6 +141,10 @@ namespace GUI_Login.modelo
 
         // ==================== CONSULTAS PARA REPORTES ====================
 
+        /// <summary>
+        /// Obtiene una tabla completa con datos de alumnos, instrumentos, profesores y porcentajes de asistencia
+        /// </summary>
+        /// <returns>DataTable con todos los datos para el reporte de asistencias</returns>
         public DataTable ObtenerTablaAsistencia()
         {
             DataTable tabla = new DataTable();
@@ -136,7 +155,7 @@ namespace GUI_Login.modelo
                 {
                     conn.Open();
 
-                    // CORREGIDO: Query optimizada sin cantidad_instrumentos
+                    // Query optimizada para obtener datos consolidados
                     string sql = @"
                     SELECT 
                         a.id AS id_alumno,
@@ -157,7 +176,7 @@ namespace GUI_Login.modelo
                     adapter.Fill(tabla);
                 }
 
-                // Agregar columna de porcentaje
+                // Agregar columna de porcentaje y calcular para cada alumno
                 tabla.Columns.Add("porcentaje_asistencia", typeof(double));
 
                 foreach (DataRow fila in tabla.Rows)
@@ -169,14 +188,12 @@ namespace GUI_Login.modelo
                     }
                     catch (Exception ex)
                     {
-                        // CORREGIDO: Lanzar excepción en lugar de MessageBox
                         throw new Exception($"Error calculando porcentaje para alumno ID {fila["id_alumno"]}: {ex.Message}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new Exception($"Error al obtener tabla de asistencias: {ex.Message}");
             }
 

@@ -6,13 +6,21 @@ namespace GUI_Login
 {
     public partial class Login : Form
     {
+        private readonly ControlSesion controlsesion;
+        /// <summary>
+        /// Constructor que inicializa el formulario y configura eventos
+        /// </summary>
         public Login()
         {
+            controlsesion = new ControlSesion();
             InitializeComponent();
             ConfigureEventHandlers();
-            ConfigureInitialFocus();
+            txtUsuario.Focus();
         }
 
+        /// <summary>
+        /// Configura los manejadores de eventos para los controles
+        /// </summary>
         private void ConfigureEventHandlers()
         {
             txtUsuario.KeyPress += UsuarioTextBox_KeyPress;
@@ -20,16 +28,17 @@ namespace GUI_Login
             checkBxMostrarContraseña.CheckedChanged += CheckBxMostrarContraseña_CheckedChanged;
         }
 
-        private void ConfigureInitialFocus()
-        {
-            txtUsuario.Focus();
-        }
-
+        /// <summary>
+        /// Maneja el clic en el botón de iniciar sesión
+        /// </summary>
         private void BtnIniciarsesion_Click(object sender, EventArgs e)
         {
             IniciarSesion();
         }
 
+        /// <summary>
+        /// Procesa el inicio de sesión del usuario
+        /// </summary>
         private void IniciarSesion()
         {
             try
@@ -37,58 +46,55 @@ namespace GUI_Login
                 string usuario = txtUsuario.Text.Trim();
                 string pass = txtContraseña.Text.Trim();
 
-                if (!ValidarCamposLogin(usuario, pass))
+                // Validar campos completos
+                if (string.IsNullOrEmpty(usuario) || string.IsNullOrEmpty(pass))
+                {
+                    MessageBox.Show("Debe completar todos los campos", "Login",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtUsuario.Focus();
                     return;
+                }
 
-                string respuestaControlador = ControlSesion.CtrlLogin(usuario, pass);
-                ProcesarRespuestaAutenticacion(respuestaControlador);
+                // Autenticar usuario
+                string respuestaControlador = controlsesion.CtrlLogin(usuario, pass);
+
+                // Procesar respuesta de autenticación
+                if (respuestaControlador == "¡Bienvenido!")
+                {
+                    FrmPrincipal principal = new FrmPrincipal();
+                    this.Hide();
+                    principal.Show();
+                }
+                else
+                {
+                    MessageBox.Show(respuestaControlador, "Control de usuarios",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    // Establecer foco en el campo apropiado
+                    if (string.IsNullOrEmpty(txtUsuario.Text))
+                        txtUsuario.Focus();
+                    else
+                        txtContraseña.Focus();
+                }
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Ahora captura excepciones del Controlador
                 MessageBox.Show($"Error al iniciar sesión: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private bool ValidarCamposLogin(string usuario, string pass)
-        {
-            if (string.IsNullOrEmpty(usuario) || string.IsNullOrEmpty(pass))
-            {
-                MessageBox.Show("Debe completar todos los campos", "Login",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtUsuario.Focus();
-                return false;
-            }
-            return true;
-        }
-
-        // CORREGIDO: Manejo simplificado de foco
-        private void ProcesarRespuestaAutenticacion(string respuesta)
-        {
-            if (respuesta == "¡Bienvenido!")
-            {
-                FrmPrincipal principal = new FrmPrincipal();
-                this.Hide(); // Solo ocultar
-                principal.Show();
-            }
-            else
-            {
-                MessageBox.Show(respuesta, "Control de usuarios",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                if (string.IsNullOrEmpty(txtUsuario.Text))
-                    txtUsuario.Focus();
-                else
-                    txtContraseña.Focus();
-            }
-        }
-
+        /// <summary>
+        /// Maneja el cambio en la opción de mostrar contraseña
+        /// </summary>
         private void CheckBxMostrarContraseña_CheckedChanged(object sender, EventArgs e)
         {
             txtContraseña.PasswordChar = checkBxMostrarContraseña.Checked ? '\0' : '•';
         }
 
+        /// <summary>
+        /// Maneja la tecla Enter en el campo de usuario
+        /// </summary>
         private void UsuarioTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)
@@ -98,6 +104,9 @@ namespace GUI_Login
             }
         }
 
+        /// <summary>
+        /// Maneja la tecla Enter en el campo de contraseña
+        /// </summary>
         private void ContraseñaTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)
@@ -107,6 +116,9 @@ namespace GUI_Login
             }
         }
 
+        /// <summary>
+        /// Maneja el clic en el botón Salir
+        /// </summary>
         private void BtnSalir_Click(object sender, EventArgs e)
         {
             DialogResult rta = MessageBox.Show("¿Seguro que desea salir?", "Control de usuarios",
@@ -117,9 +129,12 @@ namespace GUI_Login
             }
         }
 
+        /// <summary>
+        /// Maneja el clic en el botón Registro
+        /// </summary>
         private void BtnRegistro_Click(object sender, EventArgs e)
         {
-            this.Hide(); // Solo ocultar
+            this.Hide();
             Registro registro = new Registro();
             registro.Show();
         }

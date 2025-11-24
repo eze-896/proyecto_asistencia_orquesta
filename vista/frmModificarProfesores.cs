@@ -5,12 +5,19 @@ using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
+    /// <summary>
+    /// Formulario para modificar datos de profesores existentes
+    /// Permite buscar, cargar y actualizar información de profesores
+    /// </summary>
     public partial class FrmModificarProfesores : Form
     {
         private readonly ControlProfesor controlProfesor;
         private readonly ControlInstrumento controlInstrumento;
         private int idSeleccionado = -1;
 
+        /// <summary>
+        /// Constructor que inicializa los controladores
+        /// </summary>
         public FrmModificarProfesores()
         {
             InitializeComponent();
@@ -18,6 +25,9 @@ namespace GUI_Login.vista
             controlInstrumento = new ControlInstrumento();
         }
 
+        /// <summary>
+        /// Carga inicial del formulario
+        /// </summary>
         private void FrmModificarProfesores_Load(object sender, EventArgs e)
         {
             CargarProfesores();
@@ -25,6 +35,9 @@ namespace GUI_Login.vista
             this.KeyPreview = true;
         }
 
+        /// <summary>
+        /// Carga la lista de profesores en el ListBox
+        /// </summary>
         private void CargarProfesores()
         {
             lstProfesoresModificar.Items.Clear();
@@ -36,6 +49,9 @@ namespace GUI_Login.vista
             }
         }
 
+        /// <summary>
+        /// Carga los instrumentos disponibles en el ComboBox
+        /// </summary>
         private void CargarInstrumentos()
         {
             cmbInstrumentos.DisplayMember = "Nombre";
@@ -44,6 +60,9 @@ namespace GUI_Login.vista
             cmbInstrumentos.SelectedIndex = -1;
         }
 
+        /// <summary>
+        /// Maneja la selección de un profesor en la lista
+        /// </summary>
         private void LstProfesoresModificar_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lstProfesoresModificar.SelectedItem == null) return;
@@ -51,7 +70,7 @@ namespace GUI_Login.vista
             string? seleccionado = lstProfesoresModificar.SelectedItem.ToString();
             if (!string.IsNullOrEmpty(seleccionado))
             {
-                // CORREGIDO: Parsing seguro usando TryParse
+                // Extraer ID del profesor seleccionado
                 string idPart = seleccionado.Split('-')[0].Trim();
                 if (int.TryParse(idPart, out int id))
                 {
@@ -59,7 +78,13 @@ namespace GUI_Login.vista
                     Profesor? prof = controlProfesor.BuscarProfesor(idSeleccionado);
                     if (prof != null)
                     {
-                        CargarDatosProfesor(prof);
+                        // Cargar datos del profesor en los controles
+                        txtNombre.Text = prof.Nombre;
+                        txtApellido.Text = prof.Apellido;
+                        txtDni.Text = prof.Dni.ToString();
+                        txtTelefono.Text = prof.Telefono;
+                        txtEmail.Text = prof.Email;
+                        cmbInstrumentos.SelectedValue = prof.Id_instrumento;
                     }
                 }
                 else
@@ -70,37 +95,47 @@ namespace GUI_Login.vista
             }
         }
 
-        private void CargarDatosProfesor(Profesor profesor)
-        {
-            txtNombre.Text = profesor.Nombre;
-            txtApellido.Text = profesor.Apellido;
-            txtDni.Text = profesor.Dni.ToString();
-            txtTelefono.Text = profesor.Telefono;
-            txtEmail.Text = profesor.Email;
-            cmbInstrumentos.SelectedValue = profesor.Id_instrumento;
-        }
-
-        // Los demás métodos permanecen igual...
+        /// <summary>
+        /// Guarda los cambios realizados en los datos del profesor
+        /// </summary>
         private void BtnGuardarCambios_Click(object sender, EventArgs e)
         {
-            if (!ValidarSeleccionProfesor())
+            // Validar selección de profesor
+            if (idSeleccionado == -1)
+            {
+                MessageBox.Show("Seleccione un profesor para modificar.", "Advertencia",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
+            }
 
-            if (!ValidarCamposFormulario())
-                return;
-
-            if (!ControlProfesor.ConfirmarModificacion())
-                return;
-
+            // Crear objeto profesor con los datos actualizados
             if (cmbInstrumentos.SelectedValue is int selectedValue)
             {
-                Profesor profesor = CrearObjetoProfesor(selectedValue);
-                bool exito = controlProfesor.ModificarProfesor(profesor);
+                Profesor profesor = new Profesor
+                {
+                    Id = idSeleccionado,
+                    Dni = int.Parse(txtDni.Text),
+                    Nombre = txtNombre.Text.Trim(),
+                    Apellido = txtApellido.Text.Trim(),
+                    Telefono = txtTelefono.Text.Trim(),
+                    Email = txtEmail.Text.Trim(),
+                    Id_instrumento = selectedValue
+                };
 
+                // Ejecutar modificación
+                bool exito = controlProfesor.ModificarProfesor(profesor);
                 if (exito)
                 {
-                    CargarProfesores();
-                    LimpiarFormulario();
+                    CargarProfesores(); // Recargar lista actualizada
+
+                    // Limpiar formulario
+                    txtNombre.Clear();
+                    txtApellido.Clear();
+                    txtDni.Clear();
+                    txtTelefono.Clear();
+                    txtEmail.Clear();
+                    cmbInstrumentos.SelectedIndex = -1;
+                    idSeleccionado = -1;
                 }
             }
             else
@@ -110,53 +145,9 @@ namespace GUI_Login.vista
             }
         }
 
-        private bool ValidarSeleccionProfesor()
-        {
-            if (idSeleccionado == -1)
-            {
-                MessageBox.Show("Seleccione un profesor para modificar.",
-                    "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
-            }
-            return true;
-        }
-
-        private bool ValidarCamposFormulario()
-        {
-            return ControlProfesor.ValidarProfesor(
-                nombre: txtNombre.Text,
-                apellido: txtApellido.Text,
-                dni: txtDni.Text,
-                telefono: txtTelefono.Text,
-                email: txtEmail.Text,
-                idInstrumento: cmbInstrumentos.SelectedValue as int?);
-        }
-
-        private Profesor CrearObjetoProfesor(int idInstrumento)
-        {
-            return new Profesor
-            {
-                Id = idSeleccionado,
-                Dni = int.Parse(txtDni.Text),
-                Nombre = txtNombre.Text.Trim(),
-                Apellido = txtApellido.Text.Trim(),
-                Telefono = txtTelefono.Text.Trim(),
-                Email = txtEmail.Text.Trim(),
-                Id_instrumento = idInstrumento
-            };
-        }
-
-        private void LimpiarFormulario()
-        {
-            txtNombre.Clear();
-            txtApellido.Clear();
-            txtDni.Clear();
-            txtTelefono.Clear();
-            txtEmail.Clear();
-            cmbInstrumentos.SelectedIndex = -1;
-            idSeleccionado = -1;
-        }
-
+        /// <summary>
+        /// Regresa al formulario principal
+        /// </summary>
         private void BtnVolver_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -164,6 +155,9 @@ namespace GUI_Login.vista
             formPrincipal.Show();
         }
 
+        /// <summary>
+        /// Sale del sistema con confirmación
+        /// </summary>
         private void BtnSalir_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show(
@@ -178,6 +172,9 @@ namespace GUI_Login.vista
             }
         }
 
+        /// <summary>
+        /// Maneja atajos de teclado en el formulario
+        /// </summary>
         private void FrmModificarProfesores_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)

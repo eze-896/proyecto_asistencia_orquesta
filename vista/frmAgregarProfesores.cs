@@ -24,20 +24,14 @@ namespace GUI_Login.vista
             controlInstrumento = new ControlInstrumento();
         }
 
-        // ==================== MÉTODOS DE CARGA Y CONFIGURACIÓN ====================
-
-        private void FrmAgregarProfesores_Load(object sender, EventArgs e)
-        {
-            CargarInstrumentos();
-        }
-
         /// <summary>
-        /// Carga los instrumentos disponibles en el ComboBox
+        /// Carga inicial del formulario
         /// </summary>
-        private void CargarInstrumentos()
+        private void FrmAgregarProfesores_Load(object sender, EventArgs e)
         {
             try
             {
+                // Cargar instrumentos disponibles en el ComboBox
                 List<Instrumento> instrumentos = controlInstrumento.ListarInstrumentosEnOrquesta();
                 cmbInstrumentos.DataSource = null;
                 cmbInstrumentos.DataSource = instrumentos;
@@ -52,22 +46,29 @@ namespace GUI_Login.vista
             }
         }
 
-        // ==================== OPERACIONES PRINCIPALES ====================
-
+        /// <summary>
+        /// Maneja el clic en el botón Ingresar para registrar un profesor
+        /// </summary>
         private void BtnIngresar_Click(object sender, EventArgs e)
         {
-            if (!ControlProfesor.ValidarProfesor(
-                nombre: txtNombre.Text,
-                apellido: txtApellido.Text,
-                dni: txtDni.Text,
-                telefono: txtTelefono.Text,
-                email: txtEmail.Text,
-                idInstrumento: cmbInstrumentos.SelectedValue as int?))
+            // Validar datos del formulario
+            Profesor profesorValidar = new()
+            {
+                Dni = int.TryParse(txtDni.Text, out int dni) ? dni : 0,
+                Nombre = txtNombre.Text.Trim(),
+                Apellido = txtApellido.Text.Trim(),
+                Telefono = txtTelefono.Text.Trim(),
+                Email = txtEmail.Text.Trim(),
+                Id_instrumento = cmbInstrumentos.SelectedValue as int? ?? 0
+            };
+
+            if (!ControlProfesor.ValidarProfesor(profesorValidar))
                 return;
 
+            // Verificar selección de instrumento
             if (cmbInstrumentos.SelectedValue is int selectedValue)
             {
-                // Crea objeto profesor
+                // Crear y registrar profesor
                 Profesor profesor = new()
                 {
                     Dni = int.Parse(txtDni.Text),
@@ -78,12 +79,18 @@ namespace GUI_Login.vista
                     Id_instrumento = selectedValue
                 };
 
-                // Registra profesor
                 bool exito = controlProfesor.RegistrarProfesor(profesor);
 
                 if (exito)
                 {
-                    LimpiarFormulario();
+                    // Limpiar formulario después del registro exitoso
+                    txtDni.Clear();
+                    txtNombre.Clear();
+                    txtApellido.Clear();
+                    txtTelefono.Clear();
+                    txtEmail.Clear();
+                    cmbInstrumentos.SelectedIndex = -1;
+                    txtNombre.Focus();
                 }
             }
             else
@@ -94,21 +101,8 @@ namespace GUI_Login.vista
         }
 
         /// <summary>
-        /// Limpia todos los campos del formulario
+        /// Valida que el DNI contenga solo números
         /// </summary>
-        private void LimpiarFormulario()
-        {
-            txtDni.Clear();
-            txtNombre.Clear();
-            txtApellido.Clear();
-            txtTelefono.Clear();
-            txtEmail.Clear();
-            cmbInstrumentos.SelectedIndex = -1;
-            txtNombre.Focus();
-        }
-
-        // ==================== VALIDACIONES EN TIEMPO REAL ====================
-
         private void TxtDni_Leave(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtDni.Text) && !int.TryParse(txtDni.Text, out _))
@@ -120,6 +114,9 @@ namespace GUI_Login.vista
             }
         }
 
+        /// <summary>
+        /// Valida que el teléfono contenga solo números
+        /// </summary>
         private void TxtTelefono_Leave(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtTelefono.Text) && !long.TryParse(txtTelefono.Text, out _))
@@ -131,8 +128,9 @@ namespace GUI_Login.vista
             }
         }
 
-        // ==================== NAVEGACIÓN Y CIERRE ====================
-
+        /// <summary>
+        /// Regresa al formulario principal
+        /// </summary>
         private void BtnVolver_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -140,6 +138,9 @@ namespace GUI_Login.vista
             formPrincipal.Show();
         }
 
+        /// <summary>
+        /// Sale del sistema con confirmación
+        /// </summary>
         private void BtnSalir_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show(
@@ -154,6 +155,9 @@ namespace GUI_Login.vista
             }
         }
 
+        /// <summary>
+        /// Maneja atajos de teclado en el formulario
+        /// </summary>
         private void FrmAgregarProfesores_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)

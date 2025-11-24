@@ -3,10 +3,16 @@ using System.Data;
 
 namespace GUI_Login.modelo
 {
+    /// <summary>
+    /// Modelo para gestionar las operaciones de base de datos relacionadas con alumnos
+    /// </summary>
     public class ModeloAlumno
     {
         private readonly Conexion conexion;
 
+        /// <summary>
+        /// Constructor que inicializa la conexión a la base de datos
+        /// </summary>
         public ModeloAlumno()
         {
             conexion = new Conexion();
@@ -14,6 +20,11 @@ namespace GUI_Login.modelo
 
         // ==================== OPERACIONES CRUD ====================
 
+        /// <summary>
+        /// Inserta un nuevo alumno en la base de datos
+        /// </summary>
+        /// <param name="alumno">Objeto Alumno con los datos a insertar</param>
+        /// <returns>ID del alumno insertado o -1 si falla</returns>
         public int InsertarAlumno(Alumno alumno)
         {
             int idGenerado = -1;
@@ -39,13 +50,17 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new Exception($"Error al insertar alumno: {ex.Message}");
             }
 
             return idGenerado;
         }
 
+        /// <summary>
+        /// Actualiza los datos de un alumno existente
+        /// </summary>
+        /// <param name="alumno">Objeto Alumno con los datos actualizados</param>
+        /// <returns>True si la actualización fue exitosa</returns>
         public bool ActualizarAlumno(Alumno alumno)
         {
             bool exito = false;
@@ -69,12 +84,16 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new Exception($"Error al actualizar alumno: {ex.Message}");
             }
             return exito;
         }
 
+        /// <summary>
+        /// Elimina un alumno y todas sus relaciones (asistencias e instrumentos)
+        /// </summary>
+        /// <param name="idAlumno">ID del alumno a eliminar</param>
+        /// <returns>True si la eliminación fue exitosa</returns>
         public bool EliminarAlumno(int idAlumno)
         {
             bool exito = false;
@@ -87,7 +106,7 @@ namespace GUI_Login.modelo
 
                 try
                 {
-                    // Eliminar asistencias
+                    // Eliminar asistencias del alumno
                     string deleteAsistencias = "DELETE FROM asistencia WHERE id_alumno = @id";
                     using (MySqlCommand cmdAsis = new(deleteAsistencias, conn, transaction))
                     {
@@ -117,7 +136,6 @@ namespace GUI_Login.modelo
                     else
                     {
                         transaction.Rollback();
-                        // CORREGIDO: Lanzar excepción en lugar de MessageBox
                         throw new Exception("No se encontró el alumno a eliminar.");
                     }
                 }
@@ -129,14 +147,17 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new Exception($"Error al eliminar alumno: {ex.Message}");
             }
             return exito;
         }
 
-        // ==================== CONSULTAS CON MANEJO DE NULOS ====================
+        // ==================== CONSULTAS ====================
 
+        /// <summary>
+        /// Obtiene todos los alumnos como lista de objetos
+        /// </summary>
+        /// <returns>Lista de objetos Alumno</returns>
         public List<Alumno> ObtenerAlumnosComoLista()
         {
             List<Alumno> lista = new();
@@ -151,7 +172,6 @@ namespace GUI_Login.modelo
 
                 while (reader.Read())
                 {
-                    // CORREGIDO: Manejo seguro de valores nulos
                     Alumno alumno = new()
                     {
                         Id = reader.GetInt32("id"),
@@ -165,13 +185,17 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new Exception($"Error al obtener alumnos: {ex.Message}");
             }
 
             return lista;
         }
 
+        /// <summary>
+        /// Busca un alumno por su ID
+        /// </summary>
+        /// <param name="id">ID del alumno a buscar</param>
+        /// <returns>Objeto Alumno o null si no se encuentra</returns>
         public Alumno? BuscarAlumno(int id)
         {
             Alumno? alumno = null;
@@ -187,7 +211,6 @@ namespace GUI_Login.modelo
 
                 if (reader.Read())
                 {
-                    // CORREGIDO: Manejo seguro de valores nulos
                     alumno = new Alumno
                     {
                         Id = reader.GetInt32("id"),
@@ -200,12 +223,15 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new Exception($"Error al buscar alumno: {ex.Message}");
             }
             return alumno;
         }
 
+        /// <summary>
+        /// Obtiene todos los alumnos en formato DataTable
+        /// </summary>
+        /// <returns>DataTable con los datos de los alumnos</returns>
         public DataTable ObtenerTablaAlumnos()
         {
             DataTable tabla = new();
@@ -220,7 +246,6 @@ namespace GUI_Login.modelo
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Lanzar excepción en lugar de MessageBox
                 throw new Exception($"Error al obtener tabla de alumnos: {ex.Message}");
             }
             return tabla;
@@ -228,6 +253,12 @@ namespace GUI_Login.modelo
 
         // ==================== VALIDACIONES DE UNICIDAD ====================
 
+        /// <summary>
+        /// Verifica si ya existe un alumno con el mismo DNI
+        /// </summary>
+        /// <param name="dni">DNI a verificar</param>
+        /// <param name="idExcluir">ID a excluir de la búsqueda (para actualizaciones)</param>
+        /// <returns>True si ya existe un alumno con ese DNI</returns>
         public bool ExisteDni(int dni, int idExcluir = 0)
         {
             using MySqlConnection conn = conexion.getConexion();
@@ -242,6 +273,12 @@ namespace GUI_Login.modelo
             return count > 0;
         }
 
+        /// <summary>
+        /// Verifica si ya existe un alumno con el mismo teléfono
+        /// </summary>
+        /// <param name="telefono">Teléfono a verificar</param>
+        /// <param name="idExcluir">ID a excluir de la búsqueda (para actualizaciones)</param>
+        /// <returns>True si ya existe un alumno con ese teléfono</returns>
         public bool ExisteTelefono(string telefono, int idExcluir = 0)
         {
             using MySqlConnection conn = conexion.getConexion();

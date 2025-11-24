@@ -5,22 +5,35 @@ using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
+    /// <summary>
+    /// Formulario para agregar instrumentos a la orquesta
+    /// Permite seleccionar instrumentos disponibles y agregarlos al sistema
+    /// </summary>
     public partial class frmAgregarInstrumentos : Form
     {
         private readonly ControlInstrumento controlInstrumento;
 
+        /// <summary>
+        /// Constructor que inicializa el controlador de instrumentos
+        /// </summary>
         public frmAgregarInstrumentos()
         {
             InitializeComponent();
             controlInstrumento = new ControlInstrumento();
         }
 
+        /// <summary>
+        /// Carga inicial del formulario
+        /// </summary>
         private void FrmAgregarInstrumentos_Load(object sender, EventArgs e)
         {
             CargarComboInstrumentos();
             this.KeyPreview = true;
         }
 
+        /// <summary>
+        /// Carga los instrumentos disponibles en el ComboBox
+        /// </summary>
         private void CargarComboInstrumentos()
         {
             try
@@ -34,51 +47,43 @@ namespace GUI_Login.vista
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Ahora captura excepciones del Controlador
                 MessageBox.Show($"Error al cargar los instrumentos: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+        /// <summary>
+        /// Maneja el clic en el botón Ingresar para agregar instrumento
+        /// </summary>
         private void BtnIngresar_Click(object sender, EventArgs e)
         {
-            if (!ValidarSeleccionInstrumento())
-                return;
-
-            if (cmbInstrumento.SelectedValue is int idInstrumento)
-            {
-                EjecutarInsercion(idInstrumento);
-            }
-            else
-            {
-                MessageBox.Show("No se pudo obtener el ID del instrumento seleccionado.",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private bool ValidarSeleccionInstrumento()
-        {
+            // Validar selección de instrumento
             if (cmbInstrumento.SelectedIndex == -1)
             {
                 MessageBox.Show("Seleccione un instrumento", "Advertencia",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cmbInstrumento.Focus();
-                return false;
+                return;
             }
-            return true;
-        }
 
-        private void EjecutarInsercion(int idInstrumento)
-        {
+            // Verificar que se pueda obtener el ID del instrumento
+            if (cmbInstrumento.SelectedValue is not int idInstrumento)
+            {
+                MessageBox.Show("No se pudo obtener el ID del instrumento seleccionado.",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             try
             {
+                // Agregar instrumento a la orquesta
                 bool insertado = controlInstrumento.AgregarInstrumentoAOrquesta(idInstrumento);
 
                 if (insertado)
                 {
                     MessageBox.Show("Instrumento agregado a la orquesta correctamente.",
                         "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    CargarComboInstrumentos();
+                    CargarComboInstrumentos(); // Recargar lista actualizada
                 }
                 else
                 {
@@ -88,13 +93,14 @@ namespace GUI_Login.vista
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Ahora captura excepciones del Controlador
                 MessageBox.Show($"Error al agregar el instrumento: {ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        // Los métodos de navegación permanecen igual...
+        /// <summary>
+        /// Regresa al formulario principal
+        /// </summary>
         private void BtnVolver_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -102,6 +108,9 @@ namespace GUI_Login.vista
             formPrincipal.Show();
         }
 
+        /// <summary>
+        /// Sale del sistema con confirmación
+        /// </summary>
         private void BtnSalir_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show(
@@ -116,6 +125,9 @@ namespace GUI_Login.vista
             }
         }
 
+        /// <summary>
+        /// Maneja atajos de teclado en el formulario
+        /// </summary>
         private void FrmAgregarInstrumentos_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)

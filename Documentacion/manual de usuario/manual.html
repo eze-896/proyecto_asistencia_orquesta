@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Usuario - Orquesta Escuela</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #6b4ea3;
+            border-bottom: 3px solid #6b4ea3;
+            padding-bottom: 10px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+        h2 {
+            color: #6b4ea3;
+            margin-top: 40px;
+            font-size: 1.8em;
+            border-left: 5px solid #6b4ea3;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #4a4a4a;
+            margin-top: 25px;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+        .toc {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 4px solid #6b4ea3;
+            margin: 30px 0;
+        }
+        .toc h2 {
+            margin-top: 0;
+            border-left: none;
+            padding-left: 0;
+        }
+        .toc ol {
+            margin-left: 20px;
+        }
+        .screenshot {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .screenshot p {
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .warning::before {
+            content: "⚠️ ";
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .note {
+            background-color: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .note::before {
+            content: "ℹ️ ";
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        ul, ol {
+            margin-left: 20px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        .field-list {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        strong {
+            color: #6b4ea3;
+        }
+        .button-desc {
+            background-color: #6b4ea3;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #6b4ea3;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MANUAL DE USUARIO</h1>
+        <p class="subtitle">Sistema de Gestión - Orquesta Escuela</p>
+
+        <div class="toc">
+            <h2>ÍNDICE</h2>
+            <ol>
+                <li>Introducción y Actores</li>
+                <li>Autenticación (Inicio de Sesión)</li>
+                <li>Pantalla Principal y Control General</li>
+                <li>Gestión de Alumnos</li>
+                <li>Gestión de Profesores</li>
+                <li>Gestión de Instrumentos</li>
+                <li>Gestión de Asistencia</li>
+                <li>Listados y Consultas</li>
+            </ol>
+        </div>
+
+        <div class="page-break"></div>
+
+        <h2>1. INTRODUCCIÓN Y ACTORES</h2>
+        <p>Este sistema tiene como objetivo principal ayudarte a gestionar la información académica y administrativa de la orquesta escuela. Está diseñado para manejar datos de alumnos, profesores, instrumentos y, fundamentalmente, la asistencia a las actividades.</p>
+        
+        <p><strong>Actor Principal (Usuario): Secretaria/Perceptora</strong></p>
+        <p>Como secretaria o perceptora, serás la única persona con acceso al sistema. Podrás iniciar sesión, cargar datos y consultar reportes claros para organizar el día a día de la orquesta.</p>
+
+        <h2>2. AUTENTICACIÓN</h2>
+
+        <h3>2.1 Inicio de Sesión</h3>
+        <p>Para comenzar a trabajar, ingresa con tu usuario y contraseña. Esto asegura que solo el personal autorizado (tú) pueda ver o modificar la información de los alumnos.</p>
+
+        <div class="screenshot">
+            <img src="InicioSesion.png" alt="Pantalla de Inicio de Sesión">
+            <p>Pantalla de acceso al sistema</p>
+        </div>
+
+        <div class="field-list">
+            <strong>Opciones:</strong>
+            <ul>
+                <li><span class="button-desc">INICIAR SESIÓN</span>: Accedes al menú principal.</li>
+                <li><span class="button-desc">REGISTRARSE</span>: Solo para crear un nuevo usuario de secretaria en casos excepcionales.</li>
+            </ul>
+        </div>
+
+        <h3>2.2 Registro de Secretaria</h3>
+        <p>Si necesitas crear una cuenta nueva, el sistema te pedirá los datos básicos y validará que tu contraseña sea segura.</p>
+
+        <div class="screenshot">
+            <img src="Registro.png" alt="Pantalla de Registro">
+            <p>Formulario de registro de usuario</p>
+        </div>
+
+        <div class="note">
+            El sistema te mostrará la <strong>Fortaleza</strong> de tu clave y una <strong>Confirmación</strong> para asegurar que no haya errores al escribirla.
+        </div>
+
+        <div class="page-break"></div>
+
+        <h2>3. PANTALLA PRINCIPAL (CONTROL GENERAL)</h2>
+
+        <p>Al entrar, verás el panel de <strong>Control General</strong>. Aquí tienes un resumen rápido del estado de la orquesta.</p>
+
+        <div class="screenshot">
+            <img src="frmPrincipal.png" alt="Panel de Control General">
+            <p>Tabla principal con el resumen de alumnos</p>
+        </div>
+
+        <p>En esta tabla principal encontrarás:</p>
+        <ul>
+            <li><strong>Nombre y Apellido</strong> del alumno.</li>
+            <li><strong>Instrumentos</strong> que toca.</li>
+            <li><strong>Profesores</strong> que tiene a cargo.</li>
+            <li><strong>% Asistencia:</strong> Un indicador visual (con colores) para detectar rápido si la asistencia es alta o baja.</li>
+        </ul>
+
+        <div class="field-list">
+            <strong>Menú Superior:</strong>
+            Desde aquí accedes a todas las funciones:
+            <ul>
+                <li><strong>GESTIÓN:</strong> Para agregar, modificar o eliminar datos.</li>
+                <li><strong>ASISTENCIA:</strong> Para tomar lista en las actividades.</li>
+                <li><strong>LISTADOS:</strong> Para ver las planillas completas.</li>
+            </ul>
+        </div>
+
+        <div class="page-break"></div>
+
+        <h2>4. GESTIÓN DE ALUMNOS</h2>
+
+        <p>Aquí administras la información de los chicos que integran la orquesta. Puedes registrarlos, cambiar sus datos si se mudan o cambian de instrumento, o darlos de baja.</p>
+
+        <h3>4.1 Registrar Nuevo Alumno</h3>
+        <p>Accede desde <strong>GESTIÓN > + AGREGAR > ALUMNOS</strong>.</p>
+
+        <div class="screenshot">
+            <img src="AgregarAlumno.png" alt="Registro de Nuevo Alumno">
+            <p>Formulario de inscripción de alumno</p>
+        </div>
+
+        <p>Debes completar los datos obligatorios:</p>
+        <ul>
+            <li><strong>Nombre, Apellido y DNI.</strong></li>
+            <li><strong>Teléfono de padres:</strong> Fundamental para el contacto con las familias.</li>
+            <li><strong>Instrumento a aprender:</strong> Puedes seleccionar uno o varios de la lista.</li>
+        </ul>
+
+        <h3>4.2 Modificar y Eliminar Alumnos</h3>
+        <p>Si necesitas corregir un teléfono o un apellido, ve a <strong>GESTIÓN > MODIFICAR > ALUMNOS</strong>.</p>
+        <div class="screenshot">
+            <img src="ModificarAlumno.png" alt="Modificar Alumno">
+        </div>
+
+        <p>Para dar de baja a un alumno que ya no asiste, ve a <strong>GESTIÓN > ELIMINAR > ALUMNOS</strong>.</p>
+        <div class="screenshot">
+            <img src="EliminarAlumno.png" alt="Eliminar Alumno">
+        </div>
+
+        <div class="page-break"></div>
+
+        <h2>5. GESTIÓN DE PROFESORES</h2>
+
+        <p>Permite administrar el plantel docente de la orquesta.</p>
+
+        <h3>5.1 Registrar Profesor</h3>
+        <p>Accede desde <strong>GESTIÓN > + AGREGAR > PROFESORES</strong>.</p>
+
+        <div class="screenshot">
+            <img src="AgregarProfesor.png" alt="Registro de Profesor">
+            <p>Alta de nuevo docente</p>
+        </div>
+
+        <p>Carga los datos personales (Nombre, Apellido, DNI, Mail, Teléfono) y selecciona del menú desplegable <strong>qué instrumento enseña</strong>.</p>
+
+        <h3>5.2 Modificar y Eliminar Profesores</h3>
+        <p>Usa los menús <strong>MODIFICAR</strong> o <strong>ELIMINAR</strong> dentro de la pestaña GESTIÓN para mantener actualizada la lista de profesores.</p>
+        
+        <div class="screenshot">
+            <img src="ModificarProfesor.png" alt="Modificar Profesor">
+        </div>
+
+        <div class="page-break"></div>
+
+        <h2>6. GESTIÓN DE INSTRUMENTOS</h2>
+
+        <p>Si la orquesta incorpora un nuevo instrumento o cátedra, debes registrarlo aquí para poder asignárselo luego a alumnos y profesores.</p>
+
+        <p>Accede desde <strong>GESTIÓN > + AGREGAR > INSTRUMENTOS</strong>.</p>
+
+        <div class="screenshot">
+            <img src="AgregarInstrumento.png" alt="Agregar Instrumento">
+        </div>
+
+        <div class="note">
+            Recuerda que un instrumento puede ser aprendido por varios alumnos y enseñado por varios profesores.
+        </div>
+
+        <div class="page-break"></div>
+
+        <h2>7. GESTIÓN DE ASISTENCIA</h2>
+
+        <p>Esta es una de las funciones más importantes. Permite registrar qué alumnos participaron de las actividades orquestales.</p>
+
+        <p>Ve a la pestaña <strong>ASISTENCIA</strong>.</p>
+
+        <div class="screenshot">
+            <img src="Asistencia.png" alt="Registro de Asistencias">
+            <p>Planilla de toma de asistencia</p>
+        </div>
+
+        <p><strong>Pasos para tomar lista:</strong></p>
+        <ol>
+            <li><strong>Fecha:</strong> El sistema pone la fecha de hoy automáticamente, pero puedes elegir otra en el calendario.</li>
+            <li><strong>Actividad:</strong> Selecciona qué se hizo ese día (Ensayo, Lenguaje Musical, Clases de instrumento, Concierto).</li>
+            <li><strong>Alumnos:</strong> Aparecerá la lista de nombres. Simplemente marca con un tilde (checkbox) a los presentes.</li>
+            <li>Presiona <strong>GUARDAR</strong>.</li>
+        </ol>
+
+        <p>Al guardar, el sistema actualiza automáticamente el porcentaje de asistencia de cada chico en la Pantalla Principal.</p>
+
+        <div class="page-break"></div>
+
+        <h2>8. LISTADOS Y CONSULTAS</h2>
+
+        <p>Si necesitas ver listados completos de información sin editar nada, usa la pestaña <strong>LISTADOS</strong>.</p>
+
+        <div class="screenshot">
+            <img src="MenuListados.png" alt="Menú de Listados">
+        </div>
+
+        <h3>8.1 Listado de Alumnos</h3>
+        <p>Muestra la nómina completa para consultas rápidas de DNI o contacto de padres.</p>
+        <div class="screenshot">
+            <img src="ListadoAlumnos.png" alt="Listado de Alumnos">
+        </div>
+
+        <h3>8.2 Listado de Profesores</h3>
+        <p>Muestra todos los profesores registrados, detallando su cátedra, instrumento y datos de contacto.</p>
+        <div class="screenshot">
+            <img src="ListadoProfesores.png" alt="Listado de Profesores">
+        </div>
+
+        <hr style="margin: 40px 0; border: none; border-top: 2px solid #6b4ea3;">
+
+        <p style="text-align: center; color: #666; font-size: 0.9em;">
+            © 2025 - Sistema de Gestión Orquesta Escuela<br>
+            Manual de Usuario
+        </p>
+
+    </div>
+</body>
+</html>

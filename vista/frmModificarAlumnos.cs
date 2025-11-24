@@ -27,8 +27,9 @@ namespace GUI_Login.vista
             controlInstrumento = new ControlInstrumento();
         }
 
-        // ==================== MÉTODOS DE CARGA Y CONFIGURACIÓN ====================
-
+        /// <summary>
+        /// Carga inicial del formulario
+        /// </summary>
         private void FrmModificarAlumnos_Load(object sender, EventArgs e)
         {
             CargarListaAlumnos();
@@ -36,6 +37,9 @@ namespace GUI_Login.vista
             this.KeyPreview = true;
         }
 
+        /// <summary>
+        /// Carga la lista de alumnos en el ListBox
+        /// </summary>
         private void CargarListaAlumnos()
         {
             listaAlumnos = controlAlumno.ObtenerAlumnos();
@@ -51,6 +55,9 @@ namespace GUI_Login.vista
             }
         }
 
+        /// <summary>
+        /// Carga los instrumentos disponibles en el CheckedListBox
+        /// </summary>
         private void CargarCheckListInstrumentos()
         {
             List<Instrumento> instrumentos = controlInstrumento.ListarInstrumentosEnOrquesta();
@@ -60,8 +67,9 @@ namespace GUI_Login.vista
             chkListInstrumentos.ValueMember = "Id";
         }
 
-        // ==================== MANEJO DE SELECCIONES ====================
-
+        /// <summary>
+        /// Maneja la selección de un alumno en la lista
+        /// </summary>
         private void LstAlumnosModificar_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lstAlumnosModificar.SelectedItem == null) return;
@@ -69,26 +77,19 @@ namespace GUI_Login.vista
             Alumno alumno = (Alumno)lstAlumnosModificar.SelectedItem;
             idSeleccionado = alumno.Id;
 
-            CargarDatosAlumno(alumno);
-            CargarInstrumentosDelAlumno(idSeleccionado);
-        }
-
-        /// <summary>
-        /// Carga los datos del alumno seleccionado en los controles
-        /// </summary>
-        /// <param name="alumno">Alumno seleccionado</param>
-        private void CargarDatosAlumno(Alumno alumno)
-        {
+            // Cargar datos del alumno en los controles
             txtNombre.Text = alumno.Nombre;
             txtApellido.Text = alumno.Apellido;
             txtDni.Text = alumno.Dni.ToString();
             txtTelePadres.Text = alumno.Telefono_padres;
+
+            // Cargar y marcar los instrumentos del alumno
+            CargarInstrumentosDelAlumno(idSeleccionado);
         }
 
         /// <summary>
-        /// Carga y marca los instrumentos actuales del alumno
+        /// Carga y marca los instrumentos actuales del alumno seleccionado
         /// </summary>
-        /// <param name="idAlumno">ID del alumno</param>
         private void CargarInstrumentosDelAlumno(int idAlumno)
         {
             // Desmarcar todos los instrumentos primero
@@ -97,10 +98,8 @@ namespace GUI_Login.vista
                 chkListInstrumentos.SetItemChecked(i, false);
             }
 
-            // Obtener los instrumentos actuales del alumno
+            // Obtener y marcar los instrumentos actuales del alumno
             List<int> instrumentosAlumno = controlAlumno.ObtenerInstrumentosPorAlumno(idAlumno);
-
-            // Marcar los instrumentos que el alumno ya tiene
             for (int i = 0; i < chkListInstrumentos.Items.Count; i++)
             {
                 Instrumento instrumento = (Instrumento)chkListInstrumentos.Items[i];
@@ -111,79 +110,41 @@ namespace GUI_Login.vista
             }
         }
 
-        // ==================== OPERACIONES PRINCIPALES ====================
-
+        /// <summary>
+        /// Guarda los cambios realizados en los datos del alumno
+        /// </summary>
         private void BtnGuardarCambios_Click(object sender, EventArgs e)
         {
-            if (!ValidarSeleccionAlumno())
-                return;
-
-            if (!ValidarFormularioCompleto())
-                return;
-
-            if (!ControlAlumno.ConfirmarModificacion())
-                return;
-
-            Alumno alumno = CrearObjetoAlumno();
-            List<int> idsInstrumentos = ObtenerInstrumentosSeleccionados();
-
-            // Modificar alumno con sus instrumentos
-            bool exito = controlAlumno.ModificarAlumnoConInstrumentos(alumno, idsInstrumentos);
-
-            if (exito)
-            {
-                CargarListaAlumnos();
-                LimpiarFormulario();
-            }
-        }
-
-        /// <summary>
-        /// Valida que se haya seleccionado un alumno
-        /// </summary>
-        /// <returns>True si hay un alumno seleccionado</returns>
-        private bool ValidarSeleccionAlumno()
-        {
+            // Validar que se haya seleccionado un alumno
             if (idSeleccionado <= 0)
             {
                 MessageBox.Show("Por favor, seleccione un alumno para modificar.",
                     "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
+                return;
             }
-            return true;
-        }
 
-        /// <summary>
-        /// Valida todos los campos del formulario
-        /// </summary>
-        /// <returns>True si todos los campos son válidos</returns>
-        private bool ValidarFormularioCompleto()
-        {
-            // Usar ValidarAlumno directamente
-            if (!ControlAlumno.ValidarAlumno(
-                nombre: txtNombre.Text,
-                apellido: txtApellido.Text,
-                dni: txtDni.Text,
-                telefono: txtTelePadres.Text))
-                return false;
+            // Validar campos del formulario
+            Alumno alumnoValidar = new Alumno
+            {
+                Nombre = txtNombre.Text.Trim(),
+                Apellido = txtApellido.Text.Trim(),
+                Dni = int.TryParse(txtDni.Text.Trim(), out int dni) ? dni : 0,
+                Telefono_padres = txtTelePadres.Text.Trim()
+            };
+
+            if (!ControlAlumno.ValidarAlumno(alumnoValidar))
+                return;
 
             // Validar que al menos un instrumento esté seleccionado
             if (chkListInstrumentos.CheckedItems.Count == 0)
             {
                 MessageBox.Show("Seleccione al menos un instrumento.",
                     "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
+                return;
             }
 
-            return true;
-        }
-
-        /// <summary>
-        /// Crea un objeto Alumno con los datos del formulario
-        /// </summary>
-        /// <returns>Objeto Alumno con los datos actualizados</returns>
-        private Alumno CrearObjetoAlumno()
-        {
-            return new Alumno
+            // Crear objeto alumno con los datos actualizados
+            Alumno alumno = new Alumno
             {
                 Id = idSeleccionado,
                 Nombre = txtNombre.Text.Trim(),
@@ -191,46 +152,38 @@ namespace GUI_Login.vista
                 Dni = int.Parse(txtDni.Text.Trim()),
                 Telefono_padres = txtTelePadres.Text.Trim()
             };
-        }
 
-        /// <summary>
-        /// Obtiene los IDs de los instrumentos seleccionados
-        /// </summary>
-        /// <returns>Lista de IDs de instrumentos seleccionados</returns>
-        private List<int> ObtenerInstrumentosSeleccionados()
-        {
+            // Obtener instrumentos seleccionados
             List<int> idsInstrumentos = new List<int>();
             foreach (var item in chkListInstrumentos.CheckedItems)
             {
                 Instrumento instrumento = (Instrumento)item;
                 idsInstrumentos.Add(instrumento.Id);
             }
-            return idsInstrumentos;
-        }
 
-        // ==================== MÉTODOS AUXILIARES ====================
+            // Modificar alumno
+            bool exito = controlAlumno.ModificarAlumnoConInstrumentos(alumno, idsInstrumentos);
+
+            if (exito)
+            {
+                CargarListaAlumnos();
+
+                // Limpiar formulario
+                txtNombre.Clear();
+                txtApellido.Clear();
+                txtDni.Clear();
+                txtTelePadres.Clear();
+                for (int i = 0; i < chkListInstrumentos.Items.Count; i++)
+                {
+                    chkListInstrumentos.SetItemChecked(i, false);
+                }
+                idSeleccionado = -1;
+            }
+        }
 
         /// <summary>
-        /// Limpia todos los campos del formulario
+        /// Regresa al formulario principal
         /// </summary>
-        private void LimpiarFormulario()
-        {
-            txtNombre.Clear();
-            txtApellido.Clear();
-            txtDni.Clear();
-            txtTelePadres.Clear();
-
-            // Desmarcar todos los instrumentos
-            for (int i = 0; i < chkListInstrumentos.Items.Count; i++)
-            {
-                chkListInstrumentos.SetItemChecked(i, false);
-            }
-
-            idSeleccionado = -1;
-        }
-
-        // ==================== NAVEGACIÓN Y CIERRE ====================
-
         private void BtnVolver_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -238,6 +191,9 @@ namespace GUI_Login.vista
             formPrincipal.Show();
         }
 
+        /// <summary>
+        /// Sale del sistema con confirmación
+        /// </summary>
         private void BtnSalir_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show(
@@ -252,6 +208,9 @@ namespace GUI_Login.vista
             }
         }
 
+        /// <summary>
+        /// Maneja atajos de teclado en el formulario
+        /// </summary>
         private void FrmModificarAlumnos_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)

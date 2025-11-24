@@ -5,10 +5,16 @@ using System.Windows.Forms;
 
 namespace GUI_Login.control
 {
+    /// <summary>
+    /// Controlador para gestionar las relaciones entre alumnos e instrumentos
+    /// </summary>
     public partial class ControlAlumnoInstrumento
     {
         private readonly ModeloAlumnoInstrumento modeloAlumnoInstrumento;
 
+        /// <summary>
+        /// Constructor que inicializa el modelo de relaciones alumno-instrumento
+        /// </summary>
         public ControlAlumnoInstrumento()
         {
             modeloAlumnoInstrumento = new ModeloAlumnoInstrumento();
@@ -16,13 +22,29 @@ namespace GUI_Login.control
 
         // ==================== OPERACIONES CRUD ====================
 
+        /// <summary>
+        /// Registra múltiples instrumentos para un alumno
+        /// </summary>
         public bool RegistrarInstrumentosParaAlumno(int idAlumno, List<int> idsInstrumentos)
         {
-            if (!ValidarParametros(idAlumno, idsInstrumentos))
+            // Validar parámetros
+            if (idAlumno <= 0)
+            {
+                MessageBox.Show("ID de alumno no válido.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
+            }
+
+            if (idsInstrumentos == null || idsInstrumentos.Count == 0)
+            {
+                MessageBox.Show("La lista de instrumentos no puede estar vacía.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
 
             try
             {
+                // Registrar instrumentos en la base de datos
                 bool resultado = modeloAlumnoInstrumento.RegistrarInstrumentosParaAlumno(idAlumno, idsInstrumentos);
                 if (!resultado)
                 {
@@ -33,20 +55,28 @@ namespace GUI_Login.control
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Ahora captura excepciones del Modelo
                 MessageBox.Show($"Error al registrar instrumentos: {ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
 
+        /// <summary>
+        /// Actualiza la relación entre un alumno y un instrumento específico
+        /// </summary>
         public bool ActualizarRelacion(int idAlumno, int idInstrumento)
         {
-            if (!ValidarParametros(idAlumno, idInstrumento))
+            // Validar parámetros
+            if (idAlumno <= 0 || idInstrumento <= 0)
+            {
+                MessageBox.Show("ID de alumno o instrumento no válido.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
+            }
 
             try
             {
+                // Crear y actualizar relación en la base de datos
                 AlumnoInstrumento relacion = new()
                 {
                     IdAlumno = idAlumno,
@@ -54,31 +84,44 @@ namespace GUI_Login.control
                 };
 
                 bool resultado = modeloAlumnoInstrumento.ActualizarAlumnoInstrumento(relacion);
-
                 if (!resultado)
                 {
                     MessageBox.Show("Error al actualizar la relación alumno-instrumento.",
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
                 return resultado;
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Ahora captura excepciones del Modelo
                 MessageBox.Show($"Error al actualizar relación: {ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
 
+        /// <summary>
+        /// Actualiza todos los instrumentos asociados a un alumno
+        /// </summary>
         public bool ActualizarInstrumentosDeAlumno(int idAlumno, List<int> idsInstrumentos)
         {
-            if (!ValidarParametros(idAlumno, idsInstrumentos))
+            // Validar parámetros
+            if (idAlumno <= 0)
+            {
+                MessageBox.Show("ID de alumno no válido.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
+            }
+
+            if (idsInstrumentos == null || idsInstrumentos.Count == 0)
+            {
+                MessageBox.Show("La lista de instrumentos no puede estar vacía.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
 
             try
             {
+                // Actualizar instrumentos en la base de datos
                 bool resultado = modeloAlumnoInstrumento.ActualizarInstrumentosDeAlumno(idAlumno, idsInstrumentos);
                 if (!resultado)
                 {
@@ -89,24 +132,28 @@ namespace GUI_Login.control
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Ahora captura excepciones del Modelo
                 MessageBox.Show($"Error al actualizar instrumentos: {ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
 
+        /// <summary>
+        /// Elimina todas las relaciones de instrumentos para un alumno
+        /// </summary>
         public bool EliminarRelacionPorAlumno(int idAlumno)
         {
+            // Validar ID de alumno
             if (idAlumno <= 0)
             {
-                MessageBox.Show("ID de alumno no válido.",
-                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("ID de alumno no válido.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
             try
             {
+                // Eliminar relaciones en la base de datos
                 bool resultado = modeloAlumnoInstrumento.EliminarRelacionPorAlumno(idAlumno);
                 if (!resultado)
                 {
@@ -117,7 +164,6 @@ namespace GUI_Login.control
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Ahora captura excepciones del Modelo
                 MessageBox.Show($"Error al eliminar relación alumno-instrumento: {ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
@@ -126,12 +172,16 @@ namespace GUI_Login.control
 
         // ==================== CONSULTAS ====================
 
+        /// <summary>
+        /// Obtiene los IDs de los instrumentos asociados a un alumno
+        /// </summary>
         public List<int> ObtenerInstrumentosPorAlumno(int idAlumno)
         {
+            // Validar ID de alumno
             if (idAlumno <= 0)
             {
-                MessageBox.Show("ID de alumno no válido.",
-                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("ID de alumno no válido.", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return new List<int>();
             }
 
@@ -141,65 +191,10 @@ namespace GUI_Login.control
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Ahora captura excepciones del Modelo
                 MessageBox.Show($"Error al obtener instrumentos del alumno: {ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return new List<int>();
             }
-        }
-
-        // ==================== VALIDACIONES MEJORADAS ====================
-
-        /// <summary>
-        /// Valida los parámetros para operaciones con un solo instrumento
-        /// </summary>
-        private bool ValidarParametros(int idAlumno, int idInstrumento)
-        {
-            if (idAlumno <= 0)
-            {
-                MessageBox.Show("ID de alumno no válido.",
-                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
-            }
-
-            if (idInstrumento <= 0)
-            {
-                MessageBox.Show("ID de instrumento no válido.",
-                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Valida los parámetros para operaciones con múltiples instrumentos
-        /// </summary>
-        private bool ValidarParametros(int idAlumno, List<int> idsInstrumentos)
-        {
-            if (idAlumno <= 0)
-            {
-                MessageBox.Show("ID de alumno no válido.",
-                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
-            }
-
-            if (idsInstrumentos == null || idsInstrumentos.Count == 0)
-            {
-                MessageBox.Show("La lista de instrumentos no puede estar vacía.",
-                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
-            }
-
-            // CORREGIDO: Validación más robusta usando LINQ
-            if (idsInstrumentos.Exists(id => id <= 0))
-            {
-                MessageBox.Show("La lista contiene IDs de instrumento no válidos.",
-                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
-            }
-
-            return true;
         }
     }
 }

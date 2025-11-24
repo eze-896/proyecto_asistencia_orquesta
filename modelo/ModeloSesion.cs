@@ -4,10 +4,16 @@ using System.Windows.Forms;
 
 namespace GUI_Login.modelo
 {
+    /// <summary>
+    /// Modelo para gestionar las operaciones de base de datos relacionadas con la autenticación de usuarios
+    /// </summary>
     public class ModeloSesion
     {
         private readonly Conexion conexion;
 
+        /// <summary>
+        /// Constructor que inicializa la conexión a la base de datos
+        /// </summary>
         public ModeloSesion()
         {
             conexion = new Conexion();
@@ -15,6 +21,11 @@ namespace GUI_Login.modelo
 
         // ==================== CONSULTAS ====================
 
+        /// <summary>
+        /// Obtiene un usuario por su nombre desde la base de datos
+        /// </summary>
+        /// <param name="usuario">Nombre de usuario a buscar</param>
+        /// <returns>Objeto Usuario si existe, null si no se encuentra</returns>
         public Usuario? ObtenerUsuarioPorNombre(string usuario)
         {
             Usuario? miUser = null;
@@ -31,7 +42,7 @@ namespace GUI_Login.modelo
 
                 using MySqlDataReader reader = comando.ExecuteReader();
 
-                if (reader.Read()) // Solo el primero si hay múltiples
+                if (reader.Read())
                 {
                     miUser = new Usuario
                     {
@@ -51,6 +62,11 @@ namespace GUI_Login.modelo
 
         // ==================== OPERACIONES CRUD ====================
 
+        /// <summary>
+        /// Registra un nuevo usuario en el sistema con validación de unicidad
+        /// </summary>
+        /// <param name="nuevoUser">Objeto Usuario con los datos del nuevo usuario</param>
+        /// <returns>True si el registro fue exitoso</returns>
         public bool RegistrarUsuario(Usuario nuevoUser)
         {
             using MySqlConnection c1 = conexion.getConexion();

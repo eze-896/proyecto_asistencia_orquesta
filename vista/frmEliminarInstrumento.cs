@@ -5,11 +5,18 @@ using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
+    /// <summary>
+    /// Formulario para eliminar instrumentos de la orquesta
+    /// Permite seleccionar y eliminar instrumentos con validación de uso previo
+    /// </summary>
     public partial class FrmEliminarInstrumento : Form
     {
         private readonly ControlInstrumento controlInstrumento;
         private List<Instrumento> listaInstrumentos;
 
+        /// <summary>
+        /// Constructor que inicializa el controlador y la lista de instrumentos
+        /// </summary>
         public FrmEliminarInstrumento()
         {
             InitializeComponent();
@@ -17,18 +24,18 @@ namespace GUI_Login.vista
             listaInstrumentos = new List<Instrumento>();
         }
 
+        /// <summary>
+        /// Carga inicial del formulario
+        /// </summary>
         private void FrmEliminarInstrumento_Load(object sender, EventArgs e)
         {
             CargarInstrumentos();
             this.KeyPreview = true;
-
-            // Configuración de navegación por tabulación
-            lstInstrumentos.TabStop = true;
-            btnEliminar.TabStop = true;
-            btnVolver.TabStop = true;
-            btnSalir.TabStop = false;
         }
 
+        /// <summary>
+        /// Carga y actualiza la lista de instrumentos en el ListBox
+        /// </summary>
         private void CargarInstrumentos()
         {
             try
@@ -53,104 +60,40 @@ namespace GUI_Login.vista
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Ahora captura excepciones del Controlador
                 MessageBox.Show($"Error al cargar los instrumentos: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+        /// <summary>
+        /// Maneja el clic en el botón Eliminar
+        /// </summary>
         private void BtnEliminar_Click(object sender, EventArgs e)
         {
-            if (!ValidarSeleccionInstrumento())
-                return;
-
-            Instrumento seleccionado = ObtenerInstrumentoSeleccionado();
-
-            if (!ValidarUsoInstrumento(seleccionado))
-                return;
-
-            if (!ConfirmarEliminacion(seleccionado))
-                return;
-
-            EjecutarEliminacion(seleccionado);
-        }
-
-        private bool ValidarSeleccionInstrumento()
-        {
+            // Validar que se haya seleccionado un instrumento
             if (lstInstrumentos.SelectedIndex == -1)
             {
                 MessageBox.Show("Seleccione un instrumento para eliminar de la orquesta.", "Atención",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 lstInstrumentos.Focus();
-                return false;
+                return;
             }
-            return true;
-        }
 
-        private Instrumento ObtenerInstrumentoSeleccionado()
-        {
-            return listaInstrumentos[lstInstrumentos.SelectedIndex];
-        }
+            // Obtener instrumento seleccionado
+            Instrumento seleccionado = listaInstrumentos[lstInstrumentos.SelectedIndex];
 
-        private bool ValidarUsoInstrumento(Instrumento instrumento)
-        {
-            // Verifica si el instrumento está siendo usado por algún profesor
-            if (controlInstrumento.EstaInstrumentoEnUso(instrumento.Id))
+            // Ejecutar eliminación (todas las validaciones están en el controlador)
+            bool exito = controlInstrumento.EliminarInstrumentoDeOrquesta(seleccionado.Id, seleccionado.Nombre);
+
+            if (exito)
             {
-                MessageBox.Show($"No se puede eliminar el instrumento '{instrumento.Nombre}' porque está asignado a uno o más profesores.",
-                    "No se puede eliminar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
-            }
-
-            // Verifica si el instrumento está siendo usado por algún alumno
-            if (controlInstrumento.EstaInstrumentoEnUsoPorAlumnos(instrumento.Id))
-            {
-                MessageBox.Show($"No se puede eliminar el instrumento '{instrumento.Nombre}' porque está asignado a uno o más alumnos.",
-                    "No se puede eliminar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool ConfirmarEliminacion(Instrumento instrumento)
-        {
-            DialogResult resultado = MessageBox.Show(
-                $"¿Está seguro de eliminar el instrumento '{instrumento.Nombre}' de la orquesta?\n\n" +
-                $"Cátedra: {instrumento.Catedra}",
-                "Confirmar Eliminación",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            return resultado == DialogResult.Yes;
-        }
-
-        private void EjecutarEliminacion(Instrumento instrumento)
-        {
-            try
-            {
-                bool exito = controlInstrumento.EliminarInstrumentoDeOrquesta(instrumento.Id);
-                if (exito)
-                {
-                    MessageBox.Show("Instrumento eliminado de la orquesta correctamente.", "Éxito",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    CargarInstrumentos();
-                }
-                else
-                {
-                    MessageBox.Show("Error al eliminar el instrumento de la orquesta.", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                // CORREGIDO: Ahora captura excepciones del Controlador
-                MessageBox.Show($"Error al eliminar el instrumento: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                CargarInstrumentos(); // Recargar lista actualizada
             }
         }
 
-        // CORREGIDO: Simplificado el manejo de teclado
+        /// <summary>
+        /// Maneja atajos de teclado en el ListBox
+        /// </summary>
         private void LstInstrumentos_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete && lstInstrumentos.SelectedIndex != -1)
@@ -165,7 +108,9 @@ namespace GUI_Login.vista
             }
         }
 
-        // CORREGIDO: Eliminado ProcessCmdKey redundante
+        /// <summary>
+        /// Maneja atajos de teclado en el formulario
+        /// </summary>
         private void FrmEliminarInstrumento_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
@@ -174,6 +119,9 @@ namespace GUI_Login.vista
                 BtnSalir_Click(sender, e);
         }
 
+        /// <summary>
+        /// Regresa al formulario principal
+        /// </summary>
         private void BtnVolver_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -181,6 +129,9 @@ namespace GUI_Login.vista
             formPrincipal.Show();
         }
 
+        /// <summary>
+        /// Sale del sistema con confirmación
+        /// </summary>
         private void BtnSalir_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show(

@@ -24,8 +24,9 @@ namespace GUI_Login.vista
             listaAlumnos = new List<Alumno>();
         }
 
-        // ==================== MÉTODOS DE CARGA Y CONFIGURACIÓN ====================
-
+        /// <summary>
+        /// Carga inicial del formulario
+        /// </summary>
         private void FrmEliminarAlumnos_Load(object sender, EventArgs e)
         {
             CargarAlumnos();
@@ -33,14 +34,19 @@ namespace GUI_Login.vista
         }
 
         /// <summary>
-        /// Carga la lista de alumnos desde la base de datos al ListBox
+        /// Carga y actualiza la lista de alumnos en el ListBox
         /// </summary>
         private void CargarAlumnos()
         {
             try
             {
                 listaAlumnos = controlAlumno.ObtenerAlumnos();
-                ActualizarListaVisual();
+                lstAlumnos.Items.Clear();
+
+                foreach (var alumno in listaAlumnos)
+                {
+                    lstAlumnos.Items.Add($"{alumno.Nombre} {alumno.Apellido} - DNI: {alumno.Dni}");
+                }
 
                 // Selecciona el primer elemento si hay datos
                 if (lstAlumnos.Items.Count > 0)
@@ -56,68 +62,31 @@ namespace GUI_Login.vista
         }
 
         /// <summary>
-        /// Actualiza el ListBox con los datos actualizados de alumnos
+        /// Maneja el clic en el botón Eliminar
         /// </summary>
-        private void ActualizarListaVisual()
-        {
-            lstAlumnos.Items.Clear();
-
-            foreach (var alumno in listaAlumnos)
-            {
-                lstAlumnos.Items.Add($"{alumno.Nombre} {alumno.Apellido} - DNI: {alumno.Dni}");
-            }
-        }
-
-        // ==================== OPERACIONES PRINCIPALES ====================
-
         private void BtnEliminar_Click(object sender, EventArgs e)
         {
-            if (!ValidarSeleccionAlumno())
-                return;
-
-            Alumno seleccionado = ObtenerAlumnoSeleccionado();
-            EjecutarEliminacion(seleccionado);
-        }
-
-        /// <summary>
-        /// Valida que se haya seleccionado un alumno para eliminar
-        /// </summary>
-        /// <returns>True si hay un alumno seleccionado</returns>
-        private bool ValidarSeleccionAlumno()
-        {
+            // Validar que se haya seleccionado un alumno
             if (lstAlumnos.SelectedIndex == -1)
             {
                 MessageBox.Show("Seleccione un alumno para eliminar.",
                     "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
+                return;
             }
-            return true;
-        }
 
-        /// <summary>
-        /// Obtiene el alumno seleccionado en el ListBox
-        /// </summary>
-        /// <returns>Alumno seleccionado</returns>
-        private Alumno ObtenerAlumnoSeleccionado()
-        {
-            return listaAlumnos[lstAlumnos.SelectedIndex];
-        }
+            // Obtener alumno seleccionado y ejecutar eliminación
+            Alumno seleccionado = listaAlumnos[lstAlumnos.SelectedIndex];
+            bool exito = controlAlumno.EliminarAlumno(seleccionado.Id);
 
-        /// <summary>
-        /// Ejecuta el proceso de eliminación del alumno
-        /// </summary>
-        /// <param name="alumno">Alumno a eliminar</param>
-        private void EjecutarEliminacion(Alumno alumno)
-        {
-            bool exito = controlAlumno.EliminarAlumno(alumno.Id);
             if (exito)
             {
                 CargarAlumnos(); // Recarga la lista actualizada
             }
         }
 
-        // ==================== NAVEGACIÓN Y CIERRE ====================
-
+        /// <summary>
+        /// Regresa al formulario principal
+        /// </summary>
         private void BtnVolver_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -125,6 +94,9 @@ namespace GUI_Login.vista
             formPrincipal.Show();
         }
 
+        /// <summary>
+        /// Sale del sistema con confirmación
+        /// </summary>
         private void BtnSalir_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show(
@@ -139,13 +111,8 @@ namespace GUI_Login.vista
             }
         }
 
-        // ==================== MANEJO DE TECLADO ====================
-
         /// <summary>
-        /// Maneja eventos de teclado para mejor usabilidad
-        /// - Delete: Eliminar alumno seleccionado
-        /// - Escape: Volver al formulario principal
-        /// - Alt+F4: Salir del sistema
+        /// Maneja atajos de teclado en el ListBox
         /// </summary>
         private void LstAlumnos_KeyDown(object sender, KeyEventArgs e)
         {
@@ -166,6 +133,9 @@ namespace GUI_Login.vista
             }
         }
 
+        /// <summary>
+        /// Maneja atajos de teclado en el formulario
+        /// </summary>
         private void FrmEliminarAlumnos_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)

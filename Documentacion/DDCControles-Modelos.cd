@@ -1,87 +1,158 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="GUI_Login.control.ControlAlumnoInstrumento">
-    <Position X="3.25" Y="0.5" Width="2.75" />
+    <Position X="1" Y="3.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAEAAAgAAAAAEAAACAAAAAAAAAAAAAAAAAABAAIAAAA=</HashCode>
       <FileName>control\ControlAlumnoInstrumento.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="modeloAlumnoInstrumento" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="GUI_Login.control.ControlAlumno">
-    <Position X="0.5" Y="0.5" Width="2.5" />
+    <Position X="1" Y="6" Width="2.5" />
+    <AssociationLine Name="controlAlumnoInstrumento" Type="GUI_Login.control.ControlAlumnoInstrumento">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-2.023" Y="0.11" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>BAAAAAAIQAAQAAAACBCEAAAAIAAAAAAAAAAAAAAgAAA=</HashCode>
+      <HashCode>AAAAAAAIQAAQAAABCBCEAIAAIAAAAAAAAAAAAAAgAAA=</HashCode>
       <FileName>control\ControlAlumnos.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="controlAlumnoInstrumento" />
+      <Field Name="modeloAlumno" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="GUI_Login.control.ControlAsistencia">
-    <Position X="11.5" Y="0.5" Width="2.25" />
+    <Position X="11.75" Y="6.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAQAAAAAAAAAAAAAAAAIEAAAAAAQAACAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAQAAAAAAAAAAAAAAAAIAAAAAAAQAACAAAAAAA=</HashCode>
       <FileName>control\ControlAsistencia.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="modeloAsistencia" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="GUI_Login.control.ControlInstrumento">
-    <Position X="6.25" Y="0.5" Width="2.5" />
+    <Position X="1" Y="1" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAQAAAAAAAAAASCAAAAAAAACAAAAAAAAAAAIAAAAA=</HashCode>
       <FileName>control\ControlInstrumento.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="modeloInstrumento" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="GUI_Login.control.ControlProfesor">
-    <Position X="9" Y="0.5" Width="2.25" />
+    <Position X="11.5" Y="1" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>BIAAkAAAAgAAAAghAAAgAAAAAAAIAAAAAAEAAAAAACA=</HashCode>
+      <HashCode>AIAAgAAAAgAAAAghAAAgAAAAAAAIAAAAAAEAAAAAAAA=</HashCode>
       <FileName>control\ControlProfesores.cs</FileName>
     </TypeIdentifier>
-  </Class>
-  <Class Name="ControlSesion">
-    <Position X="14" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
-      <FileName>control\ControlSesion.cs</FileName>
-    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="modeloProfesor" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="GUI_Login.modelo.ModeloAlumnoInstrumento">
-    <Position X="3.25" Y="3.25" Width="2.75" />
+    <Position X="5.5" Y="3.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAEAAIgAAAAAAAAACAAAAAAAAIAAAAAAAAABAAAAAAE=</HashCode>
       <FileName>modelo\ModeloAlumnoInstrumento.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="conexion" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="GUI_Login.modelo.ModeloAlumno">
-    <Position X="0.5" Y="4" Width="2.5" />
+    <Position X="4.75" Y="6" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQAAAgAAAAgAAAAAAAAAgAAAAAAAAAAIAAAE=</HashCode>
+      <HashCode>AAAAAAAAQAAAgAAAAgAAAIAAAAAgAAAEIAAAAAIAAAE=</HashCode>
       <FileName>modelo\ModeloAlumnos.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="conexion" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="GUI_Login.modelo.ModeloAsistencia">
-    <Position X="11.5" Y="3" Width="2.25" />
+    <Position X="11.5" Y="4" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAIAIAAAAAAgAAAAAAAAAAAAAAAAAAAAACAAAAAE=</HashCode>
       <FileName>modelo\ModeloAsistencia.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="conexion" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="GUI_Login.modelo.ModeloInstrumento">
-    <Position X="6.25" Y="3.5" Width="2.5" />
+    <Position X="5" Y="1" Width="2.5" />
+    <AssociationLine Name="conexion" Type="Conexion" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="7.5" Y="2.129" />
+        <Point X="8.188" Y="2.129" />
+        <Point X="8.188" Y="3.897" />
+        <Point X="9.125" Y="3.897" />
+        <Point X="9.125" Y="4.5" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAAAQQAAAAAQAAACAAAAAAAAACAAAQAAAAAAAAAAAAE=</HashCode>
       <FileName>modelo\ModeloInstrumento.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="conexion" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="GUI_Login.modelo.ModeloProfesor">
-    <Position X="9" Y="4.5" Width="2.25" />
+    <Position X="8.25" Y="1" Width="2" />
+    <AssociationLine Name="conexion" Type="Conexion" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="10" Y="3.834" />
+        <Point X="10" Y="4.209" />
+        <Point X="10.438" Y="4.209" />
+        <Point X="10.438" Y="4.5" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AYAAgAIAAAAAAAAgAAAAAgAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <HashCode>AYAAgAIAAAAAAAAgAAAAAgAAAAIAAAAEIAAAAAAAAAE=</HashCode>
       <FileName>modelo\ModeloProfesores.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="conexion" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="ModeloSesion">
-    <Position X="14" Y="2" Width="1.5" />
+  <Class Name="GUI_Login.control.ControlSesion">
+    <Position X="11.5" Y="8.25" Width="2.25" />
+    <AssociationLine Name="_modelo" Type="GUI_Login.modelo.ModeloSesion">
+      <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
+        <Position X="0.06" Y="-0.395" Height="0.182" Width="1.266" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAQAAAEAAAAAAAAAAAAAAAAAAAAEAAQxA=</HashCode>
+      <FileName>control\ControlSesion.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_modelo" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="GUI_Login.modelo.ModeloSesion">
+    <Position X="7.75" Y="7.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAE=</HashCode>
       <FileName>modelo\ModeloSesion.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="conexion" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Conexion">
+    <Position X="9" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAgAAAAAAAAAAEAAAAABAAAAAAAAgARAAA=</HashCode>
+      <FileName>clases\Conexion.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

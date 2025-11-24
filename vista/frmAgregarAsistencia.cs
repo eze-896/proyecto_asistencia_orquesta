@@ -5,12 +5,19 @@ using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
+    /// <summary>
+    /// Formulario para registrar asistencias de alumnos
+    /// Permite marcar alumnos presentes/ausentes por actividad y fecha
+    /// </summary>
     public partial class FrmAgregarAsistencia : Form
     {
         private readonly ControlAsistencia controlAsistencia;
         private List<Alumno> listaAlumnos;
-        private Dictionary<string, int> mapaAlumnos; // CORREGIDO: Mapa para relacionar items con IDs
+        private Dictionary<string, int> mapaAlumnos;
 
+        /// <summary>
+        /// Constructor que inicializa controladores y estructuras de datos
+        /// </summary>
         public FrmAgregarAsistencia()
         {
             InitializeComponent();
@@ -19,28 +26,33 @@ namespace GUI_Login.vista
             mapaAlumnos = new Dictionary<string, int>();
         }
 
+        /// <summary>
+        /// Carga inicial del formulario
+        /// </summary>
         private void FrmAgregarAsistencia_Load(object sender, EventArgs e)
         {
             datePicker.Value = DateTime.Today;
             cmbActividad.DataSource = Enum.GetValues(typeof(Asistencia.Tipo_Actividad));
-
             CargarAlumnos();
             this.KeyPreview = true;
         }
 
+        /// <summary>
+        /// Carga la lista de alumnos en el CheckedListBox
+        /// </summary>
         private void CargarAlumnos()
         {
             try
             {
                 listaAlumnos = controlAsistencia.ObtenerAlumnos();
                 chkListaAlumnos.Items.Clear();
-                mapaAlumnos.Clear(); // CORREGIDO: Limpiar mapa
+                mapaAlumnos.Clear();
 
                 foreach (Alumno alumno in listaAlumnos)
                 {
                     string itemText = $"{alumno.Nombre} {alumno.Apellido}";
                     chkListaAlumnos.Items.Add(itemText, false);
-                    mapaAlumnos[itemText] = alumno.Id; // CORREGIDO: Guardar relación
+                    mapaAlumnos[itemText] = alumno.Id;
                 }
 
                 if (listaAlumnos.Count == 0)
@@ -51,59 +63,44 @@ namespace GUI_Login.vista
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Ahora captura excepciones del Controlador
                 MessageBox.Show($"Error al cargar alumnos: {ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+        /// <summary>
+        /// Maneja el clic en el botón Guardar para registrar asistencias
+        /// </summary>
         private void BtnGuardar_Click(object sender, EventArgs e)
         {
-            if (!ValidarFormulario())
-                return;
-
-            List<Asistencia> asistencias = CrearListaAsistencias();
-
-            if (!ConfirmarGuardado(asistencias))
-                return;
-
-            EjecutarGuardado(asistencias);
-        }
-
-        private bool ValidarFormulario()
-        {
+            // Validar formulario
             if (cmbActividad.SelectedIndex == -1)
             {
                 MessageBox.Show("Seleccione una actividad.", "Validación",
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cmbActividad.Focus();
-                return false;
+                return;
             }
 
             if (chkListaAlumnos.Items.Count == 0)
             {
                 MessageBox.Show("No hay alumnos cargados.", "Validación",
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
+                return;
             }
 
             if (chkListaAlumnos.CheckedItems.Count == 0)
             {
                 MessageBox.Show("Seleccione al menos un alumno como presente.", "Validación",
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
+                return;
             }
 
-            return true;
-        }
-
-        private List<Asistencia> CrearListaAsistencias()
-        {
+            // Crear lista de asistencias
             DateTime fecha = datePicker.Value.Date;
             Asistencia.Tipo_Actividad actividad = (Asistencia.Tipo_Actividad)cmbActividad.SelectedItem;
             List<Asistencia> asistencias = new List<Asistencia>();
 
-            // CORREGIDO: Mapeo seguro usando el diccionario
             for (int i = 0; i < chkListaAlumnos.Items.Count; i++)
             {
                 string itemText = chkListaAlumnos.Items[i].ToString();
@@ -122,15 +119,9 @@ namespace GUI_Login.vista
                 }
             }
 
-            return asistencias;
-        }
-
-        private bool ConfirmarGuardado(List<Asistencia> asistencias)
-        {
+            // Confirmar guardado
             int presentes = asistencias.FindAll(a => a.Presente).Count;
             int ausentes = asistencias.Count - presentes;
-            DateTime fecha = datePicker.Value.Date;
-            Asistencia.Tipo_Actividad actividad = (Asistencia.Tipo_Actividad)cmbActividad.SelectedItem;
 
             DialogResult resultado = MessageBox.Show(
                 $"¿Guardar asistencias para {fecha:dd/MM/yyyy} - {actividad}?\n\n" +
@@ -142,11 +133,10 @@ namespace GUI_Login.vista
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
 
-            return resultado == DialogResult.Yes;
-        }
+            if (resultado != DialogResult.Yes)
+                return;
 
-        private void EjecutarGuardado(List<Asistencia> asistencias)
-        {
+            // Ejecutar guardado
             try
             {
                 bool guardado = controlAsistencia.GuardarAsistencias(asistencias);
@@ -155,7 +145,12 @@ namespace GUI_Login.vista
                 {
                     MessageBox.Show("Asistencias guardadas correctamente.",
                                     "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LimpiarSeleccion();
+
+                    // Limpiar selección
+                    for (int i = 0; i < chkListaAlumnos.Items.Count; i++)
+                    {
+                        chkListaAlumnos.SetItemChecked(i, false);
+                    }
                 }
                 else
                 {
@@ -165,20 +160,14 @@ namespace GUI_Login.vista
             }
             catch (Exception ex)
             {
-                // CORREGIDO: Ahora captura excepciones del Controlador
                 MessageBox.Show($"Error inesperado al guardar asistencias: {ex.Message}",
                                 "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void LimpiarSeleccion()
-        {
-            for (int i = 0; i < chkListaAlumnos.Items.Count; i++)
-            {
-                chkListaAlumnos.SetItemChecked(i, false);
-            }
-        }
-
+        /// <summary>
+        /// Regresa al formulario principal
+        /// </summary>
         private void BtnVolver_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -186,6 +175,9 @@ namespace GUI_Login.vista
             formPrincipal.Show();
         }
 
+        /// <summary>
+        /// Sale del sistema con confirmación
+        /// </summary>
         private void BtnSalir_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show(
@@ -200,6 +192,9 @@ namespace GUI_Login.vista
             }
         }
 
+        /// <summary>
+        /// Maneja atajos de teclado en el formulario
+        /// </summary>
         private void FrmAgregarAsistencia_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)

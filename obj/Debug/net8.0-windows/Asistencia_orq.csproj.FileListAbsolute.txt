@@ -7,7 +7,6 @@ C:\Users\54291\source\repos\GUI Login\bin\Debug\net8.0-windows\MySql.Data.dll
 C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\Asistencia_orq.csproj.AssemblyReference.cache
 C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI_Login.Properties.Resources.resources
 C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI_Login.frmPrincipal.resources
-C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI_Login.frmUsuarios.resources
 C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI_Login.login.resources
 C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\GUI_Login.registro.resources
 C:\Users\54291\source\repos\GUI Login\obj\Debug\net8.0-windows\Asistencia_orq.csproj.GenerateResource.cache

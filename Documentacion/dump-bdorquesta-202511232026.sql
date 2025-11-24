@@ -29,7 +29,7 @@ CREATE TABLE `alumno` (
   `apellido` varchar(25) DEFAULT NULL,
   `telefono_padres` varchar(25) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,7 +38,7 @@ CREATE TABLE `alumno` (
 
 LOCK TABLES `alumno` WRITE;
 /*!40000 ALTER TABLE `alumno` DISABLE KEYS */;
-INSERT INTO `alumno` VALUES (1,47453412,'ezequiel','irusta','2915707175'),(2,12543761,'martin','perez','2915606140'),(3,24422211,'Nicolás','Gallardo','12312354'),(4,47456621,'raul','jimenez','2915837018');
+INSERT INTO `alumno` VALUES (1,47453412,'ezequiel','irusta','2915707175'),(2,12543761,'martin','perez','2915606140'),(3,24422211,'Nicolás','Gallardo','12312354'),(5,47992124,'Julieta','Zeballos','291897003'),(6,48123740,'Ludmila','Cachanosky','29177897520');
 /*!40000 ALTER TABLE `alumno` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -65,7 +65,7 @@ CREATE TABLE `alumno_instrumento` (
 
 LOCK TABLES `alumno_instrumento` WRITE;
 /*!40000 ALTER TABLE `alumno_instrumento` DISABLE KEYS */;
-INSERT INTO `alumno_instrumento` VALUES (2,11),(3,6),(4,19);
+INSERT INTO `alumno_instrumento` VALUES (1,1),(1,6),(2,11),(3,6),(5,6),(5,11),(6,14);
 /*!40000 ALTER TABLE `alumno_instrumento` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -85,7 +85,7 @@ CREATE TABLE `asistencia` (
   PRIMARY KEY (`id`),
   KEY `asistencia_alumno_FK` (`id_alumno`),
   CONSTRAINT `asistencia_alumno_FK` FOREIGN KEY (`id_alumno`) REFERENCES `alumno` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,7 +94,7 @@ CREATE TABLE `asistencia` (
 
 LOCK TABLES `asistencia` WRITE;
 /*!40000 ALTER TABLE `asistencia` DISABLE KEYS */;
-INSERT INTO `asistencia` VALUES (1,3,'ensayo','2025-10-06 00:00:00',1),(2,2,'ensayo','2025-10-06 00:00:00',1),(3,3,'clase_lenguaje','2025-10-06 00:00:00',1),(4,4,'clase_lenguaje','2025-10-06 00:00:00',1),(5,1,'clase_lenguaje','2025-10-24 00:00:00',1),(6,2,'clase_lenguaje','2025-10-24 00:00:00',1),(7,4,'clase_lenguaje','2025-10-10 00:00:00',1),(8,2,'clase_lenguaje','2025-10-10 00:00:00',1),(9,2,'clase_lenguaje','2025-11-02 00:00:00',1),(10,3,'clase_instrumento','2025-10-10 00:00:00',1),(11,1,'clase_instrumento','2025-10-10 00:00:00',1),(12,4,'clase_instrumento','2025-10-10 00:00:00',1);
+INSERT INTO `asistencia` VALUES (1,3,'ensayo','2025-10-06 00:00:00',1),(2,2,'ensayo','2025-10-06 00:00:00',1),(3,3,'clase_lenguaje','2025-10-06 00:00:00',1),(5,1,'clase_lenguaje','2025-10-24 00:00:00',1),(6,2,'clase_lenguaje','2025-10-24 00:00:00',1),(8,2,'clase_lenguaje','2025-10-10 00:00:00',1),(9,2,'clase_lenguaje','2025-11-02 00:00:00',1),(10,3,'clase_instrumento','2025-10-10 00:00:00',1),(11,1,'clase_instrumento','2025-10-10 00:00:00',1),(13,3,'concierto','2025-10-20 00:00:00',0),(14,1,'concierto','2025-10-20 00:00:00',1),(15,2,'concierto','2025-10-20 00:00:00',0),(16,3,'clase_lenguaje','2025-10-31 00:00:00',1),(17,1,'clase_lenguaje','2025-10-31 00:00:00',0),(18,2,'clase_lenguaje','2025-10-31 00:00:00',0),(19,3,'clase_instrumento','2026-01-23 00:00:00',1),(20,1,'clase_instrumento','2026-01-23 00:00:00',1),(21,2,'clase_instrumento','2026-01-23 00:00:00',1),(22,3,'ensayo','2025-12-25 00:00:00',0),(23,1,'ensayo','2025-12-25 00:00:00',0),(24,2,'ensayo','2025-12-25 00:00:00',0),(25,5,'ensayo','2025-12-25 00:00:00',1),(26,3,'ensayo','2025-11-11 00:00:00',0),(27,1,'ensayo','2025-11-11 00:00:00',1),(28,2,'ensayo','2025-11-11 00:00:00',1),(29,5,'ensayo','2025-11-11 00:00:00',0),(30,6,'clase_instrumento','2025-11-23 00:00:00',1),(31,3,'clase_instrumento','2025-11-23 00:00:00',1),(32,1,'clase_instrumento','2025-11-23 00:00:00',1),(33,2,'clase_instrumento','2025-11-23 00:00:00',1),(34,5,'clase_instrumento','2025-11-23 00:00:00',1);
 /*!40000 ALTER TABLE `asistencia` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -143,7 +143,7 @@ CREATE TABLE `instrumento_orquesta` (
 
 LOCK TABLES `instrumento_orquesta` WRITE;
 /*!40000 ALTER TABLE `instrumento_orquesta` DISABLE KEYS */;
-INSERT INTO `instrumento_orquesta` VALUES (1),(6),(11),(19);
+INSERT INTO `instrumento_orquesta` VALUES (1),(6),(11),(14),(19);
 /*!40000 ALTER TABLE `instrumento_orquesta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -165,7 +165,7 @@ CREATE TABLE `profesor` (
   PRIMARY KEY (`id`),
   KEY `profesor_instrumento_orquesta_FK` (`id_instrumento`),
   CONSTRAINT `profesor_instrumento_orquesta_FK` FOREIGN KEY (`id_instrumento`) REFERENCES `instrumento_orquesta` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,7 +174,7 @@ CREATE TABLE `profesor` (
 
 LOCK TABLES `profesor` WRITE;
 /*!40000 ALTER TABLE `profesor` DISABLE KEYS */;
-INSERT INTO `profesor` VALUES (1,45876123,'marta','gutierrez','123675433','hola@2.com',1),(2,76098123,'martin','perez','123096749','hola@gmail.com',19);
+INSERT INTO `profesor` VALUES (2,76098123,'martin','perez','123096749','hola@gmail.com',19),(3,48472104,'martin','gutierrez','2915983017','adios@gmail.com',6),(4,31276012,'maria','jemes','893029842','mariaj@hotmail.com',11),(5,47453124,'juancito','perez','2915603719','juancitoP@hotmail.com',1),(6,27543192,'Leticia','Cardoso','2915987234','Leticar@yahoo.com',14);
 /*!40000 ALTER TABLE `profesor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -190,7 +190,7 @@ CREATE TABLE `usuario` (
   `nombre` varchar(100) DEFAULT NULL,
   `contrasena` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -199,7 +199,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'ezequiel','99800b85d3383e3a2fb45eb7d0066a4879a9dad0'),(2,'ezequiel','eb6a2f962bb597f98b2c2b9c4698da19710ddfa3');
+INSERT INTO `usuario` VALUES (1,'ezequiel','99800b85d3383e3a2fb45eb7d0066a4879a9dad0'),(2,'ezequiel','eb6a2f962bb597f98b2c2b9c4698da19710ddfa3'),(3,'raul','9704a2c1af1d35d99295a7bdc5b805b7c15f2217'),(4,'Martin','8d75ebf9dd230e87d35aa305387c6b074ce475b9'),(5,'Martin','634101e0f692786ac54ab9fa3672ec0985d3dfb3'),(6,'Julia','db34f8e97d777746e629d652d5fd9022d665aeff');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -216,4 +216,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-15 23:04:58
+-- Dump completed on 2025-11-23 20:26:04
