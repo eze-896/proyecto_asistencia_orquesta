@@ -1,7 +1,4 @@
 ﻿using GUI_Login.control;
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
@@ -28,7 +25,7 @@ namespace GUI_Login.vista
         /// <summary>
         /// Carga inicial del formulario
         /// </summary>
-        private void FrmModificarProfesores_Load(object sender, EventArgs e)
+        private void FrmModificarProfesores_Load(object? sender, EventArgs e)
         {
             CargarProfesores();
             CargarInstrumentos();
@@ -45,8 +42,14 @@ namespace GUI_Login.vista
 
             foreach (var prof in profesores)
             {
-                lstProfesoresModificar.Items.Add($"{prof.Id} - {prof.Nombre} {prof.Apellido}");
+                lstProfesoresModificar.Items.Add($"{prof.Nombre} {prof.Apellido}");
             }
+
+            // Seleccionar automáticamente el primer profesor si existe
+            if (lstProfesoresModificar.Items.Count > 0)
+                {
+                    lstProfesoresModificar.SelectedIndex = 0;
+                }
         }
 
         /// <summary>
@@ -63,18 +66,21 @@ namespace GUI_Login.vista
         /// <summary>
         /// Maneja la selección de un profesor en la lista
         /// </summary>
-        private void LstProfesoresModificar_SelectedIndexChanged(object sender, EventArgs e)
+        private void LstProfesoresModificar_SelectedIndexChanged(object? sender, EventArgs e)
         {
             if (lstProfesoresModificar.SelectedItem == null) return;
 
             string? seleccionado = lstProfesoresModificar.SelectedItem.ToString();
             if (!string.IsNullOrEmpty(seleccionado))
             {
-                // Extraer ID del profesor seleccionado
-                string idPart = seleccionado.Split('-')[0].Trim();
-                if (int.TryParse(idPart, out int id))
+                // Buscar el profesor por nombre y apellido
+                var profesores = controlProfesor.ObtenerProfesores();
+                var profesorSeleccionado = profesores.FirstOrDefault(p =>
+                    $"{p.Nombre} {p.Apellido}" == seleccionado);
+
+                if (profesorSeleccionado != null)
                 {
-                    idSeleccionado = id;
+                    idSeleccionado = profesorSeleccionado.Id;
                     Profesor? prof = controlProfesor.BuscarProfesor(idSeleccionado);
                     if (prof != null)
                     {
@@ -89,7 +95,7 @@ namespace GUI_Login.vista
                 }
                 else
                 {
-                    MessageBox.Show("Error al obtener el ID del profesor seleccionado.",
+                    MessageBox.Show("Error al obtener los datos del profesor seleccionado.",
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -98,7 +104,7 @@ namespace GUI_Login.vista
         /// <summary>
         /// Guarda los cambios realizados en los datos del profesor
         /// </summary>
-        private void BtnGuardarCambios_Click(object sender, EventArgs e)
+        private void BtnGuardarCambios_Click(object? sender, EventArgs e)
         {
             // Validar selección de profesor
             if (idSeleccionado == -1)
@@ -111,7 +117,7 @@ namespace GUI_Login.vista
             // Crear objeto profesor con los datos actualizados
             if (cmbInstrumentos.SelectedValue is int selectedValue)
             {
-                Profesor profesor = new Profesor
+                Profesor profesor = new()
                 {
                     Id = idSeleccionado,
                     Dni = int.Parse(txtDni.Text),
@@ -148,7 +154,7 @@ namespace GUI_Login.vista
         /// <summary>
         /// Regresa al formulario principal
         /// </summary>
-        private void BtnVolver_Click(object sender, EventArgs e)
+        private void BtnVolver_Click(object? sender, EventArgs e)
         {
             this.Close();
             FrmPrincipal formPrincipal = new();
@@ -158,7 +164,7 @@ namespace GUI_Login.vista
         /// <summary>
         /// Sale del sistema con confirmación
         /// </summary>
-        private void BtnSalir_Click(object sender, EventArgs e)
+        private void BtnSalir_Click(object? sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show(
                 "¿Está seguro que desea salir del sistema?",
@@ -175,7 +181,7 @@ namespace GUI_Login.vista
         /// <summary>
         /// Maneja atajos de teclado en el formulario
         /// </summary>
-        private void FrmModificarProfesores_KeyDown(object sender, KeyEventArgs e)
+        private void FrmModificarProfesores_KeyDown(object? sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
                 BtnVolver_Click(sender, e);

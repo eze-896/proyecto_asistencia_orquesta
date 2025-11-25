@@ -1,8 +1,4 @@
 ﻿using GUI_Login.control;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
@@ -15,7 +11,7 @@ namespace GUI_Login.vista
         private readonly ControlAlumno controlAlumno;
         private readonly ControlInstrumento controlInstrumento;
         private int idSeleccionado = -1;
-        private List<Alumno> listaAlumnos = new List<Alumno>();
+        private List<Alumno> listaAlumnos = [];
 
         /// <summary>
         /// Constructor que inicializa los controladores necesarios
@@ -30,7 +26,7 @@ namespace GUI_Login.vista
         /// <summary>
         /// Carga inicial del formulario
         /// </summary>
-        private void FrmModificarAlumnos_Load(object sender, EventArgs e)
+        private void FrmModificarAlumnos_Load(object? sender, EventArgs e)
         {
             CargarListaAlumnos();
             CargarCheckListInstrumentos();
@@ -43,10 +39,12 @@ namespace GUI_Login.vista
         private void CargarListaAlumnos()
         {
             listaAlumnos = controlAlumno.ObtenerAlumnos();
-            lstAlumnosModificar.DataSource = null;
-            lstAlumnosModificar.DataSource = listaAlumnos;
-            lstAlumnosModificar.DisplayMember = "NombreCompleto";
-            lstAlumnosModificar.ValueMember = "Id";
+            lstAlumnosModificar.Items.Clear();
+
+            foreach (var alumno in listaAlumnos)
+            {
+                lstAlumnosModificar.Items.Add($"{alumno.Nombre} {alumno.Apellido}");
+            }
 
             // Seleccionar automáticamente el primer alumno si existe
             if (lstAlumnosModificar.Items.Count > 0)
@@ -60,31 +58,61 @@ namespace GUI_Login.vista
         /// </summary>
         private void CargarCheckListInstrumentos()
         {
-            List<Instrumento> instrumentos = controlInstrumento.ListarInstrumentosEnOrquesta();
-            chkListInstrumentos.DataSource = null;
-            chkListInstrumentos.DataSource = instrumentos;
-            chkListInstrumentos.DisplayMember = "Nombre";
-            chkListInstrumentos.ValueMember = "Id";
+            try
+            {
+                List<Instrumento> instrumentos = controlInstrumento.ListarInstrumentosEnOrquesta();
+                chkListInstrumentos.DataSource = null;
+                chkListInstrumentos.DataSource = instrumentos;
+                chkListInstrumentos.DisplayMember = "Nombre";
+                chkListInstrumentos.ValueMember = "Id";
+
+                if (instrumentos.Count == 0)
+                {
+                    MessageBox.Show("No hay instrumentos en la orquesta disponibles.",
+                        "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    btnGuardarCambios.Enabled = false;
+                }
+                else
+                {
+                    btnGuardarCambios.Enabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar instrumentos: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btnGuardarCambios.Enabled = false;
+            }
         }
 
         /// <summary>
         /// Maneja la selección de un alumno en la lista
         /// </summary>
-        private void LstAlumnosModificar_SelectedIndexChanged(object sender, EventArgs e)
+        private void LstAlumnosModificar_SelectedIndexChanged(object? sender, EventArgs e)
         {
             if (lstAlumnosModificar.SelectedItem == null) return;
 
-            Alumno alumno = (Alumno)lstAlumnosModificar.SelectedItem;
-            idSeleccionado = alumno.Id;
+            string? seleccionado = lstAlumnosModificar.SelectedItem.ToString();
+            if (!string.IsNullOrEmpty(seleccionado))
+            {
+                // Buscar el alumno por nombre y apellido
+                var alumnoSeleccionado = listaAlumnos.FirstOrDefault(a =>
+                    $"{a.Nombre} {a.Apellido}" == seleccionado);
 
-            // Cargar datos del alumno en los controles
-            txtNombre.Text = alumno.Nombre;
-            txtApellido.Text = alumno.Apellido;
-            txtDni.Text = alumno.Dni.ToString();
-            txtTelePadres.Text = alumno.Telefono_padres;
+                if (alumnoSeleccionado != null)
+                {
+                    idSeleccionado = alumnoSeleccionado.Id;
 
-            // Cargar y marcar los instrumentos del alumno
-            CargarInstrumentosDelAlumno(idSeleccionado);
+                    // Cargar datos del alumno en los controles
+                    txtNombre.Text = alumnoSeleccionado.Nombre;
+                    txtApellido.Text = alumnoSeleccionado.Apellido;
+                    txtDni.Text = alumnoSeleccionado.Dni.ToString();
+                    txtTelePadres.Text = alumnoSeleccionado.Telefono_padres;
+
+                    // Cargar y marcar los instrumentos del alumno
+                    CargarInstrumentosDelAlumno(idSeleccionado);
+                }
+            }
         }
 
         /// <summary>
@@ -113,7 +141,7 @@ namespace GUI_Login.vista
         /// <summary>
         /// Guarda los cambios realizados en los datos del alumno
         /// </summary>
-        private void BtnGuardarCambios_Click(object sender, EventArgs e)
+        private void BtnGuardarCambios_Click(object? sender, EventArgs e)
         {
             // Validar que se haya seleccionado un alumno
             if (idSeleccionado <= 0)
@@ -124,7 +152,7 @@ namespace GUI_Login.vista
             }
 
             // Validar campos del formulario
-            Alumno alumnoValidar = new Alumno
+            Alumno alumnoValidar = new()
             {
                 Nombre = txtNombre.Text.Trim(),
                 Apellido = txtApellido.Text.Trim(),
@@ -144,7 +172,7 @@ namespace GUI_Login.vista
             }
 
             // Crear objeto alumno con los datos actualizados
-            Alumno alumno = new Alumno
+            Alumno alumno = new()
             {
                 Id = idSeleccionado,
                 Nombre = txtNombre.Text.Trim(),
@@ -154,7 +182,7 @@ namespace GUI_Login.vista
             };
 
             // Obtener instrumentos seleccionados
-            List<int> idsInstrumentos = new List<int>();
+            List<int> idsInstrumentos = [];
             foreach (var item in chkListInstrumentos.CheckedItems)
             {
                 Instrumento instrumento = (Instrumento)item;
@@ -184,17 +212,17 @@ namespace GUI_Login.vista
         /// <summary>
         /// Regresa al formulario principal
         /// </summary>
-        private void BtnVolver_Click(object sender, EventArgs e)
+        private void BtnVolver_Click(object? sender, EventArgs e)
         {
             this.Close();
-            FrmPrincipal formPrincipal = new FrmPrincipal();
+            FrmPrincipal formPrincipal = new();
             formPrincipal.Show();
         }
 
         /// <summary>
         /// Sale del sistema con confirmación
         /// </summary>
-        private void BtnSalir_Click(object sender, EventArgs e)
+        private void BtnSalir_Click(object? sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show(
                 "¿Está seguro que desea salir del sistema?",
@@ -211,7 +239,7 @@ namespace GUI_Login.vista
         /// <summary>
         /// Maneja atajos de teclado en el formulario
         /// </summary>
-        private void FrmModificarAlumnos_KeyDown(object sender, KeyEventArgs e)
+        private void FrmModificarAlumnos_KeyDown(object? sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
                 BtnVolver_Click(sender, e);

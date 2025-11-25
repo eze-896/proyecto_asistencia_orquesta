@@ -1,6 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Windows.Forms;
 
 namespace GUI_Login.modelo
 {
@@ -102,11 +100,11 @@ namespace GUI_Login.modelo
                 {
                     throw new Exception("El nombre de usuario ya está en uso.");
                 }
-                throw new Exception($"Error al registrar usuario: {ex.Message}");
+                throw new Exception($"Error de base de datos: {ex.Message}");
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error inesperado al registrar usuario: {ex.Message}");
+                throw new Exception($"{ex.Message}");
             }
         }
     }

@@ -1,9 +1,6 @@
 ﻿using GUI_Login.modelo;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 
 namespace GUI_Login.control
 {

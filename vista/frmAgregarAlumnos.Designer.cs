@@ -98,7 +98,8 @@
             btnSalir.Location = new Point(850, 20);
             btnSalir.Name = "btnSalir";
             btnSalir.Size = new Size(40, 40);
-            btnSalir.TabIndex = 1;
+            btnSalir.TabIndex = 7;
+            btnSalir.TabStop = false;
             btnSalir.Text = "×";
             btnSalir.UseVisualStyleBackColor = false;
             btnSalir.Click += BtnSalir_Click;
@@ -146,8 +147,8 @@
             this.chkListInstrumentos.FormattingEnabled = true;
             this.chkListInstrumentos.Location = new Point(450, 180);
             this.chkListInstrumentos.Name = "chkListInstrumentos";
-            this.chkListInstrumentos.Size = new Size(320, 180); // Mayor altura para mostrar varios items
-            this.chkListInstrumentos.TabIndex = 2;
+            this.chkListInstrumentos.Size = new Size(320, 180); 
+            this.chkListInstrumentos.TabIndex = 4;
             // 
             // btnVolver
             // 
@@ -161,7 +162,7 @@
             btnVolver.Location = new Point(450, 400);
             btnVolver.Name = "btnVolver";
             btnVolver.Size = new Size(320, 45);
-            btnVolver.TabIndex = 5;
+            btnVolver.TabIndex = 6;
             btnVolver.Text = "← VOLVER AL PRINCIPAL";
             btnVolver.UseVisualStyleBackColor = false;
             btnVolver.Click += BtnVolver_Click;
@@ -178,7 +179,7 @@
             btnIngresar.Location = new Point(80, 400);
             btnIngresar.Name = "btnIngresar";
             btnIngresar.Size = new Size(320, 45);
-            btnIngresar.TabIndex = 4;
+            btnIngresar.TabIndex = 5;
             btnIngresar.Text = "🎵 INGRESAR ALUMNO";
             btnIngresar.UseVisualStyleBackColor = false;
             btnIngresar.Click += BtnIngresar_Click;

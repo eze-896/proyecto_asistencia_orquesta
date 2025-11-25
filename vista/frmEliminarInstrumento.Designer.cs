@@ -58,9 +58,9 @@
             this.lblSubtitulo.Size = new System.Drawing.Size(400, 21);
             this.lblSubtitulo.TabIndex = 4;
             this.lblSubtitulo.Text = "Seleccione un instrumento para eliminar de la orquesta";
-            // 
+            //
             // btnSalir
-            // 
+            //
             this.btnSalir.BackColor = System.Drawing.Color.Transparent;
             this.btnSalir.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnSalir.FlatAppearance.BorderSize = 0;

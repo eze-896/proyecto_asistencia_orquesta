@@ -100,7 +100,8 @@
             btnSalir.Location = new Point(850, 20);
             btnSalir.Name = "btnSalir";
             btnSalir.Size = new Size(40, 40);
-            btnSalir.TabIndex = 1;
+            btnSalir.TabIndex = 8;
+            btnSalir.TabStop = false;
             btnSalir.Text = "×";
             btnSalir.UseVisualStyleBackColor = false;
             btnSalir.Click += BtnSalir_Click;
@@ -152,7 +153,7 @@
             cmbInstrumentos.Location = new Point(450, 241);
             cmbInstrumentos.Name = "cmbInstrumentos";
             cmbInstrumentos.Size = new Size(320, 28);
-            cmbInstrumentos.TabIndex = 3;
+            cmbInstrumentos.TabIndex = 5;
             // 
             // label7
             // 
@@ -199,7 +200,7 @@
             btnVolver.Location = new Point(450, 400);
             btnVolver.Name = "btnVolver";
             btnVolver.Size = new Size(320, 45);
-            btnVolver.TabIndex = 6;
+            btnVolver.TabIndex = 7;
             btnVolver.Text = "← VOLVER AL PRINCIPAL";
             btnVolver.UseVisualStyleBackColor = false;
             btnVolver.Click += BtnVolver_Click;
@@ -216,7 +217,7 @@
             btnIngresar.Location = new Point(80, 400);
             btnIngresar.Name = "btnIngresar";
             btnIngresar.Size = new Size(320, 45);
-            btnIngresar.TabIndex = 5;
+            btnIngresar.TabIndex = 6;
             btnIngresar.Text = "👨‍🏫 INGRESAR PROFESOR";
             btnIngresar.UseVisualStyleBackColor = false;
             btnIngresar.Click += BtnIngresar_Click;
@@ -230,7 +231,7 @@
             txtTelefono.Location = new Point(450, 180);
             txtTelefono.Name = "txtTelefono";
             txtTelefono.Size = new Size(320, 27);
-            txtTelefono.TabIndex = 4;
+            txtTelefono.TabIndex = 3;
             // 
             // txtDni
             // 

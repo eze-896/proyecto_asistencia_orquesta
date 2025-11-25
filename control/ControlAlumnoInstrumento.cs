@@ -1,7 +1,4 @@
 ﻿using GUI_Login.modelo;
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace GUI_Login.control
 {

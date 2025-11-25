@@ -1,9 +1,6 @@
-﻿using GUI_Login.vista;
-using System;
-using System.Drawing;
-using System.Windows.Forms;
+﻿using GUI_Login.control;
+using GUI_Login.vista;
 using System.Data;
-using GUI_Login.control;
 
 namespace GUI_Login
 {
@@ -114,6 +111,12 @@ namespace GUI_Login
         /// </summary>
         private void AplicarColoresPorcentaje()
         {
+            if (dgwTablaAsistencia.Rows.Count == 0 ||
+                !dgwTablaAsistencia.Columns.Contains("porcentaje_asistencia"))
+            {
+                return;
+            }
+
             foreach (DataGridViewRow fila in dgwTablaAsistencia.Rows)
             {
                 // Color de fondo alternado para mejor legibilidad
@@ -165,40 +168,45 @@ namespace GUI_Login
         /// </summary>
         private void TxtBuscar_TextChanged(object sender, EventArgs e)
         {
-            if (sender is TextBox txtBuscar)
+            if (sender is not TextBox txtBuscar)
+                return;
+
+            if (datosOriginales == null || datosOriginales.Columns.Count == 0)
             {
-                string filtro = txtBuscar.Text.Trim();
-
-                if (string.IsNullOrEmpty(filtro))
-                {
-                    dgwTablaAsistencia.DataSource = datosOriginales;
-                }
-                else
-                {
-                    try
-                    {
-                        string filtroEscapado = filtro.Replace("[", "[[]")
-                                                      .Replace("]", "[]]")
-                                                      .Replace("*", "[*]")
-                                                      .Replace("%", "[%]")
-                                                      .Replace("'", "''");
-
-                        DataView vista = new DataView(datosOriginales);
-                        vista.RowFilter = $@"nombre_alumno LIKE '%{filtroEscapado}%' OR 
-                                   apellido_alumno LIKE '%{filtroEscapado}%' OR 
-                                   instrumentos LIKE '%{filtroEscapado}%' OR
-                                   profesores LIKE '%{filtroEscapado}%'";
-                        dgwTablaAsistencia.DataSource = vista;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error al aplicar filtro: {ex.Message}",
-                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-
-                AplicarColoresPorcentaje();
+                return;
             }
+
+            string filtro = txtBuscar.Text.Trim();
+
+            if (string.IsNullOrEmpty(filtro))
+            {
+                dgwTablaAsistencia.DataSource = datosOriginales;
+            }
+            else
+            {
+                try
+                {
+                    string filtroEscapado = filtro.Replace("[", "[[]")
+                                                  .Replace("]", "[]]")
+                                                  .Replace("*", "[*]")
+                                                  .Replace("%", "[%]")
+                                                  .Replace("'", "''");
+
+                    DataView vista = new DataView(datosOriginales);
+                    vista.RowFilter = $@"nombre_alumno LIKE '%{filtroEscapado}%' OR 
+                       apellido_alumno LIKE '%{filtroEscapado}%' OR 
+                       instrumentos LIKE '%{filtroEscapado}%' OR
+                       profesores LIKE '%{filtroEscapado}%'";
+                    dgwTablaAsistencia.DataSource = vista;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al aplicar filtro: {ex.Message}",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+            AplicarColoresPorcentaje();
         }
 
         /// <summary>

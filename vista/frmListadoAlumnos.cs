@@ -1,7 +1,5 @@
 ﻿using GUI_Login.control;
-using System;
 using System.Data;
-using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
@@ -51,15 +49,6 @@ namespace GUI_Login.vista
 
                 if (dgwAlumnos.Columns.Contains("telefono_alumno"))
                     dgwAlumnos.Columns["telefono_alumno"].HeaderText = "Teléfono";
-
-                if (dgwAlumnos.Columns.Contains("nombre_instrumento"))
-                    dgwAlumnos.Columns["nombre_instrumento"].HeaderText = "Instrumento";
-
-                if (dgwAlumnos.Columns.Contains("nombre_profesor"))
-                    dgwAlumnos.Columns["nombre_profesor"].HeaderText = "Profesor";
-
-                if (dgwAlumnos.Columns.Contains("apellido_profesor"))
-                    dgwAlumnos.Columns["apellido_profesor"].HeaderText = "Apellido P.";
 
                 // Configurar estilo visual del grid
                 dgwAlumnos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;

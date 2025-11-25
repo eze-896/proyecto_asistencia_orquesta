@@ -1,7 +1,4 @@
 ﻿using GUI_Login.control;
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace GUI_Login
 {
@@ -36,7 +33,7 @@ namespace GUI_Login
         /// <summary>
         /// Carga inicial del formulario
         /// </summary>
-        private void Registro_Load(object sender, EventArgs e)
+        private void Registro_Load(object? sender, EventArgs e)
         {
             txtNombreRegistro.Focus();
         }
@@ -44,7 +41,7 @@ namespace GUI_Login
         /// <summary>
         /// Maneja el clic en el botón de registro
         /// </summary>
-        private void BtnRegistro_Click(object sender, EventArgs e)
+        private void BtnRegistro_Click(object? sender, EventArgs e)
         {
             RegistrarUsuario();
         }
@@ -95,14 +92,6 @@ namespace GUI_Login
                     return;
                 }
 
-                if (pass != confirmar)
-                {
-                    MessageBox.Show("Las contraseñas no coinciden", "Registro",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    LimpiarCamposContraseña();
-                    return;
-                }
-
                 // Validar fortaleza de la contraseña
                 var resultadoFortaleza = _controlSesion.ValidarFortalezaContrasena(pass);
                 if (!resultadoFortaleza.EsValida)
@@ -114,36 +103,28 @@ namespace GUI_Login
                 }
 
                 // Ejecutar registro en la base de datos
-                try
-                {
-                    bool exito = _controlSesion.RegistrarUsuario(usuario, pass);
+                bool exito = _controlSesion.RegistrarUsuario(usuario, pass);
 
-                    if (exito)
-                    {
-                        MessageBox.Show("Usuario registrado con éxito", "Registro",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        VolverALogin();
-                    }
-                }
-                catch (Exception ex)
+                if (exito)
                 {
-                    MessageBox.Show($"Error al registrar usuario: {ex.Message}", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    txtNombreRegistro.Focus();
-                    txtNombreRegistro.SelectAll();
+                    MessageBox.Show("Usuario registrado con éxito", "Registro",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    VolverALogin();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al registrar usuario: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtNombreRegistro.Focus();
+                txtNombreRegistro.SelectAll();
             }
         }
 
         /// <summary>
         /// Actualiza el indicador de fortaleza de la contraseña
         /// </summary>
-        private void ContraRegistro_TextChanged(object sender, EventArgs e)
+        private void ContraRegistro_TextChanged(object? sender, EventArgs e)
         {
             string password = txtContraRegistro.Text;
 
@@ -155,7 +136,7 @@ namespace GUI_Login
             }
             else
             {
-                string nivel = _controlSesion.EvaluarNivelFortaleza(password);
+                string nivel = ControlSesion.EvaluarNivelFortaleza(password);
                 lblFortaleza.Text = $"Fortaleza: {nivel}";
                 lblFortaleza.ForeColor = nivel switch
                 {
@@ -174,7 +155,7 @@ namespace GUI_Login
         /// <summary>
         /// Valida la confirmación de la contraseña
         /// </summary>
-        private void ContraConfirm_TextChanged(object sender, EventArgs e)
+        private void ContraConfirm_TextChanged(object? sender, EventArgs e)
         {
             ValidarConfirmacionContraseña();
         }
@@ -226,14 +207,14 @@ namespace GUI_Login
         private void VolverALogin()
         {
             this.Hide();
-            Login login = new Login();
+            Login login = new();
             login.Show();
         }
 
         /// <summary>
         /// Maneja el cambio en la opción de mostrar contraseña
         /// </summary>
-        private void CheckMostrarContraseña_CheckedChanged(object sender, EventArgs e)
+        private void CheckMostrarContraseña_CheckedChanged(object? sender, EventArgs e)
         {
             char passwordChar = checkMostrarContraseña.Checked ? '\0' : '•';
             txtContraRegistro.PasswordChar = passwordChar;
@@ -243,19 +224,19 @@ namespace GUI_Login
         /// <summary>
         /// Maneja la tecla Enter en los campos de texto
         /// </summary>
-        private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void TextBox_KeyPress(object? sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
                 e.Handled = true;
-                this.SelectNextControl((Control)sender, true, true, true, true);
+                this.SelectNextControl((Control)sender!, true, true, true, true);
             }
         }
 
         /// <summary>
         /// Maneja la tecla Enter en el campo de confirmación de contraseña
         /// </summary>
-        private void ConfirmTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void ConfirmTextBox_KeyPress(object? sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
@@ -267,7 +248,7 @@ namespace GUI_Login
         /// <summary>
         /// Maneja el clic en el botón Volver
         /// </summary>
-        private void BtnVolver_Click(object sender, EventArgs e)
+        private void BtnVolver_Click(object? sender, EventArgs e)
         {
             VolverALogin();
         }
@@ -275,7 +256,7 @@ namespace GUI_Login
         /// <summary>
         /// Maneja el clic en el botón Salir
         /// </summary>
-        private void BtnSalir_Click(object sender, EventArgs e)
+        private void BtnSalir_Click(object? sender, EventArgs e)
         {
             DialogResult rta = MessageBox.Show("¿Seguro que desea salir?", "Registro",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question);

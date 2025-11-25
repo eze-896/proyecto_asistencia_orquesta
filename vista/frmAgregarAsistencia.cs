@@ -1,7 +1,4 @@
 ﻿using GUI_Login.control;
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
@@ -22,14 +19,14 @@ namespace GUI_Login.vista
         {
             InitializeComponent();
             controlAsistencia = new ControlAsistencia();
-            listaAlumnos = new List<Alumno>();
-            mapaAlumnos = new Dictionary<string, int>();
+            listaAlumnos = [];
+            mapaAlumnos = [];
         }
 
         /// <summary>
         /// Carga inicial del formulario
         /// </summary>
-        private void FrmAgregarAsistencia_Load(object sender, EventArgs e)
+        private void FrmAgregarAsistencia_Load(object? sender, EventArgs e)
         {
             datePicker.Value = DateTime.Today;
             cmbActividad.DataSource = Enum.GetValues(typeof(Asistencia.Tipo_Actividad));
@@ -71,7 +68,7 @@ namespace GUI_Login.vista
         /// <summary>
         /// Maneja el clic en el botón Guardar para registrar asistencias
         /// </summary>
-        private void BtnGuardar_Click(object sender, EventArgs e)
+        private void BtnGuardar_Click(object? sender, EventArgs e)
         {
             // Validar formulario
             if (cmbActividad.SelectedIndex == -1)
@@ -98,14 +95,22 @@ namespace GUI_Login.vista
 
             // Crear lista de asistencias
             DateTime fecha = datePicker.Value.Date;
-            Asistencia.Tipo_Actividad actividad = (Asistencia.Tipo_Actividad)cmbActividad.SelectedItem;
-            List<Asistencia> asistencias = new List<Asistencia>();
+
+            if (fecha > DateTime.Now.Date)
+            {
+                MessageBox.Show("No se puede registrar asistencia para fechas futuras.", "Validación",
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Asistencia.Tipo_Actividad actividad = (Asistencia.Tipo_Actividad)cmbActividad.SelectedItem!;
+            List<Asistencia> asistencias = [];
 
             for (int i = 0; i < chkListaAlumnos.Items.Count; i++)
             {
-                string itemText = chkListaAlumnos.Items[i].ToString();
+                string? itemText = chkListaAlumnos.Items[i]?.ToString();
 
-                if (mapaAlumnos.TryGetValue(itemText, out int idAlumno))
+                if (!string.IsNullOrEmpty(itemText) && mapaAlumnos.TryGetValue(itemText, out int idAlumno))
                 {
                     bool estaPresente = chkListaAlumnos.GetItemChecked(i);
 
@@ -168,17 +173,17 @@ namespace GUI_Login.vista
         /// <summary>
         /// Regresa al formulario principal
         /// </summary>
-        private void BtnVolver_Click(object sender, EventArgs e)
+        private void BtnVolver_Click(object? sender, EventArgs e)
         {
             this.Close();
-            FrmPrincipal formPrincipal = new FrmPrincipal();
+            FrmPrincipal formPrincipal = new();
             formPrincipal.Show();
         }
 
         /// <summary>
         /// Sale del sistema con confirmación
         /// </summary>
-        private void BtnSalir_Click(object sender, EventArgs e)
+        private void BtnSalir_Click(object? sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show(
                 "¿Está seguro que desea salir del sistema?",
@@ -195,7 +200,7 @@ namespace GUI_Login.vista
         /// <summary>
         /// Maneja atajos de teclado en el formulario
         /// </summary>
-        private void FrmAgregarAsistencia_KeyDown(object sender, KeyEventArgs e)
+        private void FrmAgregarAsistencia_KeyDown(object? sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
                 BtnVolver_Click(sender, e);

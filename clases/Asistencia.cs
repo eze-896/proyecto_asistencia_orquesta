@@ -1,6 +1,4 @@
-﻿using System;
-
-/// <summary>
+﻿/// <summary>
 /// Clase que registra la asistencia de alumnos a diferentes actividades
 /// Lleva control de presencia/ausencia en eventos del orquesta
 /// </summary>
@@ -11,10 +9,10 @@ public class Asistencia
     /// </summary>
     public enum Tipo_Actividad
     {
-        ensayo,           
+        ensayo,
         clase_instrumento, // Clase individual de instrumento
         clase_lenguaje,   // Clase de lenguaje musical
-        concierto         
+        concierto
     }
 
     // Atributos

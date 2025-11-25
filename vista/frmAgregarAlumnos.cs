@@ -1,8 +1,4 @@
 ﻿using GUI_Login.control;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
@@ -28,7 +24,7 @@ namespace GUI_Login.vista
         /// <summary>
         /// Carga inicial del formulario
         /// </summary>
-        private void FrmAgregarAlumnos_Load(object sender, EventArgs e)
+        private void FrmAgregarAlumnos_Load(object? sender, EventArgs e)
         {
             try
             {
@@ -44,21 +40,33 @@ namespace GUI_Login.vista
                 {
                     chkListInstrumentos.SetItemChecked(i, false);
                 }
+
+                if (instrumentos.Count == 0)
+                {
+                    MessageBox.Show("No hay instrumentos en la orquesta.\n\nDebe agregar instrumentos a la orquesta antes de poder registrar alumnos.",
+                        "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    btnIngresar.Enabled = false;
+                }
+                else
+                {
+                    btnIngresar.Enabled = true;
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cargar instrumentos: {ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btnIngresar.Enabled = false;
             }
         }
 
         /// <summary>
         /// Maneja el clic en el botón Ingresar para registrar alumno
         /// </summary>
-        private void BtnIngresar_Click(object sender, EventArgs e)
+        private void BtnIngresar_Click(object? sender, EventArgs e)
         {
             // Validar datos del formulario
-            Alumno alumnoValidar = new Alumno
+            Alumno alumnoValidar = new()
             {
                 Dni = int.TryParse(txtDni.Text, out int dni) ? dni : 0,
                 Nombre = txtNombre.Text.Trim(),
@@ -78,7 +86,7 @@ namespace GUI_Login.vista
             }
 
             // Crear objeto alumno
-            Alumno alumno = new Alumno
+            Alumno alumno = new()
             {
                 Dni = int.Parse(txtDni.Text),
                 Nombre = txtNombre.Text.Trim(),
@@ -87,7 +95,7 @@ namespace GUI_Login.vista
             };
 
             // Obtener instrumentos seleccionados
-            List<int> idsInstrumentos = new List<int>();
+            List<int> idsInstrumentos = [];
             foreach (var item in chkListInstrumentos.CheckedItems)
             {
                 Instrumento instrumento = (Instrumento)item;
@@ -115,7 +123,7 @@ namespace GUI_Login.vista
         /// <summary>
         /// Valida que el DNI contenga solo números
         /// </summary>
-        private void TxtDni_Leave(object sender, EventArgs e)
+        private void TxtDni_Leave(object? sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtDni.Text) && !int.TryParse(txtDni.Text, out _))
             {
@@ -129,7 +137,7 @@ namespace GUI_Login.vista
         /// <summary>
         /// Valida que el teléfono contenga solo números
         /// </summary>
-        private void TxtTelePadres_Leave(object sender, EventArgs e)
+        private void TxtTelePadres_Leave(object? sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtTelePadres.Text) && !long.TryParse(txtTelePadres.Text, out _))
             {
@@ -143,29 +151,29 @@ namespace GUI_Login.vista
         /// <summary>
         /// Formatea el nombre con la primera letra mayúscula
         /// </summary>
-        private void TxtNombre_Leave(object sender, EventArgs e)
+        private void TxtNombre_Leave(object? sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtNombre.Text))
             {
-                txtNombre.Text = char.ToUpper(txtNombre.Text[0]) + txtNombre.Text.Substring(1).ToLower();
+                txtNombre.Text = char.ToUpper(txtNombre.Text[0]) + txtNombre.Text[1..].ToLower();
             }
         }
 
         /// <summary>
         /// Formatea el apellido con la primera letra mayúscula
         /// </summary>
-        private void TxtApellido_Leave(object sender, EventArgs e)
+        private void TxtApellido_Leave(object? sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtApellido.Text))
             {
-                txtApellido.Text = char.ToUpper(txtApellido.Text[0]) + txtApellido.Text.Substring(1).ToLower();
+                txtApellido.Text = char.ToUpper(txtApellido.Text[0]) + txtApellido.Text[1..].ToLower();
             }
         }
 
         /// <summary>
         /// Efecto visual al entrar en un control
         /// </summary>
-        private void Control_Enter(object sender, EventArgs e)
+        private void Control_Enter(object? sender, EventArgs e)
         {
             if (sender is TextBox textBox)
                 textBox.BackColor = Color.LightYellow;
@@ -174,7 +182,7 @@ namespace GUI_Login.vista
         /// <summary>
         /// Efecto visual al salir de un control
         /// </summary>
-        private void Control_Leave(object sender, EventArgs e)
+        private void Control_Leave(object? sender, EventArgs e)
         {
             if (sender is TextBox textBox)
                 textBox.BackColor = Color.White;
@@ -183,17 +191,17 @@ namespace GUI_Login.vista
         /// <summary>
         /// Regresa al formulario principal
         /// </summary>
-        private void BtnVolver_Click(object sender, EventArgs e)
+        private void BtnVolver_Click(object? sender, EventArgs e)
         {
             this.Close();
-            FrmPrincipal formPrincipal = new FrmPrincipal();
+            FrmPrincipal formPrincipal = new();
             formPrincipal.Show();
         }
 
         /// <summary>
         /// Sale del sistema con confirmación
         /// </summary>
-        private void BtnSalir_Click(object sender, EventArgs e)
+        private void BtnSalir_Click(object? sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show(
                 "¿Está seguro que desea salir del sistema?",
@@ -210,7 +218,7 @@ namespace GUI_Login.vista
         /// <summary>
         /// Maneja atajos de teclado en el formulario
         /// </summary>
-        private void FrmAgregarAlumnos_KeyDown(object sender, KeyEventArgs e)
+        private void FrmAgregarAlumnos_KeyDown(object? sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
                 BtnVolver_Click(sender, e);

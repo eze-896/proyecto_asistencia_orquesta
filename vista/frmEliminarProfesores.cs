@@ -1,7 +1,4 @@
 ﻿using GUI_Login.control;
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {

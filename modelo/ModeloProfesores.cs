@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MySql.Data.MySqlClient;
 using System.Data;
-using MySql.Data.MySqlClient;
-using System.Windows.Forms;
 
 namespace GUI_Login.modelo
 {
@@ -79,12 +76,12 @@ namespace GUI_Login.modelo
                         var profesor = new Profesor
                         {
                             Id = reader.GetInt32("id"),
-                            Dni = reader.GetInt32("dni"),
+                            Dni = reader.IsDBNull(reader.GetOrdinal("dni")) ? 0 : reader.GetInt32("dni"),
                             Nombre = reader.IsDBNull(reader.GetOrdinal("nombre")) ? "" : reader.GetString("nombre"),
                             Apellido = reader.IsDBNull(reader.GetOrdinal("apellido")) ? "" : reader.GetString("apellido"),
                             Telefono = reader.IsDBNull(reader.GetOrdinal("telefono")) ? "" : reader.GetString("telefono"),
                             Email = reader.IsDBNull(reader.GetOrdinal("email")) ? "" : reader.GetString("email"),
-                            Id_instrumento = reader.GetInt32("id_instrumento")
+                            Id_instrumento = reader.IsDBNull(reader.GetOrdinal("id_instrumento")) ? 0 : reader.GetInt32("id_instrumento")
                         };
                         profesores.Add(profesor);
                     }
@@ -120,12 +117,12 @@ namespace GUI_Login.modelo
                         profesor = new Profesor
                         {
                             Id = reader.GetInt32("id"),
-                            Dni = reader.GetInt32("dni"),
+                            Dni = reader.IsDBNull(reader.GetOrdinal("dni")) ? 0 : reader.GetInt32("dni"),
                             Nombre = reader.IsDBNull(reader.GetOrdinal("nombre")) ? "" : reader.GetString("nombre"),
                             Apellido = reader.IsDBNull(reader.GetOrdinal("apellido")) ? "" : reader.GetString("apellido"),
                             Telefono = reader.IsDBNull(reader.GetOrdinal("telefono")) ? "" : reader.GetString("telefono"),
                             Email = reader.IsDBNull(reader.GetOrdinal("email")) ? "" : reader.GetString("email"),
-                            Id_instrumento = reader.GetInt32("id_instrumento")
+                            Id_instrumento = reader.IsDBNull(reader.GetOrdinal("id_instrumento")) ? 0 : reader.GetInt32("id_instrumento")
                         };
                     }
                 }

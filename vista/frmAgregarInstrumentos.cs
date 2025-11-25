@@ -1,7 +1,4 @@
 ﻿using GUI_Login.control;
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
@@ -44,11 +41,23 @@ namespace GUI_Login.vista
                 cmbInstrumento.DisplayMember = "Nombre";
                 cmbInstrumento.ValueMember = "Id";
                 cmbInstrumento.SelectedIndex = -1;
+
+                if (instrumentos.Count == 0)
+                {
+                    MessageBox.Show("No hay instrumentos disponibles para agregar a la orquesta.\n\nTodos los instrumentos ya están en la orquesta.",
+                        "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    btnIngresar.Enabled = false;
+                }
+                else
+                {
+                    btnIngresar.Enabled = true;
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cargar los instrumentos: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btnIngresar.Enabled = false;
             }
         }
 
@@ -58,6 +67,12 @@ namespace GUI_Login.vista
         private void BtnIngresar_Click(object sender, EventArgs e)
         {
             // Validar selección de instrumento
+            if (cmbInstrumento.Items.Count == 0)
+            {
+                MessageBox.Show("No hay instrumentos disponibles...");
+                return;
+            }
+
             if (cmbInstrumento.SelectedIndex == -1)
             {
                 MessageBox.Show("Seleccione un instrumento", "Advertencia",

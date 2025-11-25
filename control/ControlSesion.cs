@@ -1,9 +1,7 @@
 ﻿using GUI_Login.modelo;
-using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 
 namespace GUI_Login.control
 {
@@ -12,7 +10,12 @@ namespace GUI_Login.control
     /// </summary>
     public class ControlSesion
     {
-        private ModeloSesion _modelo;
+        private readonly ModeloSesion _modelo;
+
+        // Expresiones regulares compiladas para mejor rendimiento
+        private static readonly Regex CaracterEspecialRegex = new(@"[\p{P}\p{S}]", RegexOptions.Compiled);
+        private static readonly Regex SecuenciaNumericaRegex = new(@"^12345678$|^87654321$", RegexOptions.Compiled);
+        private static readonly Regex CaracteresRepetidosRegex = new(@"(.)\1{3,}", RegexOptions.Compiled);
 
         /// <summary>
         /// Constructor que inicializa el modelo de sesión
@@ -73,7 +76,7 @@ namespace GUI_Login.control
             {
                 string hashContrasena = GenerarSHA1(password);
 
-                Usuario nuevoUser = new Usuario
+                Usuario nuevoUser = new()
                 {
                     Nombre = usuario,
                     Contrasena = hashContrasena
@@ -81,9 +84,9 @@ namespace GUI_Login.control
 
                 return _modelo.RegistrarUsuario(nuevoUser);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception($"Error en el registro: {ex.Message}");
+                throw;
             }
         }
 
@@ -92,7 +95,7 @@ namespace GUI_Login.control
         /// <summary>
         /// Genera un hash SHA1 de una cadena de texto
         /// </summary>
-        public string GenerarSHA1(string cadena)
+        public static string GenerarSHA1(string cadena)
         {
             if (string.IsNullOrEmpty(cadena))
                 return string.Empty;
@@ -104,7 +107,7 @@ namespace GUI_Login.control
                 byte[] hash = SHA1.HashData(data);
 
                 // Convertir hash a string hexadecimal
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 foreach (byte b in hash)
                 {
                     sb.Append(b.ToString("x2"));
@@ -140,9 +143,9 @@ namespace GUI_Login.control
                 return (false, "La contraseña debe contener al menos una letra minúscula");
             if (!password.Any(char.IsDigit))
                 return (false, "La contraseña debe contener al menos un número");
-            if (!Regex.IsMatch(password, @"[\p{P}\p{S}]"))
+            if (!CaracterEspecialRegex.IsMatch(password))
                 return (false, "La contraseña debe contener al menos un carácter especial (!@#$%^&* etc.)");
-            if (password.Contains(" "))
+            if (password.Contains(' '))
                 return (false, "La contraseña no puede contener espacios en blanco");
 
             // Verificar si es una contraseña común o secuencia simple
@@ -155,7 +158,7 @@ namespace GUI_Login.control
         /// <summary>
         /// Evalúa el nivel de fortaleza de una contraseña
         /// </summary>
-        public string EvaluarNivelFortaleza(string password)
+        public static string EvaluarNivelFortaleza(string password)
         {
             if (string.IsNullOrEmpty(password))
                 return "Débil";
@@ -172,7 +175,7 @@ namespace GUI_Login.control
             if (password.Any(char.IsLower)) score++;
             if (password.Any(char.IsUpper)) score++;
             if (password.Any(char.IsDigit)) score++;
-            if (Regex.IsMatch(password, @"[\p{P}\p{S}]")) score++;
+            if (CaracterEspecialRegex.IsMatch(password)) score++;
 
             // Clasificar según el puntaje obtenido
             return score switch
@@ -187,29 +190,31 @@ namespace GUI_Login.control
         /// <summary>
         /// Verifica si una contraseña es demasiado simple o común
         /// </summary>
-        private bool EsSecuenciaSimple(string password)
+        private static bool EsSecuenciaSimple(string password)
         {
             // Lista de contraseñas comunes a evitar
-            string[] contraseñasComunes = {
+            string[] contraseñasComunes = [
                 "12345678", "password", "qwertyui", "abcdefgh",
                 "11111111", "00000000", "admin123", "contraseña"
-            };
+            ];
 
             // Verificar contra contraseñas comunes
-            if (Array.Exists(contraseñasComunes, common => password.ToLower() == common))
+            if (Array.Exists(contraseñasComunes, common =>
+                string.Equals(password, common, StringComparison.OrdinalIgnoreCase)))
                 return true;
 
             // Verificar secuencias numéricas
-            if (Regex.IsMatch(password, "^12345678$|^87654321$"))
+            if (SecuenciaNumericaRegex.IsMatch(password))
                 return true;
 
             // Verificar secuencias de teclado
-            string[] secuenciasTeclado = { "qwerty", "asdfgh", "zxcvbn", "poiuyt" };
-            if (Array.Exists(secuenciasTeclado, seq => password.ToLower().Contains(seq)))
+            string[] secuenciasTeclado = ["qwerty", "asdfgh", "zxcvbn", "poiuyt"];
+            if (Array.Exists(secuenciasTeclado, seq =>
+                password.Contains(seq, StringComparison.OrdinalIgnoreCase)))
                 return true;
 
             // Verificar caracteres repetidos (ej: aaaa, 1111)
-            if (Regex.IsMatch(password, @"(.)\1{3,}"))
+            if (CaracteresRepetidosRegex.IsMatch(password))
                 return true;
 
             return false;

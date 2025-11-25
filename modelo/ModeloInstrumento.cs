@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using MySql.Data.MySqlClient;
-using System.Windows.Forms;
+﻿using MySql.Data.MySqlClient;
 
 namespace GUI_Login.modelo
 {

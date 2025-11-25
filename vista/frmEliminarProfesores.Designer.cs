@@ -58,9 +58,9 @@
             this.lblSubtitulo.Size = new System.Drawing.Size(370, 21);
             this.lblSubtitulo.TabIndex = 4;
             this.lblSubtitulo.Text = "Seleccione un profesor para eliminar del sistema";
-            // 
+            //
             // btnSalir
-            // 
+            //
             this.btnSalir.BackColor = System.Drawing.Color.Transparent;
             this.btnSalir.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnSalir.FlatAppearance.BorderSize = 0;

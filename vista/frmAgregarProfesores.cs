@@ -1,7 +1,4 @@
 ﻿using GUI_Login.control;
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace GUI_Login.vista
 {
@@ -38,11 +35,23 @@ namespace GUI_Login.vista
                 cmbInstrumentos.DisplayMember = "Nombre";
                 cmbInstrumentos.ValueMember = "Id";
                 cmbInstrumentos.SelectedIndex = -1;
+
+                if (instrumentos.Count == 0)
+                {
+                    MessageBox.Show("No hay instrumentos en la orquesta.\n\nDebe agregar instrumentos a la orquesta antes de poder registrar profesores.",
+                        "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    btnIngresar.Enabled = false;
+                }
+                else
+                {
+                    btnIngresar.Enabled = true;
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cargar instrumentos: {ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btnIngresar.Enabled = false;
             }
         }
 

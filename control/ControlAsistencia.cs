@@ -1,8 +1,5 @@
 ﻿using GUI_Login.modelo;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Windows.Forms;
 
 namespace GUI_Login.control
 {
@@ -80,8 +77,8 @@ namespace GUI_Login.control
             {
                 try
                 {
-                    // Validar datos de la asistencia
                     if (a == null || a.IdAlumno <= 0 || a.Fecha == DateTime.MinValue ||
+                        a.Fecha > DateTime.Now.Date ||
                         !Enum.IsDefined(typeof(Asistencia.Tipo_Actividad), a.TipoActividad))
                     {
                         errores++;

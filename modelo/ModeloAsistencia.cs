@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MySql.Data.MySqlClient;
 using System.Data;
-using MySql.Data.MySqlClient;
-using System.Windows.Forms;
 
 namespace GUI_Login.modelo
 {
@@ -76,11 +73,14 @@ namespace GUI_Login.modelo
                 using MySqlConnection conn = conexion.getConexion();
                 conn.Open();
 
-                // Usar INSERT ON DUPLICATE KEY UPDATE para manejar actualizaciones
                 string query = @"
-                INSERT INTO asistencia (id_alumno, fecha, actividad_orquestal, presente)
-                VALUES (@idAlumno, @fecha, @actividadOrquestal, @presente)
-                ON DUPLICATE KEY UPDATE presente = @presente";
+                                    DELETE FROM asistencia 
+                                    WHERE id_alumno = @idAlumno 
+                                        AND fecha = @fecha 
+                                        AND actividad_orquestal = @actividadOrquestal;
+            
+                                    INSERT INTO asistencia (id_alumno, fecha, actividad_orquestal, presente)
+                                    VALUES (@idAlumno, @fecha, @actividadOrquestal, @presente)";
 
                 using MySqlCommand cmd = new(query, conn);
                 cmd.Parameters.AddWithValue("@idAlumno", asistencia.IdAlumno);

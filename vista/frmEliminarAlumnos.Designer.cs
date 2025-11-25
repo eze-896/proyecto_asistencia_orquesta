@@ -60,7 +60,7 @@
             this.lblSubtitulo.Text = "Seleccione un alumno para eliminar del sistema";
             // 
             // btnSalir
-            // 
+            //
             this.btnSalir.BackColor = System.Drawing.Color.Transparent;
             this.btnSalir.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnSalir.FlatAppearance.BorderSize = 0;
@@ -72,7 +72,7 @@
             this.btnSalir.Name = "btnSalir";
             this.btnSalir.Size = new System.Drawing.Size(40, 40);
             this.btnSalir.TabIndex = 3;
-            this.btnSalir.TabStop = false;
+            this.btnSalir.TabStop = false;  
             this.btnSalir.Text = "×";
             this.btnSalir.UseVisualStyleBackColor = false;
             this.btnSalir.Click += new System.EventHandler(this.BtnSalir_Click);
