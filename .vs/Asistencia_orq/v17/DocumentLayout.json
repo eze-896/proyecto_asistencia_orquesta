@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\54291\\source\\repos\\GUI Login\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0EDE999A-E112-4C3D-9695-E701FF784E7C}|Asistencia_orq.csproj|c:\\users\\54291\\source\\repos\\gui login\\vista\\frmagregaralumnos.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0EDE999A-E112-4C3D-9695-E701FF784E7C}|Asistencia_orq.csproj|solutionrelative:vista\\frmagregaralumnos.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{0EDE999A-E112-4C3D-9695-E701FF784E7C}|Asistencia_orq.csproj|c:\\users\\54291\\source\\repos\\gui login\\vista\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0EDE999A-E112-4C3D-9695-E701FF784E7C}|Asistencia_orq.csproj|solutionrelative:vista\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0EDE999A-E112-4C3D-9695-E701FF784E7C}|Asistencia_orq.csproj|c:\\users\\54291\\source\\repos\\gui login\\vista\\frmagregaralumnos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{0EDE999A-E112-4C3D-9695-E701FF784E7C}|Asistencia_orq.csproj|solutionrelative:vista\\frmagregaralumnos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{0EDE999A-E112-4C3D-9695-E701FF784E7C}|Asistencia_orq.csproj|c:\\users\\54291\\source\\repos\\gui login\\control\\controlasistencia.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0EDE999A-E112-4C3D-9695-E701FF784E7C}|Asistencia_orq.csproj|solutionrelative:control\\controlasistencia.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0EDE999A-E112-4C3D-9695-E701FF784E7C}|Asistencia_orq.csproj|c:\\users\\54291\\source\\repos\\gui login\\vista\\frmagregarprofesores.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0EDE999A-E112-4C3D-9695-E701FF784E7C}|Asistencia_orq.csproj|solutionrelative:vista\\frmagregarprofesores.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{0EDE999A-E112-4C3D-9695-E701FF784E7C}|Asistencia_orq.csproj|c:\\users\\54291\\source\\repos\\gui login\\modelo\\modeloasistencia.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0EDE999A-E112-4C3D-9695-E701FF784E7C}|Asistencia_orq.csproj|solutionrelative:modelo\\modeloasistencia.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0EDE999A-E112-4C3D-9695-E701FF784E7C}|Asistencia_orq.csproj|c:\\users\\54291\\source\\repos\\gui login\\vista\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{0EDE999A-E112-4C3D-9695-E701FF784E7C}|Asistencia_orq.csproj|solutionrelative:vista\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -31,40 +35,53 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "frmAgregarAlumnos.cs [Dise\u00F1o]",
-              "DocumentMoniker": "C:\\Users\\54291\\source\\repos\\GUI Login\\vista\\frmAgregarAlumnos.cs",
-              "RelativeDocumentMoniker": "vista\\frmAgregarAlumnos.cs",
-              "ToolTip": "C:\\Users\\54291\\source\\repos\\GUI Login\\vista\\frmAgregarAlumnos.cs [Dise\u00F1o]",
-              "RelativeToolTip": "vista\\frmAgregarAlumnos.cs [Dise\u00F1o]",
+              "Title": "ControlAsistencia.cs",
+              "DocumentMoniker": "C:\\Users\\54291\\source\\repos\\GUI Login\\control\\ControlAsistencia.cs",
+              "RelativeDocumentMoniker": "control\\ControlAsistencia.cs",
+              "ToolTip": "C:\\Users\\54291\\source\\repos\\GUI Login\\control\\ControlAsistencia.cs",
+              "RelativeToolTip": "control\\ControlAsistencia.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T01:02:38.722Z",
-              "EditorCaption": " [Dise\u00F1o]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "frmAgregarAlumnos.Designer.cs",
-              "DocumentMoniker": "C:\\Users\\54291\\source\\repos\\GUI Login\\vista\\frmAgregarAlumnos.Designer.cs",
-              "RelativeDocumentMoniker": "vista\\frmAgregarAlumnos.Designer.cs",
-              "ToolTip": "C:\\Users\\54291\\source\\repos\\GUI Login\\vista\\frmAgregarAlumnos.Designer.cs",
-              "RelativeToolTip": "vista\\frmAgregarAlumnos.Designer.cs",
-              "ViewState": "AgIAAE8AAAAAAAAAAAAQwGQAAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T00:59:11.842Z",
+              "WhenOpened": "2025-11-25T01:15:24.076Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "frmAgregarProfesores.Designer.cs",
-              "DocumentMoniker": "C:\\Users\\54291\\source\\repos\\GUI Login\\vista\\frmAgregarProfesores.Designer.cs",
-              "RelativeDocumentMoniker": "vista\\frmAgregarProfesores.Designer.cs",
-              "ToolTip": "C:\\Users\\54291\\source\\repos\\GUI Login\\vista\\frmAgregarProfesores.Designer.cs",
-              "RelativeToolTip": "vista\\frmAgregarProfesores.Designer.cs",
-              "ViewState": "AgIAANUAAAAAAAAAAAAswGYAAAAMAAAAAAAAAA==",
+              "Title": "ModeloAsistencia.cs",
+              "DocumentMoniker": "C:\\Users\\54291\\source\\repos\\GUI Login\\modelo\\ModeloAsistencia.cs",
+              "RelativeDocumentMoniker": "modelo\\ModeloAsistencia.cs",
+              "ToolTip": "C:\\Users\\54291\\source\\repos\\GUI Login\\modelo\\ModeloAsistencia.cs",
+              "RelativeToolTip": "modelo\\ModeloAsistencia.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAALYAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T00:52:37.552Z",
+              "WhenOpened": "2025-11-25T01:14:02.667Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "frmPrincipal.cs",
+              "DocumentMoniker": "C:\\Users\\54291\\source\\repos\\GUI Login\\vista\\frmPrincipal.cs",
+              "RelativeDocumentMoniker": "vista\\frmPrincipal.cs",
+              "ToolTip": "C:\\Users\\54291\\source\\repos\\GUI Login\\vista\\frmPrincipal.cs",
+              "RelativeToolTip": "vista\\frmPrincipal.cs",
+              "ViewState": "AgIAABoAAAAAAAAAAAAcwDQAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-25T01:13:29.138Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "frmPrincipal.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\54291\\source\\repos\\GUI Login\\vista\\frmPrincipal.cs",
+              "RelativeDocumentMoniker": "vista\\frmPrincipal.cs",
+              "ToolTip": "C:\\Users\\54291\\source\\repos\\GUI Login\\vista\\frmPrincipal.cs [Dise\u00F1o]",
+              "RelativeToolTip": "vista\\frmPrincipal.cs [Dise\u00F1o]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-25T01:13:08.734Z",
+              "EditorCaption": " [Dise\u00F1o]"
             }
           ]
         }

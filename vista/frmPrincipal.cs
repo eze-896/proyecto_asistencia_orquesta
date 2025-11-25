@@ -37,8 +37,9 @@ namespace GUI_Login
             {
                 datosOriginales = controlAsistencia.ObtenerDatosParaGrid();
 
-                if (datosOriginales.Rows.Count == 0)
+                if (datosOriginales == null || datosOriginales.Rows.Count == 0)
                 {
+                    datosOriginales = new DataTable();
                     MessageBox.Show("No hay datos de asistencia para mostrar.",
                         "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -49,6 +50,7 @@ namespace GUI_Login
             }
             catch (Exception ex)
             {
+                datosOriginales = new DataTable();
                 MessageBox.Show($"Error al cargar la tabla de asistencias: {ex.Message}",
                               "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -75,8 +77,6 @@ namespace GUI_Login
             // Ocultar columnas que no se deben mostrar
             if (dgwTablaAsistencia.Columns.Contains("id_alumno"))
                 dgwTablaAsistencia.Columns["id_alumno"].Visible = false;
-            if (dgwTablaAsistencia.Columns.Contains("cantidad_instrumentos"))
-                dgwTablaAsistencia.Columns["cantidad_instrumentos"].Visible = false;
 
             // Configurar headers de columnas
             if (dgwTablaAsistencia.Columns.Contains("nombre_alumno"))

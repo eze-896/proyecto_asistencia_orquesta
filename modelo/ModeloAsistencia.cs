@@ -177,7 +177,10 @@ namespace GUI_Login.modelo
                 }
 
                 // Agregar columna de porcentaje y calcular para cada alumno
-                tabla.Columns.Add("porcentaje_asistencia", typeof(double));
+                if (!tabla.Columns.Contains("porcentaje_asistencia"))
+                {
+                    tabla.Columns.Add("porcentaje_asistencia", typeof(double));
+                }
 
                 foreach (DataRow fila in tabla.Rows)
                 {
